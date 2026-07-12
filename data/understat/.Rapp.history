@@ -1,0 +1,2 @@
+load("/Users/benrimmer/Transfer Predictions/data/understat/la_liga_shot_data.rds")
+load("/Users/benrimmer/Transfer Predictions/data/understat/serie_a_shot_data.rds")

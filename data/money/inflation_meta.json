@@ -1,0 +1,102 @@
+{
+  "base_year": 2010,
+  "valid_min": 1992,
+  "valid_max": 2025,
+  "premium_min": 2005,
+  "n_transfers": 25368,
+  "r2": {
+    "all": 0.15071455785883203,
+    "elite": 0.5903955299070178,
+    "median": 0.15360303805084596,
+    "fwd": 0.13071163422275478,
+    "nonfwd": 0.15234612830009042,
+    "premium": 0.6700351273689913
+  },
+  "controls": {
+    "all": {
+      "age": 0.748038398991417,
+      "age2": -0.014602295066809276,
+      "to_top5": 0.6620824036112299,
+      "lmv": null
+    },
+    "premium": {
+      "age": -0.20098705291838867,
+      "age2": 0.002572417015523488,
+      "to_top5": 0.27396309712095257,
+      "lmv": 0.8899121053900934
+    }
+  },
+  "segments": [
+    "all",
+    "elite",
+    "median",
+    "fwd",
+    "nonfwd",
+    "premium"
+  ],
+  "segment_valid_max": {
+    "all": 2025,
+    "median": 2025,
+    "nonfwd": 2025,
+    "elite": 2022,
+    "fwd": 2022,
+    "premium": 2022
+  },
+  "regimes": [
+    {
+      "start": 1992,
+      "end": 1996,
+      "cagr_pct": 6.0,
+      "label": ""
+    },
+    {
+      "start": 1997,
+      "end": 2011,
+      "cagr_pct": 1.0,
+      "label": "Bosman"
+    },
+    {
+      "start": 2012,
+      "end": 2016,
+      "cagr_pct": 11.7,
+      "label": "PSG/QSI"
+    },
+    {
+      "start": 2017,
+      "end": 2021,
+      "cagr_pct": -0.8,
+      "label": "Neymar \u20ac222m"
+    },
+    {
+      "start": 2022,
+      "end": 2025,
+      "cagr_pct": 1.3,
+      "label": "Chelsea/Saudi PIF"
+    }
+  ],
+  "chow_pvalues": {
+    "1995": 3.840029067527833e-12,
+    "2003": 3.877456160779892e-56,
+    "2008": 1.2826467860057008e-29,
+    "2011": 1.8429531396665493e-32,
+    "2017": 6.80775801084302e-24,
+    "2020": 0.007483624224662389,
+    "2022": 4.521306684136391e-05
+  },
+  "cpi_multiple_all_1996_2022": {
+    "y0": 1996,
+    "y1": 2022,
+    "football_x": 4.95,
+    "cpi_x": 1.8,
+    "multiple": 2.75
+  },
+  "cpi_multiple_elite_1996_2022": {
+    "y0": 1996,
+    "y1": 2022,
+    "football_x": 5.86,
+    "cpi_x": 1.8,
+    "multiple": 3.26
+  },
+  "formula": "lfee ~ C(_s, Treatment(reference=@BASE)) + age + age2 + C(pos) + to_top5",
+  "se": "two-way cluster (player, selling club)"
+}
