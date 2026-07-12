@@ -81,12 +81,42 @@ promotion to "proven" — reporting it as proven would require gate 3 to clear i
 to stop sign-flipping on a marquee case, and neither happened. **Edge PRESENT BUT UNPROVEN**
 remains the honest label.
 
+## Addendum — the gate-2 fix was tried, and it made things worse
+
+Tested the first item in the list above directly: added `days_missed_in_season` (point-in-time,
+this-season-only injury days, from the raw spell file) alongside the existing trailing-3y
+durability feature, retrained, re-gated. **Result: gate 2 got worse, not better** — Haaland's
+gap widened from +75.9 to +91.8 (further from the correct sign). Gate 3's spread widened
+(+0.118→+0.174, CI even more clearly positive) but its step-monotonicity got worse (55.6%→44.4%
+of deciles). Gates 1 and 4 were roughly flat.
+
+**Why the fix backfired, once checked:** `days_missed_in_season` is legitimately negatively
+correlated with forward growth across the training set (corr −0.07 on prior seasons) —
+players who miss a lot of a season, for *any* reason, tend on average to see flatter or
+declining valuations next. That's a real, sensible pattern for the population. Haaland's row
+has `days_missed_in_season=99` (about a third of the season) — a large number on the very axis
+the model has learned to discount. Adding the feature didn't teach the model "this explains away
+his low minutes"; it added a second independently-negative signal on top of the first, because
+the model has no way to know his 99 missed days were a one-off in an otherwise-healthy career
+rather than the chronic pattern the feature usually flags. **This isn't a fixable-in-five-minutes
+problem** — distinguishing "one bad injury season for an elite player" from "an unreliable
+player" needs career-shape context (e.g., a multi-season trend), not a single-season count,
+and that's a materially bigger feature-engineering job than the one tried here.
+
+**Reverted.** `impact/talent.py` and `data/money/talent_scores.csv` are back to the committed,
+gated version (`git diff` clean against HEAD) — shipping a change that measurably regressed the
+exact gate it was meant to fix would be the "loosen the gate" failure mode in a different
+costume. The negative result is recorded here instead of discarded, per the project's own rule
+that a failed hypothesis is a finding, not nothing.
+
 ## What would close the gap (not built here — scoped, not started)
 
-1. **A minutes-context feature** (e.g., trailing-2-season n90s trend, or an explicit
-   "returning from injury" flag from `avail_trailing3y`'s own spell data) to stop the model
-   reading "great player having a short season" as "ordinary player." This is the direct fix
-   for the gate-2 failure mode found above, not a speculative add.
+1. **A career-shape minutes feature** — a trailing-2-3-season n90s *trend/baseline*, so a dip
+   reads as "down from his own normal" rather than an absolute injury-day count. **The simple
+   version of this was tried (see addendum above) and made gate 2 worse**, because a raw
+   single-season injury-day count is itself negatively correlated with growth across the
+   population, and Haaland's 99 missed days looks like the same pattern chronic-injury players
+   show. A trend feature is a different, untried idea, not a retry of the same one.
 2. **Selling-league coverage** (`shots_selling`, already on disk, 234,800 rows,
    Eredivisie/Portugal/Championship/Brazil) wired into the same panel — the standing fix for
    the Antony-class blind spot, and the review's own highest-value-next-move for axis 3.
