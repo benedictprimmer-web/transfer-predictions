@@ -1,0 +1,4 @@
+output,approved_label,prohibited_label,requires_uncertainty
+fee_residual,deviation from expected negotiated fee / market-consensus pricing,true player value or genuine undervaluation,True
+buyer_specific_surplus,buyer-specific expected acquisition surplus,available without named buyer context,True
+wage_estimate,"observed wage or modelled wage, explicitly flagged",unqualified wage,True

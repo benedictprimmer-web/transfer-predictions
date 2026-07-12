@@ -1,0 +1,11 @@
+{
+  "command": "python3 -m validate.modelling_contract",
+  "outputs": {
+    "acceptance_results": "reports/model-contract/acceptance_results.csv",
+    "component_support": "reports/model-contract/component_support.csv",
+    "feature_policy": "reports/model-contract/feature_policy.csv",
+    "fold_manifest": "reports/model-contract/fold_manifest.csv",
+    "named_development_cases": "reports/model-contract/named_development_cases.csv",
+    "output_policy": "reports/model-contract/output_policy.csv"
+  }
+}

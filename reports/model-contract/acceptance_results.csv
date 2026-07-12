@@ -1,0 +1,20 @@
+name,passed,detail
+buyer_surplus_requires_buyer_context,True,buyer-specific surplus unavailable without named buyer context
+continuous_fee_scope_paid_permanent_only,True,0 non-permanent rows in V1 fee scope
+crosswalk_ambiguity_known_and_not_silent,True,3 TM-to-Understat ambiguous ids; V1 fee scope does not consume this crosswalk
+current_state_contract_excluded_historically,True,0 non-PIT contract rows in V1 fee scope
+feature_policy_names_prohibited_temporal_features,True,"future performance, post-transfer market value, current-state contract snapshots, current-state wages"
+fee_residual_not_labelled_true_value,True,fee residual approved label is negotiated-fee deviation
+future_performance_excluded_from_safe_link,True,0 future performance rows in safe link
+missing_critical_pit_inputs_abstain,True,0 V1 fee rows missing critical inputs
+modelled_wage_visibly_distinct,True,wage policy requires observed/modelled status
+player_master_join_no_expansion,True,5151 joined rows from 5151 V1 rows
+post_transfer_market_value_excluded,True,0 non-PIT MV rows in V1 fee scope
+proxy_dated_rows_excluded_from_v1_fee_scope,True,0 proxy rows in V1 fee scope
+same_deal_does_not_cross_recommended_folds,True,0 overlapping V1 keys across design_A folds
+transaction_taxonomy_covers_all_rows,True,134147/134147 rows categorized
+undisclosed_fee_excluded_from_continuous_target,True,0 undisclosed rows in V1 fee scope
+unsupported_goalkeepers_abstain,True,0 GK rows in V1 discovery scope
+unsupported_roles_abstain,True,0 unsupported-position rows in V1 discovery scope
+v1_transfer_prediction_key_unique,True,"5151 rows, 5151 distinct V1 keys"
+zero_fee_excluded_from_continuous_target,True,0 zero/null fee rows in V1 fee scope

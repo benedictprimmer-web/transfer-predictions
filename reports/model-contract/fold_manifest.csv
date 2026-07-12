@@ -1,0 +1,9 @@
+design,split,season_filter,v1_negotiated_fee_rows,v1_discovery_snapshot_rows,forward_mv_diagnostic_rows,prior_perf_link_rows
+design_A_recommended,train,season <= 2018,1536,4650,4607,2269
+design_A_recommended,tune,season = 2019,399,1131,1130,696
+design_A_recommended,calibration,season between 2020 and 2021,526,2073,2073,1376
+design_A_recommended,locked_final_test,season >= 2023,2690,12483,5403,0
+design_B_historical_rolling,train,season <= 2017,1220,3701,3659,1681
+design_B_historical_rolling,tune,season between 2018 and 2019,715,2080,2078,1284
+design_B_historical_rolling,calibration,season between 2020 and 2021,526,2073,2073,1376
+design_B_historical_rolling,diagnostic_recent,season >= 2023,2690,12483,5403,0
