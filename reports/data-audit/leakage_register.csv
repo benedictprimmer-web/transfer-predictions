@@ -1,0 +1,14 @@
+item,source,timestamp_rule,permitted_models,prohibited_models,executable_assertion
+future performance,transfer_performance_link_safe,perf_season < transfer_season only,prior-history models,target-period feature models,assert all perf_season < transfer_season
+post-transfer market value,valuations,feature valuation must be strictly before prediction date,fee-vs-consensus models with PIT MV,future repricing features,assert valuation.date < prediction_date
+current-state contracts,contracts/players_master,PIT only when contract_is_pit true or raw snapshot predates transfer,prospective current-board context,historical backtests without PIT,assert contract snapshot date < transfer date
+wage snapshots,wages_fifa/capology,edition/season must be <= prediction season,scenario costs when flagged observed/modelled,silent imputation,assert wage edition_year <= season
+destination-season information,fbref_perf/transfer_performance_link,only pre-transfer seasons as features,post-transfer labels,pre-transfer features,assert feature season < transfer season
+encoders fitted outside folds,model code,fit within each temporal train split,all models,random full-sample preprocessing,unit test pipeline fit per split
+random temporal splits,money/fees.py history,expanding-window only,validation,random KFold on market-inflated data,grep/sklearn split audit plus fold table
+duplicate deals across folds,transfers_canonical,deal key must be assigned to one split,all temporal CV,same deal repeated train/test,assert duplicate deal key not split
+player history across folds,players longitudinal tables,future seasons excluded,history features,future aggregates,assert max feature season < prediction season
+target-derived inflation features,money/inflation,fit inflation index using training period only,fee models,full-history inflation in train,assert inflation fit window <= train max
+future transfer-induced market value,valuations,future MV target must flag transfer-contaminated observations,target feasibility only,ground-truth value labels,exclude/flag valuations after subsequent paid transfer
+calibration/test reuse,validation reports,calibration split separate from final test,model calibration,final test tuning,fold table enforces separate periods
+buyer identity in buyer-agnostic value,transfers_canonical.to_club_id,exclude unless model estimand is buyer-specific,buyer-specific surplus,buyer-agnostic value models,feature allowlist test

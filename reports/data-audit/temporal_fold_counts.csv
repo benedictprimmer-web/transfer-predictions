@@ -1,0 +1,9 @@
+design,split,filter,all_transfers,paid_permanent,model_ready_fee,mv_forward_2y_observed
+design_A,train,season <= 2017,91262,17573,11045,40130
+design_A,tune,season between 2018 and 2019,10600,2367,2709,9646
+design_A,calibration,season between 2020 and 2021,9412,1581,1760,8271
+design_A,final_test,season >= 2022,22873,4075,4345,10273
+design_B,train,season <= 2019,101862,19940,13754,49776
+design_B,tune,season = 2020,4757,780,911,4270
+design_B,calibration,season = 2021,4655,801,849,4001
+design_B,final_test,season >= 2022,22873,4075,4345,10273

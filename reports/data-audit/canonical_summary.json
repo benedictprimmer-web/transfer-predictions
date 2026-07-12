@@ -1,0 +1,36 @@
+{
+  "canonical_distinct_deal_key": 131582,
+  "canonical_duplicate_transfer_uid_rows": 19113,
+  "canonical_time_range": [
+    1992,
+    2026,
+    "1992-08-01",
+    "2026-08-31"
+  ],
+  "canonical_unique_transfer_uid": 115033,
+  "current_canonical_rows": 134147,
+  "exact_transfer_date_rows": 29032,
+  "filter_definitions": {
+    "canonical_distinct_deal_key": "select count(distinct coalesce(cast(player_id as varchar),'?')||'|'||coalesce(cast(season as varchar),'?')||'|'||coalesce(\"window\",'?')||'|'||coalesce(from_club_name,'?')||'|'||coalesce(to_club_name,'?')) from transfers_canonical",
+    "canonical_duplicate_transfer_uid_rows": "select coalesce(sum(cnt-1),0) from (select transfer_uid, count(*) cnt from transfers_canonical group by 1 having count(*)>1)",
+    "canonical_unique_transfer_uid": "select count(distinct transfer_uid) from transfers_canonical",
+    "current_canonical_rows": "select count(*) from transfers_canonical",
+    "exact_transfer_date_rows": "select count(*) from transfers_canonical where date_source in ('exact','exact_raw')",
+    "market_value_nonnull_rows": "select count(*) from transfers_canonical where market_value_eur is not null",
+    "market_value_pit_rows": "select count(*) from transfers_canonical where mv_is_point_in_time",
+    "player_id_null_rows": "select count(*) from transfers_canonical where player_id is null",
+    "positive_fee_rows_all_types": "select count(*) from transfers_canonical where fee_eur > 0",
+    "positive_fee_rows_paid_permanent": "select count(*) from transfers_canonical where transfer_type='permanent' and fee_eur > 0",
+    "proxy_transfer_date_rows": "select count(*) from transfers_canonical where date_source='proxy'",
+    "trainable_fee_rows_current_filter": "select count(*) from transfers_canonical where fee_eur > 0 and market_value_eur is not null and player_age is not null and coalesce(fee_suspect,false)=false",
+    "undated_transfer_rows": "select count(*) from transfers_canonical where transfer_date is null and date is null"
+  },
+  "market_value_nonnull_rows": 80727,
+  "market_value_pit_rows": 75857,
+  "player_id_null_rows": 32623,
+  "positive_fee_rows_all_types": 28102,
+  "positive_fee_rows_paid_permanent": 25596,
+  "proxy_transfer_date_rows": 105115,
+  "trainable_fee_rows_current_filter": 19859,
+  "undated_transfer_rows": 0
+}

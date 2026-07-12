@@ -1,0 +1,16 @@
+table_or_view,rows,columns,date_column_used,earliest_date,latest_date,intended_grain_key_tested,duplicate_key_rows
+clubelo_history,771384,5,date,1939-01-08,2026-08-30,club|date,0
+contracts,50149,9,contract_expiration_date,2000-05-31,2035-06-30,tm_player_id,0
+crosswalk_matches,18917,7,,,,understat_game_id|tm_game_id,0
+crosswalk_players,6433,8,,,,us_player_id|tm_player_id,0
+fbref_defense,14634,12,,,,tm_player_id|season_end_year|comp|squad,0
+fbref_niche,14634,36,,,,tm_player_id|season_end_year|comp|squad,0
+fbref_perf,52951,222,,,,fbref_id|Season_End_Year|Comp|Squad,47
+injuries,34561,13,,,,tm_player_id,0
+players_master,50149,11,contract_expiration_date,2000-05-31,2035-06-30,tm_player_id,0
+shots,539971,18,date,2014-08-01,2025-01-04,league|season|game_id|minute|player_id|x|y,126
+shots_selling,234800,20,,,,league|season|match_id|minute|fbref_id|xg,523
+transfer_performance_link_safe,91081,19,,,,transfer_uid|perf_season,5582
+transfers_canonical,134147,34,transfer_date,2009-01-01,2026-08-31,transfer_uid,19113
+valuations,507815,6,date,2000-01-20,2026-02-27,player_id|date,0
+wages_fifa,13650,16,,,,tm_player_id|edition_year,0
