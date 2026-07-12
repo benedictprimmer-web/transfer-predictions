@@ -24,6 +24,7 @@ two team mappings).
 from __future__ import annotations
 
 import difflib
+import html
 import re
 import unicodedata
 from pathlib import Path
@@ -71,8 +72,13 @@ def norm_team(name: str) -> str:
 
 
 def norm_player(name: str) -> str:
-    """De-accent, casefold, punctuation->space. 'N. Kanté' -> 'n kante'."""
-    s = _strip_diacritics(str(name)).casefold()
+    """De-accent, casefold, punctuation->space. 'N. Kanté' -> 'n kante'.
+
+    Understat names carry literal HTML entities (e.g. "N&#039;Golo Kanté");
+    unescape (up to twice, for double-encoded cases) before stripping.
+    """
+    s = html.unescape(html.unescape(str(name)))
+    s = _strip_diacritics(s).casefold()
     return " ".join(re.sub(r"[^a-z0-9]+", " ", s).split())
 
 

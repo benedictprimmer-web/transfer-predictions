@@ -15,7 +15,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor
-from sklearn.model_selection import cross_val_predict
 
 TM_DIR = Path(__file__).resolve().parent.parent / "data" / "transfermarkt"
 CANONICAL = TM_DIR.parent / "merged" / "transfers_canonical.parquet"
@@ -28,11 +27,19 @@ _WFR = "https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/dat
 # thing blocking you.
 FEATURES = ["age", "market_value", "position", "from_league", "to_league", "season", "contract_years"]
 CATS = [False, False, True, True, True, False, False]
+MIN_TRAIN_ROWS = 30  # a season needs at least this much prior history to be scored
 
 
 def fit_residuals(df: pd.DataFrame) -> pd.DataFrame:
-    """df needs FEATURES + `fee`. Returns df with predicted fee and residual."""
-    d = df[df.fee > 0].dropna(subset=["fee", "market_value", "age"]).copy()
+    """df needs FEATURES + `fee`. Returns df with predicted fee and residual.
+
+    `season` is a feature and the data is time-ordered, so a random K-fold split
+    leaks future seasons into the training set. Instead: walk forward through
+    seasons, predicting each one from a model trained only on earlier seasons
+    (expanding-window / forward-chaining CV). Seasons whose prior history is
+    thinner than MIN_TRAIN_ROWS are left unscored and dropped, not backfilled.
+    """
+    d = df[df.fee > 0].dropna(subset=["fee", "market_value", "age", "season"]).copy()
     for c in FEATURES:                       # a source may not carry every feature (e.g. contract_years)
         if c not in d.columns:
             d[c] = np.nan
@@ -41,9 +48,18 @@ def fit_residuals(df: pd.DataFrame) -> pd.DataFrame:
         X[c] = X[c].astype("category") if is_cat else pd.to_numeric(X[c])
     y = np.log1p(d.fee)
 
-    m = HistGradientBoostingRegressor(categorical_features=CATS, random_state=0)
-    # out-of-fold, so a deal is never priced by a model that saw it
-    d["fee_pred"] = np.expm1(cross_val_predict(m, X, y, cv=5))
+    pred = pd.Series(np.nan, index=d.index, dtype=float)
+    for s in sorted(d.season.unique()):
+        train = d.season < s
+        if train.sum() < MIN_TRAIN_ROWS:
+            continue                         # too little prior history -> leave unscored
+        test = d.season == s
+        m = HistGradientBoostingRegressor(categorical_features=CATS, random_state=0)
+        m.fit(X[train], y[train])
+        pred[test] = m.predict(X[test])
+
+    d = d[pred.notna()].copy()               # drop unscored rows rather than backfill
+    d["fee_pred"] = np.expm1(pred[pred.notna()])
     d["overpay"] = d.fee - d.fee_pred
     d["overpay_pct"] = d.overpay / d.fee_pred * 100
     # sort relative, not absolute: absolute € residual just ranks the big fees
