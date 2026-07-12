@@ -1,0 +1,9 @@
+# ignore the ~1.2GB of data, but KEEP the README navigation docs so the map travels with the repo
+data/**
+!data/**/
+!data/README.md
+!data/**/README.md
+__pycache__/
+*.pyc
+.DS_Store
+scratchpad/

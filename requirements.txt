@@ -1,0 +1,8 @@
+pandas
+numpy
+scikit-learn
+rdata          # reads Understat .rds dumps (pure-Python, no compile)
+duckdb         # ingest/merge.py: reads Estate B parquet + Estate A csv.gz, guarded dedup SQL
+pyarrow        # parquet read/write for the canonical merged table
+# soccerdata   # deprecated: FBref lost xG/advanced data (Opta, Jan 2025) and 403s datacenter IPs
+# kaggle       # optional: Transfermarkt player-scores dump (needs API token); GitHub/R2 mirrors avoid it
