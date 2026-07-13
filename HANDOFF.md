@@ -99,13 +99,11 @@ Parallel sub-agents for independent grunt work (each: one module, tidy fns + off
 artifact, not new data). Then `docs/v2-results.md` for what the V2 pass
 found, and `docs/mustermann.md` for the evidence-layer design.
 
-**One-line status**: git repair clean (no conflicts); Phase 0 audit and V1
-contract both reproduce on the combined branch; one gated fee-prototype
-comparison ran and passed (F1 minimal beats F0 market-value baseline by
-+11.3%, CI [+6.2%,+12.0%]); sporting-target prototypes are **blocked**, not
-run — `transfer_performance_link_safe` needs an external `ESTATE_B_DIR` this
-environment doesn't have; locked period (`season>=2023`) was never loaded,
-proven in `reports/v2-full-data/locked_test_audit.json`.
+**One-line status (superseded by §10 below — read that first):** git repair
+clean (no conflicts); Phase 0 audit and V1 contract both reproduce on the
+combined branch; one gated fee-prototype comparison ran (numbers below were
+corrected on 2026-07-13, see §10); sporting-target prototypes were
+originally reported as blocked by Estate B — also corrected, see §10.
 
 **New this branch**: `impact/evidence.py` (per-90/shrinkage/percentile/
 evidence-card primitives, self-tested), `validate/locked_guard.py` (the
@@ -113,13 +111,41 @@ locked-period exclusion helper — route any new dev-only loader through
 `dev_only()`), `validate/v2_full_data.py` and `validate/v2_fee_prototypes.py`
 (the two commands that produced `reports/v2-full-data/`).
 
-**Biggest open gap**: Estate B. Without `transfer_performance_link_safe` (or
-an in-repo rebuild of it from `fbref_perf` + `transfers_canonical`), the
-sporting-contribution component — the more interesting half of the product —
-stays unvalidatable here. See `docs/v2-results.md` "Remaining decisions".
-
 **Also found, not fixed**: `transfers_canonical` league labels split
 `"La Liga"`/`"LaLiga"` at the 2023 rebrand (`ingest/merge.py` normalization
-bug); `main`'s `talent_pctl` scout-board column is wired but joins to
-nothing on the live board (0/120 non-null). Both in
-`docs/contradiction-log.md`.
+bug). In `docs/contradiction-log.md`.
+
+## 10. V2 corrections + V3 data spine (2026-07-13, external review)
+
+External review caught three real bugs in §9's work, all reproduced
+independently before fixing (full record: `docs/contradiction-log.md`):
+
+1. `transfer_performance_link_safe` was mischaracterized as a future/
+   destination-season source. It is explicitly a strictly-**prior** feature
+   link by design (`perf_season < transfer_season`, a leak guard) — the
+   opposite of what a sporting outcome target needs, regardless of Estate B
+   availability.
+2. The fee-prototype's reported "CI [+6.2%,+12.0%]" bootstrapped the
+   *absolute* RMSE difference but was labeled as a *relative percentage*
+   interval. Fixed: `validate/v2_fee_prototypes.py` now reports both,
+   correctly labeled, club-block-bootstrapped (not row-wise IID), and gates
+   against a calibrated baseline (F0b) rather than the trivial fee=MV
+   identity (F0a, now descriptive only). Corrected result: F1 beats F0b by
+   +9.15% [rel. CI +6.8%,+11.5%] — still passes, smaller and more honest.
+   New finding: the existing production `money/fees.py` HistGBR
+   underperforms the simple linear F1 on the identical population.
+3. `impact/evidence.py`'s shrinkage weight used a dimensionally unsound
+   `k`, and `support_flag` silently treated unknown (`NaN`) minutes as the
+   *highest*-confidence label. Both fixed: shrinkage is now a proper
+   Gamma-Poisson conjugate model with a simulation-calibrated self-check
+   (83% empirical coverage of an 80% nominal interval), and unknown
+   exposure is its own abstention category.
+
+**The most consequential fix is #1**: it meant the sporting-contribution
+component was never actually blocked by Estate B specifically — a genuine
+future-outcome table can be built entirely from in-repo `fbref_perf` +
+`transfers_canonical`. `docs/v3-plan.md` builds it
+(`transfer_performance_outcomes_future`); `docs/v3-results.md` has the
+resulting effective-sample funnel and whether a sporting prototype cleared
+its gate. **Read that before trusting §1-§9 above on the sporting
+component's status.**

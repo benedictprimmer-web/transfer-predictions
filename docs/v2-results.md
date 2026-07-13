@@ -5,19 +5,44 @@ nothing here is a production model. See `docs/v2-full-data-plan.md` for what
 was and wasn't attempted, and `docs/reconciliation.md` for the branch
 repair this builds on.
 
-## 1. Sporting target: BLOCKED, not run
+**CORRECTIONS (2026-07-13, external code review, reproduced independently
+before any fix — see `docs/contradiction-log.md` for the full record):**
+this document originally (a) mischaracterized `transfer_performance_link_safe`
+as a future/destination-season source when it is explicitly a strictly-prior
+feature link by design, (b) reported a fee-prototype confidence interval
+computed on the *absolute* RMSE difference as if it were a *relative*
+percentage-improvement interval, and (c) compared F1 only against a trivial
+untrained baseline. All three are fixed below. **For the V3 follow-up that
+this correction enabled — a real destination-season sporting target built
+without Estate B — see `docs/v3-plan.md` and `docs/v3-results.md`.**
 
-FACT — `transfer_performance_link_safe`, the table that would connect a
-transfer to the player's destination-season performance, is unavailable in
-this environment (materialized from an external `ESTATE_B_DIR` never
-committed to this repo — `docs/reconciliation.md` §4). Every sporting design
-in the task's S0-S7 ladder needs it. No sporting prototype was run, and no
-proxy target was substituted. This is recorded as a BLOCKER: the sporting
-component of V1/V2 remains `NOT V1-SUPPORTED` for the same reason it already
-was before this PR (`docs/target-definitions.md`), now additionally blocked
-from *any* re-validation in this specific environment.
+## 1. Sporting target: originally BLOCKED — corrected framing, see V3
 
-## 2. Fee prototype: F0 vs F1, gate PASSED
+FACT (corrected) — `transfer_performance_link_safe` is not a destination-
+season source at all, regardless of Estate B availability: its own
+definition (`perf_season < transfer_season`) makes it a strictly-**prior**
+feature link, deliberately leak-guarded. The original "BLOCKED by missing
+Estate B" framing was based on a mischaracterization of what this table
+does. See `docs/mustermann.md` §0 and `docs/contradiction-log.md`.
+
+No sporting prototype was run in the original V2 pass, and no proxy target
+was substituted — that part stands. **`docs/v3-plan.md` builds a genuine
+future-outcome table (`transfer_performance_outcomes_future`) from in-repo
+`fbref_perf` + `transfers_canonical`, entirely avoiding Estate B; see
+`docs/v3-results.md` for the resulting effective sample and whether a
+sporting prototype cleared its gate on it.**
+
+## 2. Fee prototype: corrected baseline and CI
+
+**CORRECTED (2026-07-13):** the original table below reported F1 beating
+"F0" (market value = fee, no fit) by "+11.3%, 90% CI [+6.2%,+12.0%]". Two
+bugs, reproduced independently before fixing: the bootstrap computed the
+*absolute* RMSE difference in log1p(fee) units and that was reported as a
+*relative percentage* CI (the two numbers only looked similar because F0's
+RMSE, 0.808, happened to be close to 1.0); and the baseline itself (fee=MV,
+no fit at all) is trivial — task §13's fee gate explicitly requires
+comparing against a *calibrated* baseline, not a naive identity. See
+`validate/v2_fee_prototypes.py` and `docs/contradiction-log.md`.
 
 Population: strict V1 negotiated-fee scope (`V1_FEE_SCOPE`,
 `validate/modelling_contract.py`) — exact-date, disclosed, paid-permanent,
@@ -27,31 +52,47 @@ folds used here (`train<=2018`: 1,536, `tune=2019`: 399,
 **never loaded** (`reports/v2-full-data/locked_test_audit.json`).
 
 Gate, frozen in `validate/v2_fee_prototypes.py::EXPERIMENT_MANIFEST` before
-any model was fit: F1 ships as a challenger only if it cuts pooled
-dev-evaluation log1p(fee) RMSE by >= 5% relative to F0, with a 90%
-bootstrap CI on the RMSE difference that excludes 0.
+any model beyond F0a/F0b was fit: a design ships as a challenger over
+**F0b** (not F0a — F0a is descriptive only, task §13) only if it cuts
+pooled dev-evaluation log1p(fee) RMSE by >= 5% relative to F0b, with a
+club-block-bootstrapped (`to_club_id`, cluster-robust) 90% CI on the
+*relative* improvement that excludes 0.
 
-| Design | Features | n (tune+calibration) | log1p(fee) RMSE | Relative improvement vs F0 | 90% CI | Gate |
+| Design | Features | n | log1p(fee) RMSE | Relative improvement vs F0b | 90% CI (relative) | Gate |
 |---|---|---:|---:|---:|---|---|
-| F0 | `market_value_eur` only, no fit | 925 | 0.808 | — | — | baseline |
-| F1 minimal | age, age², position, origin league, destination league, log(MV) — Ridge, expanding-window walk-forward | 925 | 0.717 | **+11.3%** | **[+6.2%, +12.0%]** | **PASS** |
+| F0a naive | `market_value_eur` only, no fit | 925 | 0.808 | −2.4% | descriptive only, not gated | context |
+| F0b calibrated | log(fee) ~ log(MV), refit per fold — **the real baseline** | 925 | 0.789 | 0.0% | — | baseline |
+| F1 minimal | F0b + age, age², position, origin/dest. league | 925 | 0.717 | **+9.15%** | **[+6.8%, +11.5%]** | **PASS** |
+| F2 contract | F1 + PIT contract years (rows where `contract_is_pit`, 74% of scope) | 925 | 0.736 | +6.7% | [+4.4%,+9.0%] | PASS, but worse than F1 |
+| F3 existing HistGBR | `money/fees.py::fit_residuals` on the identical rows/seasons (context only, not row-paired) | 925 | 0.767 | +2.7% | not computed (context only) | context |
+
+Absolute log1p(fee)-RMSE-difference CI (separately, correctly labeled, not
+the same statistic as the relative CI above): F1 vs F0b, 90% CI
+[0.052, 0.092] log1p-fee units.
 
 Subgroup stability (`reports/v2-full-data/subgroup_results.csv`): positive
-improvement in every position group (DEF +10.8%, FWD +6.8%, MID +16.8%) and
-both eval splits (tune +10.8%, calibration +11.8%) — no subgroup shows
-deterioration, which the gate also required.
+improvement in every position group and both eval splits — no subgroup
+shows deterioration.
 
-**Decision**: F1 (age/role/league on top of market value) is the
-provisional fee-diagnostic design over the pure market-value baseline. This
-is a *development* result on `tune`/`calibration` folds only; it says
-nothing about the locked period and must not be read as validating a
-production fee model. F1's residual is a deviation from market consensus,
-not a labelled "undervaluation" — the existing V1 output-policy prohibition
+**Decision**: F1 (age/role/league on top of a *calibrated* market-value
+model) is the provisional fee-diagnostic design over F0b. **F2 does not
+earn its added complexity** — contract years make F1 worse, not better, on
+this scope (a genuine "less is more" finding, not a bug: PIT contract
+coverage is 74%, and the extra feature/reduced-sample tradeoff nets
+negative here). **The existing production `money/fees.py` HistGBR (F3)
+underperforms the simple linear F1 on this identical population** — worth
+flagging to the owner as a real, if not row-paired, finding rather than
+assuming more model complexity implies better fit. This is a *development*
+result on `tune`/`calibration` folds only; it says nothing about the locked
+period and must not be read as validating a production fee model. F1's
+residual is a deviation from market consensus, not a labelled
+"undervaluation" — the existing V1 output-policy prohibition
 (`docs/modelling-contract.md`) still applies.
 
-F2-F5 (contract years, sporting-evidence block, league/context challengers,
-broad kitchen-sink) were not run — see `docs/v2-full-data-plan.md` for why,
-and "Remaining decisions" below for what would be next.
+F4-F5 (sporting-evidence block, broader context/league challengers) were
+not run — F1 already cleared cleanly over the honest baseline, and adding a
+sporting-evidence feature (F4) only became possible after the V3 sporting
+spine existed (see `docs/v3-results.md`).
 
 ## 3. Mustermann evidence layer
 
@@ -69,16 +110,28 @@ metric-specific translation).
 See `reports/v2-full-data/analysis.md` for the complete FACT/INFERENCE
 synthesis. Headlines:
 
-- ~40% of `fbref_perf` rows are low-minutes or minutes-unknown — the
-  concrete case for shrinkage over a hard cutoff.
-- 405/439 (92%) of (season, league, role) cells support a domestic
-  percentile at a 20-player minimum; the 5-league `fbref_perf` footprint is
-  small relative to the 134,147-row canonical transfer table, so this
-  coverage is real but narrow.
+- 27% of `fbref_perf` rows are low-minutes (`<450`, known exposure) and a
+  **separate** 12.6% (6,694/52,951) have **unknown** exposure (minutes
+  field is null) — corrected from the original pass, which reported these
+  as a single "~40% low-minutes-or-unknown" figure. The distinction matters:
+  `impact/evidence.py::support_flag` now has a dedicated `unknown_exposure`
+  category (originally, `NaN < threshold` silently evaluated `False` and
+  such rows fell through to the *highest*-confidence label — a real bug,
+  fixed; see `docs/contradiction-log.md`).
+- Cohort confidence is now tiered (unavailable `<20`, low `20-49`, moderate
+  `50-99`, high `100+`), not a single "viable at 20" cutoff: of 439
+  (season, league, role) cells, 265 are `high`, 88 `moderate`, 52 `low`, 34
+  `unavailable`. The 5-league `fbref_perf` footprint is small relative to
+  the 134,147-row canonical transfer table, so this coverage is real but
+  narrow.
 - **Data-quality finding**: `transfers_canonical` league labels split
   `"La Liga"`/`"LaLiga"` at the competition's 2023 rebrand — a real defect
   in `ingest/merge.py`'s normalization, out of scope to fix here, logged in
   `docs/contradiction-log.md`.
+- New: `reports/v2-full-data/missingness_patterns.csv` (joint feature/label
+  availability, previously a required-but-missing artifact) and data-hash
+  entries in `full_data_manifest.json` (previously commit-only, no data
+  hashes — both fixed).
 
 ## 5. Locked test: untouched
 
@@ -91,28 +144,22 @@ has its own offline self-check (`python3 -m validate.locked_guard`).
 
 ## Remaining decisions (owner)
 
-1. **F2 (add PIT contract years)**: the next predeclared experiment if
-   further fee-model complexity is wanted. Not run — F1 already cleared its
-   gate and section 11.4's simplicity rule argues against adding complexity
-   without a specific reason to suspect F1 is insufficient.
-2. **Estate B / `transfer_performance_link_safe`**: without it (or an
-   in-repo equivalent), the entire sporting-contribution component stays
-   unsupported and unvalidatable in this environment. This blocks the
-   single highest-value V2 component (task's own framing: "usage/WOWY
-   evidence is weak and noisy," `docs/data-audit.md` §14).
-2b. Restoring it likely means either committing the relevant Estate B
-    parquet into this repo's tracked `data/` (licensing permitting — not
-    checked here) or rebuilding an equivalent link from `fbref_perf` +
-    `transfers_canonical` directly inside this repo.
-3. **`La Liga`/`LaLiga` league-name normalization**: a real, narrow fix to
-   `ingest/merge.py`, not made in this PR to avoid re-churning the
-   reconciled row counts in `docs/reconciliation.md`.
-4. **Talent-model `talent_pctl` scout-board join**: 0/120 non-null despite
-   24 same-season talent scores existing — a real but narrow defect in
-   `main`'s own feature, flagged in `docs/contradiction-log.md`, not fixed
-   here (out of scope: it's a `main`-authored feature, not part of the
-   audit/V1 contract or this PR's V2 additions).
-5. Whether F1's log1p(fee) residual, framed strictly as "deviation from
-   market consensus," is worth exposing as a new diagnostic column
-   alongside the existing `money/fees.py` HistGBR fee ranker, or whether one
-   fee model is enough — this is a product decision, not a modelling one.
+1. **`La Liga`/`LaLiga` league-name normalization**: a real, narrow fix to
+   `ingest/merge.py`, still not made — fixing it would re-churn the
+   reconciled row counts in `docs/reconciliation.md`. Now also affects
+   `docs/v3-plan.md`'s destination-club matching.
+2. **Talent-model `talent_pctl` scout-board join** — root-caused, not just
+   flagged: the join key is fine (confirmed overlapping IDs exist); the
+   real cause is `impact/talent.py`'s forward-2-year-market-value label
+   construction, which structurally starves the most recent season (24
+   rows for 2023-2024 vs. 1,100-2,060/season historically) via right-
+   censoring. Not fixed here — it's a `main`-authored feature and the fix
+   (a different label horizon or explicit right-censoring handling) is a
+   product decision about `impact/talent.py`, not this PR's scope.
+3. Whether F1's log1p(fee) residual, framed strictly as "deviation from
+   market consensus," is worth exposing as a new diagnostic column — and,
+   given F3 (existing `money/fees.py` HistGBR) underperforms F1 on the
+   identical population (§2 above), whether the existing production fee
+   model should be revisited.
+4. See `docs/v3-results.md` for the sporting-target and separate-arms
+   decisions that follow from this V2 correction pass.

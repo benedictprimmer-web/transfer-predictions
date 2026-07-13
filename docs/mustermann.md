@@ -21,37 +21,66 @@ that already does the hard part in a different unit.
 
 ## 0. What data actually exists to build this from
 
-FACT — this repo has, per `warehouse.duckdb` (rebuilt `2026-07-13`, see
-`docs/reconciliation.md`):
+**CORRECTION (2026-07-13, external review, reproduced independently):** the
+first version of this section conflated two different FBref-derived tables
+and mischaracterized `transfer_performance_link_safe`'s direction. Both are
+fixed below; see `docs/contradiction-log.md` for the full reproduction.
+
+FACT — this repo has **two separate FBref-derived sources**, not one:
+
+1. `ingest/fbref_snapshot.py` → `data/fbref_snapshot/` — the original
+   Understat-pivot-era source (`HANDOFF.md` §1), genuinely Big-5 2017-22,
+   frozen before Opta pulled the feed. Feeds `shots_selling`
+   (234,800 rows, 4 feeder/selling leagues — Eredivisie, Championship,
+   Primeira Liga, Brazil Serie A — 2018-19 to 2024-25 per warehouse query,
+   not Big-5 despite the similarly-named source).
+2. `ingest/fbref_perf.py` → `data/fbref/perf_player_season.parquet` →
+   warehouse view `fbref_perf` — a **later, separately-added** 221-column
+   table, sourced from Estate B but already copied into this repo's
+   tracked `data/fbref/` (it does NOT need `ESTATE_B_DIR` present to build
+   — confirmed, `ingest.warehouse build` succeeds without it, unlike
+   `transfer_performance_link_safe` below). Its own module docstring states
+   "2010-2026, Big-5, 221 stat cols" in plain text; the warehouse
+   reproduces that range exactly (`reports/v2-full-data/coverage_cube.csv`).
+   `fbref_defense`/`fbref_niche` are per-90 summaries derived from it and
+   are narrower in practice — 2018-2025 by `season_end_year`, reflecting
+   where the underlying defensive/niche columns are actually populated
+   (`reports/v2-full-data/missingness_patterns.csv`: only 41% of
+   `fbref_perf` rows have `tackles_known`), not a hard source-window limit.
+
+FACT — this repo also has:
 
 - `shots` (539,971 rows, Understat, 2014-2025): shot-level xG, assists,
   situation, home/away. Attacking actions only.
-- `fbref_perf` (52,951 player-seasons, 222 columns): the advanced FBref
-  snapshot, Big-5 leagues 2017-22 only (frozen before Opta pulled the feed —
-  `HANDOFF.md` §1). This is the only source with progression, pressures,
-  turnovers as *counting stats* rather than derived from shots.
-- `fbref_defense` / `fbref_niche` (14,634 rows each): defensive summary and
-  niche stats, same Big-5 2017-22 window.
 - `clubelo_history` (771,384 rows, 1939-2026): club Elo, usable as a
   league/opponent-strength signal.
-- `shots_selling` (234,800 rows): FBref xG for 4 feeder/selling leagues —
-  the one non-Big-5 xG source, per `HANDOFF.md`.
 
-FACT — `transfer_performance_link_safe`, the table that would connect a
-transfer row to the player's *destination-season* performance, is
-**unavailable in this environment** (`docs/reconciliation.md` §4 — it is
-materialized from an external `ESTATE_B_DIR` never committed to this repo).
-This means every idea below that needs a *destination-season* label (e.g.
-"did the per-90 shrinkage estimate predict what he actually did after the
-move") cannot be validated here. Presentation-only and origin-side
-(pre-transfer) uses are unaffected.
+Everything in this document that uses "the advanced FBref source" below
+means `fbref_perf` (2010-2026, Big-5) unless stated otherwise.
 
-FACT — the Big-5 FBref window (2017-22) does not overlap the locked final
-period (`season >= 2023` per `docs/modelling-contract.md`'s
-`design_A_recommended`). Any FBref-based per-90/shrinkage feature is
-therefore currently usable only on `train`/`tune`/`calibration` folds by
-construction — there is no FBref coverage in the locked period to
-accidentally leak.
+FACT — `transfer_performance_link_safe` is **not** a destination/future
+outcome table. Its own definition (`ingest/warehouse.py`:
+`WHERE perf_season < transfer_season`) makes it a strictly-**prior**
+feature link, deliberately leak-guarded — exactly the opposite of what a
+destination-season label needs. It is also unavailable in this environment
+(`docs/reconciliation.md` §4, materialized from an external `ESTATE_B_DIR`
+never committed to this repo), but even where Estate B is available, this
+specific view would never expose future outcomes — a *separate* table would
+be needed. `docs/v3-plan.md` builds one, `transfer_performance_outcomes_future`,
+entirely from in-repo data (`fbref_perf` + `transfers_canonical`), avoiding
+Estate B altogether — see §8/§9 below and `docs/v3-results.md` for what that
+unblocked. As of this correction, destination-season validation is no
+longer categorically unavailable; it is scoped to what `fbref_perf` covers
+(Big-5, and only where a stable player/club ID join succeeds).
+
+FACT (corrected) — `fbref_perf` spans 2010-2026, which **does overlap** the
+locked final period (`season >= 2023` per `docs/modelling-contract.md`'s
+`design_A_recommended`) — the original claim that it didn't (based on the
+wrong table's date range, §0 above) was wrong. Any FBref-based per-90/
+shrinkage/outcome feature must be explicitly filtered through
+`validate.locked_guard.dev_only()`; it is not automatically locked-period-free
+by construction. `validate/v3_sporting_target.py` enforces this at load
+time, not by relying on a coverage-window assumption.
 
 ## 1. Per-90 metrics
 
@@ -218,10 +247,18 @@ outperforms the separate dimensions.
 - Metric-specific league/context translation on a metric other than the
   already-gated WOWY predictor (e.g. defensive per-90 counts).
 - Style-cluster promotion to a feature (`PROMPT.md`'s own deferred item).
-- Any destination-season validation of the shrinkage estimate — blocked by
-  the missing `transfer_performance_link_safe` (§0), not abandoned.
 - Percentile-as-model-feature challenger.
 
 None of these were run "just to see." They are recorded here as the next
-predeclared experiments, contingent on Estate B (or an in-repo equivalent)
-becoming available for the destination-season items.
+predeclared experiments.
+
+**No longer deferred as of the V3 pass** (`docs/v3-plan.md`,
+`docs/v3-results.md`): destination-season validation of the shrinkage
+estimate. §0's original framing — "blocked by the missing
+`transfer_performance_link_safe`" — was itself based on a mischaracterization
+of that table (it was never going to provide this regardless of Estate B
+availability). `transfer_performance_outcomes_future`, built entirely from
+in-repo `fbref_perf` + `transfers_canonical`, unblocks this for the
+population it actually covers (Big-5 destinations, stable-ID-linked
+players) — see `docs/v3-results.md` for the resulting effective sample and
+whether a sporting-quality prototype cleared its gate on it.
