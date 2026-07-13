@@ -1,0 +1,3 @@
+design,n,rmse_log1p_fee,relative_improvement_vs_f0,ci_lo,ci_hi,gate
+F0_market_value_baseline,925,0.8080905910425206,0.0,,,baseline
+F1_minimal,925,0.7166966484747063,0.113098634708649,0.06227162654401046,0.11950006239790792,PASS

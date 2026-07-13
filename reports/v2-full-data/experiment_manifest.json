@@ -1,0 +1,23 @@
+{
+  "bootstrap": {
+    "n": 2000,
+    "seed": 0
+  },
+  "designs": {
+    "F0": "market-value baseline: fee_pred = market_value_eur, no fitting",
+    "F1_minimal": "Ridge(log1p(fee) ~ log1p(market_value) + age + age^2 + pos_group + from_league + to_league), expanding-window walk-forward"
+  },
+  "folds": {
+    "calibration": "season 2020-2021",
+    "train": "season <= 2018",
+    "tune": "season = 2019"
+  },
+  "gate": {
+    "min_relative_rmse_improvement": 0.05,
+    "rule": "F1 ships as a challenger only if (F0_rmse - F1_rmse)/F0_rmse >= threshold AND a paired bootstrap 90% CI on the RMSE difference excludes 0. Frozen before any model was fit \u2014 see git history of this file.",
+    "simplicity_rule": "if the gate is not cleared, F0 remains the provisional design (task 11.4)"
+  },
+  "locked_period": "season >= 2023, excluded via validate.locked_guard.dev_only()",
+  "metric": "RMSE of log1p(fee) on pooled dev-evaluation rows (tune + calibration)",
+  "population": "V1_FEE_SCOPE (validate.modelling_contract), strict negotiated-fee candidates"
+}

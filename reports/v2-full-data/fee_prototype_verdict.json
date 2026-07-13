@@ -1,0 +1,13 @@
+{
+  "bootstrap_ci_90": [
+    0.06227162654401046,
+    0.11950006239790792
+  ],
+  "decision": "F1_minimal ships as the provisional fee-diagnostic challenger over F0.",
+  "gate_passed": true,
+  "min_required": 0.05,
+  "n_dev_evaluation_rows": 925,
+  "relative_improvement": 0.113098634708649,
+  "rmse_f0_log1p_fee": 0.8080905910425206,
+  "rmse_f1_log1p_fee": 0.7166966484747063
+}
