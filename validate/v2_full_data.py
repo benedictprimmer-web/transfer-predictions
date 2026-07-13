@@ -9,7 +9,6 @@ metric on the locked final period (`validate.locked_guard.LOCKED_SEASON_MIN`).
 from __future__ import annotations
 
 import json
-import subprocess
 from pathlib import Path
 
 import duckdb
@@ -135,13 +134,10 @@ def cohort_support(con: duckdb.DuckDBPyConnection, min_cohort: int = 20) -> pd.D
 
 
 def full_data_manifest() -> dict:
-    try:
-        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO).decode().strip()
-    except Exception:
-        commit = None
     return {
-        "commit": commit,
         "command": "python3 -m validate.v2_full_data",
+        "determinism_note": "Manifest omits commit/branch so tracked reports can be regenerated "
+                             "byte-for-byte across commits (same convention as validate.data_audit).",
         "warehouse": str((DATA / "warehouse.duckdb").relative_to(REPO)),
         "locked_season_min": LOCKED_SEASON_MIN,
         "note": "Descriptive coverage/support only. No model fit, no metric computed on the locked period.",
