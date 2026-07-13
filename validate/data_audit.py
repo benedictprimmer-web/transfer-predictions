@@ -22,6 +22,12 @@ DATA = REPO / "data"
 OUT = REPO / "reports" / "data-audit"
 
 
+def _has_table(con: duckdb.DuckDBPyConnection, name: str) -> bool:
+    return con.execute(
+        "select count(*) from information_schema.tables where table_name = ?", [name]
+    ).fetchone()[0] > 0
+
+
 def _write_csv(df: pd.DataFrame, name: str) -> Path:
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / name
@@ -295,37 +301,54 @@ def joins_and_linkage(con: duckdb.DuckDBPyConnection) -> dict[str, pd.DataFrame]
         from crosswalk_players
         """
     ).fetchdf()
-    out["join_funnel_transfer_perf"] = con.execute(
-        """
-        select step, row_count from (
-          select 1 ord, 'canonical transfers' step, count(*) row_count from transfers_canonical
-          union all select 2, 'canonical with player_id', count(*) from transfers_canonical where player_id is not null
-          union all select 3, 'player_master fbref-linked players', count(*) from players_master where has_fbref
-          union all select 4, 'safe transfer-performance link rows', count(*) from transfer_performance_link_safe
-          union all select 5, 'safe link distinct transfers', count(distinct transfer_uid) from transfer_performance_link_safe
-        ) order by ord
-        """
-    ).fetchdf()
-    out["linked_vs_unlinked"] = con.execute(
-        """
-        with base as (
-          select t.*,
-                 p.has_fbref,
-                 p.has_understat,
-                 exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid) as has_prior_perf_link
-          from transfers_canonical t
-          left join players_master p on t.player_id=p.tm_player_id
+    has_link = _has_table(con, "transfer_performance_link_safe")
+    if has_link:
+        out["join_funnel_transfer_perf"] = con.execute(
+            """
+            select step, row_count from (
+              select 1 ord, 'canonical transfers' step, count(*) row_count from transfers_canonical
+              union all select 2, 'canonical with player_id', count(*) from transfers_canonical where player_id is not null
+              union all select 3, 'player_master fbref-linked players', count(*) from players_master where has_fbref
+              union all select 4, 'safe transfer-performance link rows', count(*) from transfer_performance_link_safe
+              union all select 5, 'safe link distinct transfers', count(distinct transfer_uid) from transfer_performance_link_safe
+            ) order by ord
+            """
+        ).fetchdf()
+        out["linked_vs_unlinked"] = con.execute(
+            """
+            with base as (
+              select t.*,
+                     p.has_fbref,
+                     p.has_understat,
+                     exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid) as has_prior_perf_link
+              from transfers_canonical t
+              left join players_master p on t.player_id=p.tm_player_id
+            )
+            select
+              case when has_prior_perf_link then 'linked_prior_perf' else 'unlinked_prior_perf' end as group_name,
+              count(*) row_count,
+              avg(case when fee_eur>0 then 1.0 else 0.0 end) positive_fee_rate,
+              avg(case when market_value_eur is not null then 1.0 else 0.0 end) mv_rate,
+              avg(player_age) avg_age,
+              avg(case when to_is_top5 then 1.0 else 0.0 end) to_top5_rate
+            from base group by 1 order by 1
+            """
+        ).fetchdf()
+    else:
+        note = (
+            "UNAVAILABLE_IN_THIS_ENVIRONMENT: transfer_performance_link_safe is materialized "
+            "from ESTATE_B_DIR (default /Users/benrimmer/Downloads/football-transfer-db), a raw "
+            "source directory that lives outside this repo's tracked data/ and was not present "
+            "when the warehouse was rebuilt here. Counts below are NOT zero findings — they are "
+            "not computed. Do not treat as 'no linked transfers'."
         )
-        select
-          case when has_prior_perf_link then 'linked_prior_perf' else 'unlinked_prior_perf' end as group_name,
-          count(*) row_count,
-          avg(case when fee_eur>0 then 1.0 else 0.0 end) positive_fee_rate,
-          avg(case when market_value_eur is not null then 1.0 else 0.0 end) mv_rate,
-          avg(player_age) avg_age,
-          avg(case when to_is_top5 then 1.0 else 0.0 end) to_top5_rate
-        from base group by 1 order by 1
-        """
-    ).fetchdf()
+        out["join_funnel_transfer_perf"] = pd.DataFrame(
+            [{"step": "safe transfer-performance link rows", "row_count": np.nan, "note": note}]
+        )
+        out["linked_vs_unlinked"] = pd.DataFrame(
+            [{"group_name": "linked_prior_perf", "row_count": np.nan, "note": note},
+             {"group_name": "unlinked_prior_perf", "row_count": np.nan, "note": note}]
+        )
     return out
 
 
@@ -350,17 +373,34 @@ def timestamp_gaps(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
 
 def target_funnels(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
     base = con.execute("select count(*) from transfers_canonical").fetchone()[0]
+    has_link = _has_table(con, "transfer_performance_link_safe")
     rows = []
     specs = [
-        ("next-season sporting performance", "exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid)", "prior performance only in current safe link; future label not audited as leak-safe here"),
-        ("next-season minutes/availability", "exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid and l.minutes is not null)", "minutes present in safe prior link, but next-season target must be rebuilt with post-transfer horizon rules"),
-        ("forward two-year market-value change", "t.player_id is not null and exists(select 1 from valuations v where v.player_id=t.player_id and v.date > cast(t.date as date) + interval 300 day and v.date <= cast(t.date as date) + interval 800 day)", "survival-observed valuation label; biased toward still-observed players"),
-        ("realized resale/transfer fee", "t.player_id is not null and exists(select 1 from transfers_canonical f where f.player_id=t.player_id and f.date > t.date and f.fee_eur > 0)", "selected on resale and fee disclosure"),
-        ("starter retention", "t.player_id is not null and exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid)", "not directly available without destination-season appearances"),
-        ("early loan or termination", "t.player_id is not null and exists(select 1 from transfers_canonical f where f.player_id=t.player_id and f.date > t.date and f.date <= t.date + interval 730 day and f.transfer_type in ('loan','end_of_loan','free'))", "proxy target; requires taxonomy review"),
-        ("replacement-based importance", "exists(select 1 from fbref_perf p where cast(p.tm_player_id as bigint)=t.player_id)", "performance-rich subset only; not full deployment population"),
+        ("next-season sporting performance", "exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid)", "prior performance only in current safe link; future label not audited as leak-safe here", True),
+        ("next-season minutes/availability", "exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid and l.minutes is not null)", "minutes present in safe prior link, but next-season target must be rebuilt with post-transfer horizon rules", True),
+        ("forward two-year market-value change", "t.player_id is not null and exists(select 1 from valuations v where v.player_id=t.player_id and v.date > cast(t.date as date) + interval 300 day and v.date <= cast(t.date as date) + interval 800 day)", "survival-observed valuation label; biased toward still-observed players", False),
+        ("realized resale/transfer fee", "t.player_id is not null and exists(select 1 from transfers_canonical f where f.player_id=t.player_id and f.date > t.date and f.fee_eur > 0)", "selected on resale and fee disclosure", False),
+        ("starter retention", "t.player_id is not null and exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid)", "not directly available without destination-season appearances", True),
+        ("early loan or termination", "t.player_id is not null and exists(select 1 from transfers_canonical f where f.player_id=t.player_id and f.date > t.date and f.date <= t.date + interval 730 day and f.transfer_type in ('loan','end_of_loan','free'))", "proxy target; requires taxonomy review", False),
+        ("replacement-based importance", "exists(select 1 from fbref_perf p where cast(p.tm_player_id as bigint)=t.player_id)", "performance-rich subset only; not full deployment population", False),
     ]
-    for target, pred, caveat in specs:
+    for target, pred, caveat, needs_link in specs:
+        if needs_link and not has_link:
+            rows.append(
+                {
+                    "candidate_target": target,
+                    "source_table": "warehouse.transfers_canonical plus linked tables",
+                    "row_grain": "canonical transfer row",
+                    "eligibility_filter": pred,
+                    "base_rows": base,
+                    "eligible_rows": np.nan,
+                    "eligible_pct": np.nan,
+                    "period_counts": "[]",
+                    "leakage_or_selection_note": caveat + " | UNAVAILABLE_IN_THIS_ENVIRONMENT: requires transfer_performance_link_safe, sourced from ESTATE_B_DIR which is not present in this checkout/environment. Not a zero finding.",
+                    "simpler_baseline": "age + position + prior market value/league cohort baseline, evaluated by expanding window",
+                }
+            )
+            continue
         n = con.execute(f"select count(*) from transfers_canonical t where {pred}").fetchone()[0]
         by_period = con.execute(
             f"""

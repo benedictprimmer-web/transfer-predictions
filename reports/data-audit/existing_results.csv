@@ -1,9 +1,10 @@
 result,number,ci_lo,ci_hi,n,command,artifact
 usage_efficiency_vs_wowy,0.07670706201399712,0.03006910532048525,0.12498841514416316,1614,python3 -m validate.stage4 run,reports/data-audit/existing_results.csv
 usage_efficiency_vs_team_delta,0.06353419981322571,0.020148373726997886,0.106699097719275,2164,python3 -m validate.stage4 run,reports/data-audit/existing_results.csv
-usage_efficiency_partial_slope,4.733587170803935,-0.3941395171055443,9.580932397499492,2164,python3 -m validate.stage4 run,reports/data-audit/existing_results.csv
+usage_efficiency_partial_slope,4.7335871708039265,-0.3941395171055449,9.580932397499515,2164,python3 -m validate.stage4 run,reports/data-audit/existing_results.csv
 npv_oof_backtest,2.0,,,2,read data/money/backtest.csv,reports/data-audit/existing_results.csv
 npv_named_cases,3.0,,,3,read data/money/backtest_named.csv,reports/data-audit/existing_results.csv
 fee_ranker_rows,17129.0,,,17129,read data/money/fee_ranker.csv,reports/data-audit/existing_results.csv
-npv_board,98.0,,,98,read data/money/scout_arsenal.csv,reports/data-audit/existing_results.csv
-npv_board_positive_count,0.0,,,98,read data/money/scout_arsenal.csv column npv_m,reports/data-audit/existing_results.csv
+npv_board,120.0,,,120,read data/money/scout_arsenal.csv,reports/data-audit/existing_results.csv
+npv_board_positive_count,5.0,,,120,read data/money/scout_arsenal.csv column npv_m,reports/data-audit/existing_results.csv
+talent_scores_rows,14891.0,,,14891,read data/money/talent_scores.csv,reports/data-audit/existing_results.csv

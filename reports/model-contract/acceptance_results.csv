@@ -5,7 +5,7 @@ crosswalk_ambiguity_known_and_not_silent,True,3 TM-to-Understat ambiguous ids; V
 current_state_contract_excluded_historically,True,0 non-PIT contract rows in V1 fee scope
 feature_policy_names_prohibited_temporal_features,True,"future performance, post-transfer market value, current-state contract snapshots, current-state wages"
 fee_residual_not_labelled_true_value,True,fee residual approved label is negotiated-fee deviation
-future_performance_excluded_from_safe_link,True,0 future performance rows in safe link
+future_performance_excluded_from_safe_link,,"NOT RUN: transfer_performance_link_safe unavailable in this environment (ESTATE_B_DIR not present) — assertion not evaluated, not passed or failed"
 missing_critical_pit_inputs_abstain,True,0 V1 fee rows missing critical inputs
 modelled_wage_visibly_distinct,True,wage policy requires observed/modelled status
 player_master_join_no_expansion,True,5151 joined rows from 5151 V1 rows

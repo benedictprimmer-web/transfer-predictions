@@ -10,7 +10,6 @@ injuries,34561,13,,,,tm_player_id,0
 players_master,50149,11,contract_expiration_date,2000-05-31,2035-06-30,tm_player_id,0
 shots,539971,18,date,2014-08-01,2025-01-04,league|season|game_id|minute|player_id|x|y,126
 shots_selling,234800,20,,,,league|season|match_id|minute|fbref_id|xg,523
-transfer_performance_link_safe,91081,19,,,,transfer_uid|perf_season,5582
 transfers_canonical,134147,34,transfer_date,2009-01-01,2026-08-31,transfer_uid,19113
 valuations,507815,6,date,2000-01-20,2026-02-27,player_id|date,0
 wages_fifa,13650,16,,,,tm_player_id|edition_year,0

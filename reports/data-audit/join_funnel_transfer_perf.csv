@@ -1,6 +1,2 @@
-step,row_count
-canonical transfers,134147
-canonical with player_id,101524
-player_master fbref-linked players,15012
-safe transfer-performance link rows,91081
-safe link distinct transfers,30489
+step,row_count,note
+safe transfer-performance link rows,,"UNAVAILABLE_IN_THIS_ENVIRONMENT: transfer_performance_link_safe is materialized from ESTATE_B_DIR (default /Users/benrimmer/Downloads/football-transfer-db), a raw source directory that lives outside this repo's tracked data/ and was not present when the warehouse was rebuilt here. Counts below are NOT zero findings — they are not computed. Do not treat as 'no linked transfers'."

@@ -84,7 +84,7 @@ OUTPUT_POLICY = [
 @dataclass(frozen=True)
 class Check:
     name: str
-    passed: bool
+    passed: bool | None  # None = not run (e.g. missing environment dependency), not a pass or fail
     detail: str
 
 
@@ -110,6 +110,12 @@ def q1(con: duckdb.DuckDBPyConnection, sql: str):
     return con.execute(sql).fetchone()[0]
 
 
+def _has_table(con: duckdb.DuckDBPyConnection, name: str) -> bool:
+    return con.execute(
+        "select count(*) from information_schema.tables where table_name = ?", [name]
+    ).fetchone()[0] > 0
+
+
 def v1_key_expr() -> str:
     return """
     coalesce(cast(player_id as varchar),'?') || '|' ||
@@ -131,8 +137,26 @@ def fold_manifest(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
         ("design_B_historical_rolling", "calibration", "season between 2020 and 2021"),
         ("design_B_historical_rolling", "diagnostic_recent", "season >= 2023"),
     ]
+    has_link = _has_table(con, "transfer_performance_link_safe")
     rows = []
     for design, split, season_filter in designs:
+        if has_link:
+            prior_perf_link_rows = q1(
+                con,
+                f"""
+                select count(*) from transfers_canonical t
+                where {V1_DISCOVERY_SCOPE} and {season_filter}
+                  and exists (
+                    select 1 from transfer_performance_link_safe l
+                    where l.transfer_uid=t.transfer_uid
+                  )
+                """,
+            )
+        else:
+            # UNAVAILABLE_IN_THIS_ENVIRONMENT: transfer_performance_link_safe is materialized from
+            # ESTATE_B_DIR, a raw source directory outside this repo's tracked data/ that is not
+            # present in this checkout. This is a missing-data marker, not a zero finding.
+            prior_perf_link_rows = pd.NA
         rows.append(
             {
                 "design": design,
@@ -153,16 +177,10 @@ def fold_manifest(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
                       )
                     """,
                 ),
-                "prior_perf_link_rows": q1(
-                    con,
-                    f"""
-                    select count(*) from transfers_canonical t
-                    where {V1_DISCOVERY_SCOPE} and {season_filter}
-                      and exists (
-                        select 1 from transfer_performance_link_safe l
-                        where l.transfer_uid=t.transfer_uid
-                      )
-                    """,
+                "prior_perf_link_rows": prior_perf_link_rows,
+                "prior_perf_link_note": (
+                    "ok" if has_link else
+                    "UNAVAILABLE_IN_THIS_ENVIRONMENT: ESTATE_B_DIR not present; not a zero finding"
                 ),
             }
         )
@@ -170,20 +188,25 @@ def fold_manifest(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
 
 
 def component_support(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
+    has_link = _has_table(con, "transfer_performance_link_safe")
+    link_note = (
+        None if has_link else
+        "UNAVAILABLE_IN_THIS_ENVIRONMENT: ESTATE_B_DIR not present; evidence_count not computed, not zero"
+    )
     rows = [
         {
             "component": "future_minutes_availability",
             "v1_status": "NOT V1-SUPPORTED",
             "row_grain": "player snapshot / transfer candidate",
-            "evidence_count": q1(con, "select count(*) from transfers_canonical t where exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid and l.minutes is not null)"),
-            "reason": "current link is prior-performance-safe, not a destination next-season label builder",
+            "evidence_count": q1(con, "select count(*) from transfers_canonical t where exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid and l.minutes is not null)") if has_link else pd.NA,
+            "reason": "current link is prior-performance-safe, not a destination next-season label builder" + (f" | {link_note}" if link_note else ""),
         },
         {
             "component": "future_sporting_contribution",
             "v1_status": "NOT V1-SUPPORTED",
             "row_grain": "player snapshot / transfer candidate",
-            "evidence_count": q1(con, "select count(*) from transfers_canonical t where exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid)"),
-            "reason": "usage/WOWY signal is weak and target builder is incomplete for destination-season contribution",
+            "evidence_count": q1(con, "select count(*) from transfers_canonical t where exists(select 1 from transfer_performance_link_safe l where l.transfer_uid=t.transfer_uid)") if has_link else pd.NA,
+            "reason": "usage/WOWY signal is weak and target builder is incomplete for destination-season contribution" + (f" | {link_note}" if link_note else ""),
         },
         {
             "component": "market_consensus_value",
@@ -268,13 +291,22 @@ def check_timestamp_integrity(con: duckdb.DuckDBPyConnection) -> list[Check]:
           and not coalesce(contract_is_pit,false)
         """,
     )
-    future_perf = q1(con, "select count(*) from transfer_performance_link_safe where perf_season >= transfer_season")
+    has_link = _has_table(con, "transfer_performance_link_safe")
+    if has_link:
+        future_perf = q1(con, "select count(*) from transfer_performance_link_safe where perf_season >= transfer_season")
+        link_check = Check("future_performance_excluded_from_safe_link", future_perf == 0, f"{future_perf} future performance rows in safe link")
+    else:
+        link_check = Check(
+            "future_performance_excluded_from_safe_link", None,
+            "NOT RUN: transfer_performance_link_safe unavailable in this environment "
+            "(ESTATE_B_DIR not present) — assertion not evaluated, not passed or failed",
+        )
     prohibited_fee_features = [f for f in FEATURE_POLICY[0]["prohibited_features"].split(", ") if "future" in f or "post-transfer" in f or "current-state" in f]
     return [
         Check("proxy_dated_rows_excluded_from_v1_fee_scope", proxy_in_v1 == 0, f"{proxy_in_v1} proxy rows in V1 fee scope"),
         Check("post_transfer_market_value_excluded", non_pit_mv == 0, f"{non_pit_mv} non-PIT MV rows in V1 fee scope"),
         Check("current_state_contract_excluded_historically", non_pit_contract == 0, f"{non_pit_contract} non-PIT contract rows in V1 fee scope"),
-        Check("future_performance_excluded_from_safe_link", future_perf == 0, f"{future_perf} future performance rows in safe link"),
+        link_check,
         Check("feature_policy_names_prohibited_temporal_features", len(prohibited_fee_features) >= 3, ", ".join(prohibited_fee_features)),
     ]
 
@@ -358,9 +390,13 @@ def main() -> int:
     }
     write_json({"command": "python3 -m validate.modelling_contract", "outputs": artifacts}, "run_manifest.json")
 
-    failed = checks[~checks.passed]
+    not_run = checks[checks.passed.isna()]
+    failed = checks[checks.passed == False]  # noqa: E712 — explicit False, distinct from NaN "not run"
     print(checks.to_string(index=False))
     print(json.dumps(artifacts, indent=2, sort_keys=True))
+    if len(not_run):
+        print("\nNOT RUN (missing environment dependency, not a pass or fail)")
+        print(not_run.to_string(index=False))
     if len(failed):
         print("\nFAILED CONTRACT CHECKS")
         print(failed.to_string(index=False))
