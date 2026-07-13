@@ -149,3 +149,23 @@ future-outcome table can be built entirely from in-repo `fbref_perf` +
 resulting effective-sample funnel and whether a sporting prototype cleared
 its gate. **Read that before trusting §1-§9 above on the sporting
 component's status.**
+
+## 11. V3 data spine, built (2026-07-13, branch `agent/v3-data-spine`)
+
+`docs/v3-plan.md` and `docs/v3-results.md` have the full account. One-line
+status: `transfer_performance_features_prior` and
+`transfer_performance_outcomes_future` exist
+(`validate/v3_sporting_target.py`), built entirely from in-repo
+`fbref_perf`+`transfers_canonical`+a new `ingest/club_crosswalk.py` (no
+club ID exists in this repo; built a name-matcher, validated it against
+real data, found and locked-in-as-regression-tests 4 real false positives).
+Effective dev-eligible sporting population: **2,117 transfers with a
+one-season outcome, 1,266 with two-season** (`reports/v3-data-spine/
+effective_sample_funnel.csv`). Two real bugs caught and fixed before
+shipping: a non-monotone funnel, and a locked-period leak specific to
+two-season outcomes (`transfer_season`-based filtering under-protects a
++2-season horizon — must filter on `outcome_season`, see
+`validate.v3_sporting_target.dev_outcomes_only`). **No sporting model was
+fit against this population in this pass** — the data spine is the
+deliverable; ADR `docs/architecture-decisions/0004-separate-arms.md`
+formalizes the five-arm product structure this spine feeds into.
