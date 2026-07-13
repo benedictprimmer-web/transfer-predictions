@@ -506,8 +506,8 @@ def _write_audit(m, naive, segs):
         f"- Clean modelling universe: **{len(m):,}** transfers.",
         "- `scale_fee()` clamps + flags any request outside the range; it never falls back to CPI.",
     ]
-    (ROOT / "INFLATION_AUDIT.md").write_text("\n".join(lines))
-    print("[build] wrote INFLATION_AUDIT.md")
+    (ROOT / "docs" / "archive" / "INFLATION_AUDIT.md").write_text("\n".join(lines))
+    print("[build] wrote docs/archive/INFLATION_AUDIT.md")
 
 
 def _write_findings(segs, naive, r2, controls, regimes, chow, mult_all, mult_elite):
@@ -585,8 +585,8 @@ def _write_findings(segs, naive, r2, controls, regimes, chow, mult_all, mult_eli
         "- **Release clauses** not separated — the elite tail can be lifted by clause activations.",
         "- **Directional, not transactional:** this prices *the market*, not a specific negotiated deal.",
     ]
-    (ROOT / "INFLATION_FINDINGS.md").write_text("\n".join(lines))
-    print("[build] wrote INFLATION_FINDINGS.md")
+    (ROOT / "docs" / "archive" / "INFLATION_FINDINGS.md").write_text("\n".join(lines))
+    print("[build] wrote docs/archive/INFLATION_FINDINGS.md")
 
 
 # ===========================================================================

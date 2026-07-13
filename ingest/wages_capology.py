@@ -43,6 +43,7 @@ Run:
 """
 from __future__ import annotations
 
+from html import unescape as _html_unescape
 import re
 import sys
 import time
@@ -198,7 +199,9 @@ def parse_page(html: str, cc: str, slug: str, season: str) -> list[dict]:
         if not m:
             continue
         name_html = m.group(1)
-        name = _TAG_RE.sub("", name_html).strip()
+        # Capology names can carry literal HTML entities the same way Understat's do
+        # (see ingest/crosswalk.py::norm_player) — unescape before they reach the join.
+        name = _html_unescape(_TAG_RE.sub("", name_html).strip())
         href = _HREF_RE.search(name_html)
         capology_id = href.group(2) if href else None
         gbp_m = _FIELD_RES["annual_gbp"].search(seg)
@@ -208,7 +211,7 @@ def parse_page(html: str, cc: str, slug: str, season: str) -> list[dict]:
         if not annual_gbp and not annual_eur:
             continue  # no salary data for this row (undisclosed) -> skip, don't fabricate
         club_m = _FIELD_RES["club_raw"].search(seg)
-        club = _TAG_RE.sub("", club_m.group(1)).strip() if club_m else None
+        club = _html_unescape(_TAG_RE.sub("", club_m.group(1)).strip()) if club_m else None
         age = _grp("age", seg)
         rows.append(dict(
             capology_id=capology_id,
@@ -379,10 +382,24 @@ def _check():
             'expiration': moment("").format("MMM D, YYYY"),
             'years': "",
             'loan': "False",
+          },{
+            'name': "<a href='/player/ngolo-kante-999/'>N&#039;Golo Kant&eacute;</a>",
+            'verified':"<img/>",
+            'annual_gross_gbp': accounting.formatMoney("5000000", "£ ", 0),
+            'annual_gross_eur': accounting.formatMoney("5850000", "€ ", 0),
+            'position': "M",
+            'age': Math.round("28"),
+            'country': "France",
+            'club': "<a href='/club/x/'>X</a>",
+            'active': "True",
+            'signed': moment("").format("MMM D, YYYY"),
+            'expiration': moment("").format("MMM D, YYYY"),
+            'years': "",
+            'loan': "False",
           }];
     """
     rows = parse_page(sample, "uk", "premier-league", "2025-2026")
-    assert len(rows) == 1, rows  # the undisclosed-salary row must be dropped, not fabricated
+    assert len(rows) == 2, rows  # the undisclosed-salary row must be dropped, not fabricated
     r = rows[0]
     assert r["player"] == "Erling Haaland", r
     assert r["annual_gross_gbp"] == 27_300_000, r
@@ -390,6 +407,7 @@ def _check():
     assert r["age"] == 25 and r["position"] == "F" and r["country"] == "Norway"
     assert r["club"] == "Manchester City"
     assert r["expiration"] == "2034-06-30"
+    assert rows[1]["player"] == "N'Golo Kanté", rows[1]  # HTML entities must be unescaped
 
     assert _season_sort_key("2025-2026") == "2025"
     assert _season_sort_key("2022") == "2022"
