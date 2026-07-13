@@ -1,11 +1,15 @@
 {
   "bootstrap": {
+    "cluster_unit": "to_club_id",
     "n": 2000,
     "seed": 0
   },
   "designs": {
-    "F0": "market-value baseline: fee_pred = market_value_eur, no fitting",
-    "F1_minimal": "Ridge(log1p(fee) ~ log1p(market_value) + age + age^2 + pos_group + from_league + to_league), expanding-window walk-forward"
+    "F0a_naive_mv": "DESCRIPTIVE ONLY: fee_pred = market_value_eur, no fit \u2014 not a gate baseline",
+    "F0b_calibrated_mv": "Ridge(log1p(fee) ~ log1p(market_value)) only, refit per walk-forward split \u2014 the real baseline",
+    "F1_minimal": "F0b features + age + age^2 + pos_group + from_league + to_league",
+    "F2_contract": "F1 + PIT contract_years_remaining (rows where contract_is_pit only; others get F1 prediction)",
+    "F3_existing_histgbr": "money.fees.fit_residuals (existing production-candidate model) on the identical V1_FEE_SCOPE rows/seasons, HistGradientBoosting, its own internal walk-forward filtered to the same eval seasons"
   },
   "folds": {
     "calibration": "season 2020-2021",
@@ -13,11 +17,12 @@
     "tune": "season = 2019"
   },
   "gate": {
-    "min_relative_rmse_improvement": 0.05,
-    "rule": "F1 ships as a challenger only if (F0_rmse - F1_rmse)/F0_rmse >= threshold AND a paired bootstrap 90% CI on the RMSE difference excludes 0. Frozen before any model was fit \u2014 see git history of this file.",
-    "simplicity_rule": "if the gate is not cleared, F0 remains the provisional design (task 11.4)"
+    "min_relative_rmse_improvement_vs_F0b": 0.05,
+    "rule": "A design ships as a challenger over F0b only if (F0b_rmse - design_rmse)/F0b_rmse >= threshold AND the club-block-bootstrap 90% CI on that relative improvement excludes 0. F0a is reported for context only and is NOT the gate baseline. Frozen before any model was fit beyond F0a/F0b \u2014 see git history of this file.",
+    "simplicity_rule": "if no design clears the gate over F0b, F0b remains the provisional design (task 11.4)"
   },
   "locked_period": "season >= 2023, excluded via validate.locked_guard.dev_only()",
   "metric": "RMSE of log1p(fee) on pooled dev-evaluation rows (tune + calibration)",
-  "population": "V1_FEE_SCOPE (validate.modelling_contract), strict negotiated-fee candidates"
+  "population": "V1_FEE_SCOPE (validate.modelling_contract), strict negotiated-fee candidates",
+  "uncertainty_caveat": "Only 3 distinct evaluation seasons (2019,2020,2021) exist in this scope \u2014 a season-block bootstrap would resample from just 3 units and is not reported as a headline CI. to_club_id gives 100+ clusters per season and is used instead."
 }
