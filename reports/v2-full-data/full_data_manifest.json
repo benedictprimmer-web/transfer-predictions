@@ -1,0 +1,14 @@
+{
+  "command": "python3 -m validate.v2_full_data",
+  "commit": "1f028cf0866cadf41e817505cfa755a2e2bb4c09",
+  "locked_season_min": 2023,
+  "note": "Descriptive coverage/support only. No model fit, no metric computed on the locked period.",
+  "outputs": {
+    "cohort_support": "reports/v2-full-data/cohort_support.csv",
+    "coverage_cube": "reports/v2-full-data/coverage_cube.csv",
+    "locked_test_audit": "reports/v2-full-data/locked_test_audit.json",
+    "metric_distributions": "reports/v2-full-data/metric_distributions.csv",
+    "mover_support": "reports/v2-full-data/mover_support.csv"
+  },
+  "warehouse": "data/warehouse.duckdb"
+}
