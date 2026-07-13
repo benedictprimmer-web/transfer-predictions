@@ -1,440 +1,440 @@
-season,league,role,cohort_size,viable_for_percentile
-2010,Bundesliga,Attack,77,True
-2010,Bundesliga,Defender,109,True
-2010,Bundesliga,Goalkeeper,28,True
-2010,Bundesliga,Midfield,97,True
-2010,Bundesliga,unknown,178,True
-2010,La Liga,Attack,93,True
-2010,La Liga,Defender,112,True
-2010,La Liga,Goalkeeper,26,True
-2010,La Liga,Midfield,90,True
-2010,La Liga,Missing,2,False
-2010,La Liga,unknown,222,True
-2010,Ligue 1,Attack,88,True
-2010,Ligue 1,Defender,110,True
-2010,Ligue 1,Goalkeeper,29,True
-2010,Ligue 1,Midfield,109,True
-2010,Ligue 1,Missing,1,False
-2010,Ligue 1,unknown,192,True
-2010,Premier League,Attack,92,True
-2010,Premier League,Defender,138,True
-2010,Premier League,Goalkeeper,29,True
-2010,Premier League,Midfield,100,True
-2010,Premier League,unknown,207,True
-2010,Serie A,Attack,97,True
-2010,Serie A,Defender,134,True
-2010,Serie A,Goalkeeper,42,True
-2010,Serie A,Midfield,109,True
-2010,Serie A,unknown,194,True
-2011,Bundesliga,Attack,97,True
-2011,Bundesliga,Defender,113,True
-2011,Bundesliga,Goalkeeper,27,True
-2011,Bundesliga,Midfield,99,True
-2011,Bundesliga,unknown,141,True
-2011,La Liga,Attack,105,True
-2011,La Liga,Defender,126,True
-2011,La Liga,Goalkeeper,35,True
-2011,La Liga,Midfield,121,True
-2011,La Liga,unknown,169,True
-2011,Ligue 1,Attack,116,True
-2011,Ligue 1,Defender,129,True
-2011,Ligue 1,Goalkeeper,26,True
-2011,Ligue 1,Midfield,118,True
-2011,Ligue 1,Missing,1,False
-2011,Ligue 1,unknown,153,True
-2011,Premier League,Attack,114,True
-2011,Premier League,Defender,145,True
-2011,Premier League,Goalkeeper,28,True
-2011,Premier League,Midfield,125,True
-2011,Premier League,unknown,151,True
-2011,Serie A,Attack,114,True
-2011,Serie A,Defender,149,True
-2011,Serie A,Goalkeeper,36,True
-2011,Serie A,Midfield,131,True
-2011,Serie A,unknown,141,True
-2012,Bundesliga,Attack,122,True
-2012,Bundesliga,Defender,140,True
-2012,Bundesliga,Goalkeeper,30,True
-2012,Bundesliga,Midfield,119,True
-2012,Bundesliga,unknown,78,True
-2012,La Liga,Attack,123,True
-2012,La Liga,Defender,145,True
-2012,La Liga,Goalkeeper,37,True
-2012,La Liga,Midfield,132,True
-2012,La Liga,unknown,114,True
-2012,Ligue 1,Attack,120,True
-2012,Ligue 1,Defender,155,True
-2012,Ligue 1,Goalkeeper,29,True
-2012,Ligue 1,Midfield,144,True
-2012,Ligue 1,unknown,101,True
-2012,Premier League,Attack,128,True
-2012,Premier League,Defender,156,True
-2012,Premier League,Goalkeeper,36,True
-2012,Premier League,Midfield,140,True
-2012,Premier League,unknown,100,True
-2012,Serie A,Attack,117,True
-2012,Serie A,Defender,159,True
-2012,Serie A,Goalkeeper,44,True
-2012,Serie A,Midfield,159,True
-2012,Serie A,unknown,108,True
-2013,Bundesliga,Attack,126,True
-2013,Bundesliga,Defender,149,True
-2013,Bundesliga,Goalkeeper,33,True
-2013,Bundesliga,Midfield,136,True
-2013,Bundesliga,unknown,35,True
-2013,La Liga,Attack,134,True
-2013,La Liga,Defender,169,True
-2013,La Liga,Goalkeeper,44,True
-2013,La Liga,Midfield,146,True
-2013,La Liga,unknown,59,True
-2013,Ligue 1,Attack,140,True
-2013,Ligue 1,Defender,172,True
-2013,Ligue 1,Goalkeeper,37,True
-2013,Ligue 1,Midfield,166,True
-2013,Ligue 1,Missing,1,False
-2013,Ligue 1,unknown,46,True
-2013,Premier League,Attack,133,True
-2013,Premier League,Defender,169,True
-2013,Premier League,Goalkeeper,41,True
-2013,Premier League,Midfield,169,True
-2013,Premier League,unknown,25,True
-2013,Serie A,Attack,151,True
-2013,Serie A,Defender,201,True
-2013,Serie A,Goalkeeper,49,True
-2013,Serie A,Midfield,191,True
-2013,Serie A,Missing,1,False
-2013,Serie A,unknown,34,True
-2014,Bundesliga,Attack,113,True
-2014,Bundesliga,Defender,151,True
-2014,Bundesliga,Goalkeeper,34,True
-2014,Bundesliga,Midfield,143,True
-2014,Bundesliga,unknown,35,True
-2014,La Liga,Attack,144,True
-2014,La Liga,Defender,168,True
-2014,La Liga,Goalkeeper,37,True
-2014,La Liga,Midfield,142,True
-2014,La Liga,Missing,1,False
-2014,La Liga,unknown,51,True
-2014,Ligue 1,Attack,148,True
-2014,Ligue 1,Defender,164,True
-2014,Ligue 1,Goalkeeper,41,True
-2014,Ligue 1,Midfield,168,True
-2014,Ligue 1,unknown,39,True
-2014,Premier League,Attack,160,True
-2014,Premier League,Defender,168,True
-2014,Premier League,Goalkeeper,39,True
-2014,Premier League,Midfield,168,True
-2014,Premier League,unknown,26,True
-2014,Serie A,Attack,140,True
-2014,Serie A,Defender,204,True
-2014,Serie A,Goalkeeper,51,True
-2014,Serie A,Midfield,187,True
-2014,Serie A,Missing,1,False
-2014,Serie A,unknown,28,True
-2015,Bundesliga,Attack,125,True
-2015,Bundesliga,Defender,151,True
-2015,Bundesliga,Goalkeeper,52,True
-2015,Bundesliga,Midfield,151,True
-2015,Bundesliga,unknown,57,True
-2015,La Liga,Attack,154,True
-2015,La Liga,Defender,176,True
-2015,La Liga,Goalkeeper,44,True
-2015,La Liga,Midfield,140,True
-2015,La Liga,Missing,1,False
-2015,La Liga,unknown,71,True
-2015,Ligue 1,Attack,161,True
-2015,Ligue 1,Defender,176,True
-2015,Ligue 1,Goalkeeper,53,True
-2015,Ligue 1,Midfield,179,True
-2015,Ligue 1,Missing,1,False
-2015,Ligue 1,unknown,59,True
-2015,Premier League,Attack,166,True
-2015,Premier League,Defender,187,True
-2015,Premier League,Goalkeeper,58,True
-2015,Premier League,Midfield,179,True
-2015,Premier League,unknown,48,True
-2015,Serie A,Attack,155,True
-2015,Serie A,Defender,233,True
-2015,Serie A,Goalkeeper,75,True
-2015,Serie A,Midfield,200,True
-2015,Serie A,unknown,86,True
-2016,Bundesliga,Attack,130,True
-2016,Bundesliga,Defender,168,True
-2016,Bundesliga,Goalkeeper,52,True
-2016,Bundesliga,Midfield,157,True
-2016,Bundesliga,unknown,49,True
-2016,La Liga,Attack,155,True
-2016,La Liga,Defender,193,True
-2016,La Liga,Goalkeeper,53,True
-2016,La Liga,Midfield,161,True
-2016,La Liga,Missing,2,False
-2016,La Liga,unknown,50,True
-2016,Ligue 1,Attack,160,True
-2016,Ligue 1,Defender,193,True
-2016,Ligue 1,Goalkeeper,57,True
-2016,Ligue 1,Midfield,190,True
-2016,Ligue 1,Missing,1,False
-2016,Ligue 1,unknown,65,True
-2016,Premier League,Attack,177,True
-2016,Premier League,Defender,197,True
-2016,Premier League,Goalkeeper,61,True
-2016,Premier League,Midfield,182,True
-2016,Premier League,unknown,43,True
-2016,Serie A,Attack,148,True
-2016,Serie A,Defender,233,True
-2016,Serie A,Goalkeeper,72,True
-2016,Serie A,Midfield,207,True
-2016,Serie A,unknown,86,True
-2017,Bundesliga,Attack,135,True
-2017,Bundesliga,Defender,173,True
-2017,Bundesliga,Goalkeeper,51,True
-2017,Bundesliga,Midfield,144,True
-2017,Bundesliga,unknown,49,True
-2017,La Liga,Attack,168,True
-2017,La Liga,Defender,184,True
-2017,La Liga,Goalkeeper,64,True
-2017,La Liga,Midfield,173,True
-2017,La Liga,Missing,1,False
-2017,La Liga,unknown,33,True
-2017,Ligue 1,Attack,161,True
-2017,Ligue 1,Defender,196,True
-2017,Ligue 1,Goalkeeper,62,True
-2017,Ligue 1,Midfield,196,True
-2017,Ligue 1,Missing,2,False
-2017,Ligue 1,unknown,36,True
-2017,Premier League,Attack,170,True
-2017,Premier League,Defender,199,True
-2017,Premier League,Goalkeeper,64,True
-2017,Premier League,Midfield,176,True
-2017,Premier League,unknown,35,True
-2017,Serie A,Attack,161,True
-2017,Serie A,Defender,219,True
-2017,Serie A,Goalkeeper,90,True
-2017,Serie A,Midfield,205,True
-2017,Serie A,unknown,107,True
-2018,Bundesliga,Attack,147,True
-2018,Bundesliga,Defender,185,True
-2018,Bundesliga,Goalkeeper,58,True
-2018,Bundesliga,Midfield,159,True
-2018,Bundesliga,unknown,1,False
-2018,La Liga,Attack,185,True
-2018,La Liga,Defender,205,True
-2018,La Liga,Goalkeeper,71,True
-2018,La Liga,Midfield,175,True
-2018,La Liga,Missing,2,False
-2018,La Liga,unknown,4,False
-2018,Ligue 1,Attack,161,True
-2018,Ligue 1,Defender,211,True
-2018,Ligue 1,Goalkeeper,67,True
-2018,Ligue 1,Midfield,200,True
-2018,Ligue 1,unknown,2,False
-2018,Premier League,Attack,175,True
-2018,Premier League,Defender,206,True
-2018,Premier League,Goalkeeper,65,True
-2018,Premier League,Midfield,172,True
-2018,Serie A,Attack,173,True
-2018,Serie A,Defender,246,True
-2018,Serie A,Goalkeeper,85,True
-2018,Serie A,Midfield,209,True
-2018,Serie A,unknown,4,False
-2019,Bundesliga,Attack,144,True
-2019,Bundesliga,Defender,183,True
-2019,Bundesliga,Goalkeeper,59,True
-2019,Bundesliga,Midfield,148,True
-2019,La Liga,Attack,178,True
-2019,La Liga,Defender,207,True
-2019,La Liga,Goalkeeper,64,True
-2019,La Liga,Midfield,162,True
-2019,La Liga,Missing,1,False
-2019,La Liga,unknown,3,False
-2019,Ligue 1,Attack,177,True
-2019,Ligue 1,Defender,225,True
-2019,Ligue 1,Goalkeeper,62,True
-2019,Ligue 1,Midfield,189,True
-2019,Ligue 1,unknown,2,False
-2019,Premier League,Attack,156,True
-2019,Premier League,Defender,196,True
-2019,Premier League,Goalkeeper,58,True
-2019,Premier League,Midfield,164,True
-2019,Premier League,unknown,2,False
-2019,Serie A,Attack,166,True
-2019,Serie A,Defender,230,True
-2019,Serie A,Goalkeeper,91,True
-2019,Serie A,Midfield,227,True
-2019,Serie A,unknown,4,False
-2020,Bundesliga,Attack,164,True
-2020,Bundesliga,Defender,188,True
-2020,Bundesliga,Goalkeeper,61,True
-2020,Bundesliga,Midfield,180,True
-2020,Bundesliga,unknown,1,False
-2020,La Liga,Attack,194,True
-2020,La Liga,Defender,223,True
-2020,La Liga,Goalkeeper,74,True
-2020,La Liga,Midfield,173,True
-2020,La Liga,unknown,6,False
-2020,Ligue 1,Attack,169,True
-2020,Ligue 1,Defender,203,True
-2020,Ligue 1,Goalkeeper,65,True
-2020,Ligue 1,Midfield,188,True
-2020,Ligue 1,unknown,1,False
-2020,Premier League,Attack,160,True
-2020,Premier League,Defender,216,True
-2020,Premier League,Goalkeeper,68,True
-2020,Premier League,Midfield,176,True
-2020,Premier League,unknown,3,False
-2020,Serie A,Attack,175,True
-2020,Serie A,Defender,255,True
-2020,Serie A,Goalkeeper,88,True
-2020,Serie A,Midfield,223,True
-2020,Serie A,unknown,2,False
-2021,Bundesliga,Attack,159,True
-2021,Bundesliga,Defender,192,True
-2021,Bundesliga,Goalkeeper,62,True
-2021,Bundesliga,Midfield,164,True
-2021,Bundesliga,unknown,2,False
-2021,La Liga,Attack,212,True
-2021,La Liga,Defender,238,True
-2021,La Liga,Goalkeeper,83,True
-2021,La Liga,Midfield,182,True
-2021,La Liga,Missing,1,False
-2021,La Liga,unknown,4,False
-2021,Ligue 1,Attack,188,True
-2021,Ligue 1,Defender,231,True
-2021,Ligue 1,Goalkeeper,74,True
-2021,Ligue 1,Midfield,207,True
-2021,Ligue 1,unknown,2,False
-2021,Premier League,Attack,168,True
-2021,Premier League,Defender,225,True
-2021,Premier League,Goalkeeper,71,True
-2021,Premier League,Midfield,187,True
-2021,Premier League,unknown,3,False
-2021,Serie A,Attack,190,True
-2021,Serie A,Defender,269,True
-2021,Serie A,Goalkeeper,95,True
-2021,Serie A,Midfield,248,True
-2021,Serie A,unknown,1,False
-2022,Bundesliga,Attack,162,True
-2022,Bundesliga,Defender,194,True
-2022,Bundesliga,Goalkeeper,56,True
-2022,Bundesliga,Midfield,170,True
-2022,Bundesliga,unknown,20,True
-2022,La Liga,Attack,219,True
-2022,La Liga,Defender,231,True
-2022,La Liga,Goalkeeper,76,True
-2022,La Liga,Midfield,186,True
-2022,La Liga,unknown,56,True
-2022,Ligue 1,Attack,196,True
-2022,Ligue 1,Defender,225,True
-2022,Ligue 1,Goalkeeper,67,True
-2022,Ligue 1,Midfield,207,True
-2022,Ligue 1,unknown,38,True
-2022,Premier League,Attack,179,True
-2022,Premier League,Defender,225,True
-2022,Premier League,Goalkeeper,72,True
-2022,Premier League,Midfield,183,True
-2022,Premier League,unknown,34,True
-2022,Serie A,Attack,190,True
-2022,Serie A,Defender,237,True
-2022,Serie A,Goalkeeper,86,True
-2022,Serie A,Midfield,231,True
-2022,Serie A,unknown,66,True
-2023,Bundesliga,Attack,157,True
-2023,Bundesliga,Defender,190,True
-2023,Bundesliga,Goalkeeper,52,True
-2023,Bundesliga,Midfield,157,True
-2023,Bundesliga,unknown,43,True
-2023,La Liga,Attack,204,True
-2023,La Liga,Defender,206,True
-2023,La Liga,Goalkeeper,64,True
-2023,La Liga,Midfield,180,True
-2023,La Liga,unknown,76,True
-2023,Ligue 1,Attack,183,True
-2023,Ligue 1,Defender,223,True
-2023,Ligue 1,Goalkeeper,64,True
-2023,Ligue 1,Midfield,179,True
-2023,Ligue 1,unknown,68,True
-2023,Premier League,Attack,174,True
-2023,Premier League,Defender,215,True
-2023,Premier League,Goalkeeper,70,True
-2023,Premier League,Midfield,197,True
-2023,Premier League,unknown,69,True
-2023,Serie A,Attack,153,True
-2023,Serie A,Defender,230,True
-2023,Serie A,Goalkeeper,73,True
-2023,Serie A,Midfield,220,True
-2023,Serie A,unknown,87,True
-2024,Bundesliga,Attack,151,True
-2024,Bundesliga,Defender,185,True
-2024,Bundesliga,Goalkeeper,49,True
-2024,Bundesliga,Midfield,147,True
-2024,Bundesliga,unknown,51,True
-2024,La Liga,Attack,199,True
-2024,La Liga,Defender,216,True
-2024,La Liga,Goalkeeper,60,True
-2024,La Liga,Midfield,171,True
-2024,La Liga,unknown,97,True
-2024,Ligue 1,Attack,161,True
-2024,Ligue 1,Defender,202,True
-2024,Ligue 1,Goalkeeper,49,True
-2024,Ligue 1,Midfield,168,True
-2024,Ligue 1,unknown,77,True
-2024,Premier League,Attack,164,True
-2024,Premier League,Defender,209,True
-2024,Premier League,Goalkeeper,68,True
-2024,Premier League,Midfield,196,True
-2024,Premier League,unknown,111,True
-2024,Serie A,Attack,169,True
-2024,Serie A,Defender,222,True
-2024,Serie A,Goalkeeper,65,True
-2024,Serie A,Midfield,214,True
-2024,Serie A,unknown,117,True
-2025,Bundesliga,Attack,139,True
-2025,Bundesliga,Defender,184,True
-2025,Bundesliga,Goalkeeper,49,True
-2025,Bundesliga,Midfield,143,True
-2025,Bundesliga,unknown,64,True
-2025,La Liga,Attack,203,True
-2025,La Liga,Defender,214,True
-2025,La Liga,Goalkeeper,55,True
-2025,La Liga,Midfield,166,True
-2025,La Liga,unknown,120,True
-2025,Ligue 1,Attack,175,True
-2025,Ligue 1,Defender,200,True
-2025,Ligue 1,Goalkeeper,46,True
-2025,Ligue 1,Midfield,162,True
-2025,Ligue 1,unknown,86,True
-2025,Premier League,Attack,164,True
-2025,Premier League,Defender,218,True
-2025,Premier League,Goalkeeper,65,True
-2025,Premier League,Midfield,173,True
-2025,Premier League,unknown,86,True
-2025,Serie A,Attack,172,True
-2025,Serie A,Defender,229,True
-2025,Serie A,Goalkeeper,69,True
-2025,Serie A,Midfield,216,True
-2025,Serie A,unknown,129,True
-2026,Bundesliga,Attack,97,True
-2026,Bundesliga,Defender,124,True
-2026,Bundesliga,Goalkeeper,37,True
-2026,Bundesliga,Midfield,107,True
-2026,Bundesliga,unknown,66,True
-2026,La Liga,Attack,140,True
-2026,La Liga,Defender,154,True
-2026,La Liga,Goalkeeper,44,True
-2026,La Liga,Midfield,111,True
-2026,La Liga,unknown,112,True
-2026,Ligue 1,Attack,109,True
-2026,Ligue 1,Defender,122,True
-2026,Ligue 1,Goalkeeper,34,True
-2026,Ligue 1,Midfield,93,True
-2026,Ligue 1,unknown,112,True
-2026,Premier League,Attack,118,True
-2026,Premier League,Defender,157,True
-2026,Premier League,Goalkeeper,50,True
-2026,Premier League,Midfield,132,True
-2026,Premier League,unknown,47,True
-2026,Serie A,Attack,117,True
-2026,Serie A,Defender,161,True
-2026,Serie A,Goalkeeper,50,True
-2026,Serie A,Midfield,146,True
-2026,Serie A,unknown,96,True
+season,league,role,cohort_size,cohort_confidence
+2010,Bundesliga,Attack,77,moderate
+2010,Bundesliga,Defender,109,high
+2010,Bundesliga,Goalkeeper,28,low
+2010,Bundesliga,Midfield,97,moderate
+2010,Bundesliga,unknown,178,high
+2010,La Liga,Attack,93,moderate
+2010,La Liga,Defender,112,high
+2010,La Liga,Goalkeeper,26,low
+2010,La Liga,Midfield,90,moderate
+2010,La Liga,Missing,2,unavailable
+2010,La Liga,unknown,222,high
+2010,Ligue 1,Attack,88,moderate
+2010,Ligue 1,Defender,110,high
+2010,Ligue 1,Goalkeeper,29,low
+2010,Ligue 1,Midfield,109,high
+2010,Ligue 1,Missing,1,unavailable
+2010,Ligue 1,unknown,192,high
+2010,Premier League,Attack,92,moderate
+2010,Premier League,Defender,138,high
+2010,Premier League,Goalkeeper,29,low
+2010,Premier League,Midfield,100,high
+2010,Premier League,unknown,207,high
+2010,Serie A,Attack,97,moderate
+2010,Serie A,Defender,134,high
+2010,Serie A,Goalkeeper,42,low
+2010,Serie A,Midfield,109,high
+2010,Serie A,unknown,194,high
+2011,Bundesliga,Attack,97,moderate
+2011,Bundesliga,Defender,113,high
+2011,Bundesliga,Goalkeeper,27,low
+2011,Bundesliga,Midfield,99,moderate
+2011,Bundesliga,unknown,141,high
+2011,La Liga,Attack,105,high
+2011,La Liga,Defender,126,high
+2011,La Liga,Goalkeeper,35,low
+2011,La Liga,Midfield,121,high
+2011,La Liga,unknown,169,high
+2011,Ligue 1,Attack,116,high
+2011,Ligue 1,Defender,129,high
+2011,Ligue 1,Goalkeeper,26,low
+2011,Ligue 1,Midfield,118,high
+2011,Ligue 1,Missing,1,unavailable
+2011,Ligue 1,unknown,153,high
+2011,Premier League,Attack,114,high
+2011,Premier League,Defender,145,high
+2011,Premier League,Goalkeeper,28,low
+2011,Premier League,Midfield,125,high
+2011,Premier League,unknown,151,high
+2011,Serie A,Attack,114,high
+2011,Serie A,Defender,149,high
+2011,Serie A,Goalkeeper,36,low
+2011,Serie A,Midfield,131,high
+2011,Serie A,unknown,141,high
+2012,Bundesliga,Attack,122,high
+2012,Bundesliga,Defender,140,high
+2012,Bundesliga,Goalkeeper,30,low
+2012,Bundesliga,Midfield,119,high
+2012,Bundesliga,unknown,78,moderate
+2012,La Liga,Attack,123,high
+2012,La Liga,Defender,145,high
+2012,La Liga,Goalkeeper,37,low
+2012,La Liga,Midfield,132,high
+2012,La Liga,unknown,114,high
+2012,Ligue 1,Attack,120,high
+2012,Ligue 1,Defender,155,high
+2012,Ligue 1,Goalkeeper,29,low
+2012,Ligue 1,Midfield,144,high
+2012,Ligue 1,unknown,101,high
+2012,Premier League,Attack,128,high
+2012,Premier League,Defender,156,high
+2012,Premier League,Goalkeeper,36,low
+2012,Premier League,Midfield,140,high
+2012,Premier League,unknown,100,high
+2012,Serie A,Attack,117,high
+2012,Serie A,Defender,159,high
+2012,Serie A,Goalkeeper,44,low
+2012,Serie A,Midfield,159,high
+2012,Serie A,unknown,108,high
+2013,Bundesliga,Attack,126,high
+2013,Bundesliga,Defender,149,high
+2013,Bundesliga,Goalkeeper,33,low
+2013,Bundesliga,Midfield,136,high
+2013,Bundesliga,unknown,35,low
+2013,La Liga,Attack,134,high
+2013,La Liga,Defender,169,high
+2013,La Liga,Goalkeeper,44,low
+2013,La Liga,Midfield,146,high
+2013,La Liga,unknown,59,moderate
+2013,Ligue 1,Attack,140,high
+2013,Ligue 1,Defender,172,high
+2013,Ligue 1,Goalkeeper,37,low
+2013,Ligue 1,Midfield,166,high
+2013,Ligue 1,Missing,1,unavailable
+2013,Ligue 1,unknown,46,low
+2013,Premier League,Attack,133,high
+2013,Premier League,Defender,169,high
+2013,Premier League,Goalkeeper,41,low
+2013,Premier League,Midfield,169,high
+2013,Premier League,unknown,25,low
+2013,Serie A,Attack,151,high
+2013,Serie A,Defender,201,high
+2013,Serie A,Goalkeeper,49,low
+2013,Serie A,Midfield,191,high
+2013,Serie A,Missing,1,unavailable
+2013,Serie A,unknown,34,low
+2014,Bundesliga,Attack,113,high
+2014,Bundesliga,Defender,151,high
+2014,Bundesliga,Goalkeeper,34,low
+2014,Bundesliga,Midfield,143,high
+2014,Bundesliga,unknown,35,low
+2014,La Liga,Attack,144,high
+2014,La Liga,Defender,168,high
+2014,La Liga,Goalkeeper,37,low
+2014,La Liga,Midfield,142,high
+2014,La Liga,Missing,1,unavailable
+2014,La Liga,unknown,51,moderate
+2014,Ligue 1,Attack,148,high
+2014,Ligue 1,Defender,164,high
+2014,Ligue 1,Goalkeeper,41,low
+2014,Ligue 1,Midfield,168,high
+2014,Ligue 1,unknown,39,low
+2014,Premier League,Attack,160,high
+2014,Premier League,Defender,168,high
+2014,Premier League,Goalkeeper,39,low
+2014,Premier League,Midfield,168,high
+2014,Premier League,unknown,26,low
+2014,Serie A,Attack,140,high
+2014,Serie A,Defender,204,high
+2014,Serie A,Goalkeeper,51,moderate
+2014,Serie A,Midfield,187,high
+2014,Serie A,Missing,1,unavailable
+2014,Serie A,unknown,28,low
+2015,Bundesliga,Attack,125,high
+2015,Bundesliga,Defender,151,high
+2015,Bundesliga,Goalkeeper,52,moderate
+2015,Bundesliga,Midfield,151,high
+2015,Bundesliga,unknown,57,moderate
+2015,La Liga,Attack,154,high
+2015,La Liga,Defender,176,high
+2015,La Liga,Goalkeeper,44,low
+2015,La Liga,Midfield,140,high
+2015,La Liga,Missing,1,unavailable
+2015,La Liga,unknown,71,moderate
+2015,Ligue 1,Attack,161,high
+2015,Ligue 1,Defender,176,high
+2015,Ligue 1,Goalkeeper,53,moderate
+2015,Ligue 1,Midfield,179,high
+2015,Ligue 1,Missing,1,unavailable
+2015,Ligue 1,unknown,59,moderate
+2015,Premier League,Attack,166,high
+2015,Premier League,Defender,187,high
+2015,Premier League,Goalkeeper,58,moderate
+2015,Premier League,Midfield,179,high
+2015,Premier League,unknown,48,low
+2015,Serie A,Attack,155,high
+2015,Serie A,Defender,233,high
+2015,Serie A,Goalkeeper,75,moderate
+2015,Serie A,Midfield,200,high
+2015,Serie A,unknown,86,moderate
+2016,Bundesliga,Attack,130,high
+2016,Bundesliga,Defender,168,high
+2016,Bundesliga,Goalkeeper,52,moderate
+2016,Bundesliga,Midfield,157,high
+2016,Bundesliga,unknown,49,low
+2016,La Liga,Attack,155,high
+2016,La Liga,Defender,193,high
+2016,La Liga,Goalkeeper,53,moderate
+2016,La Liga,Midfield,161,high
+2016,La Liga,Missing,2,unavailable
+2016,La Liga,unknown,50,moderate
+2016,Ligue 1,Attack,160,high
+2016,Ligue 1,Defender,193,high
+2016,Ligue 1,Goalkeeper,57,moderate
+2016,Ligue 1,Midfield,190,high
+2016,Ligue 1,Missing,1,unavailable
+2016,Ligue 1,unknown,65,moderate
+2016,Premier League,Attack,177,high
+2016,Premier League,Defender,197,high
+2016,Premier League,Goalkeeper,61,moderate
+2016,Premier League,Midfield,182,high
+2016,Premier League,unknown,43,low
+2016,Serie A,Attack,148,high
+2016,Serie A,Defender,233,high
+2016,Serie A,Goalkeeper,72,moderate
+2016,Serie A,Midfield,207,high
+2016,Serie A,unknown,86,moderate
+2017,Bundesliga,Attack,135,high
+2017,Bundesliga,Defender,173,high
+2017,Bundesliga,Goalkeeper,51,moderate
+2017,Bundesliga,Midfield,144,high
+2017,Bundesliga,unknown,49,low
+2017,La Liga,Attack,168,high
+2017,La Liga,Defender,184,high
+2017,La Liga,Goalkeeper,64,moderate
+2017,La Liga,Midfield,173,high
+2017,La Liga,Missing,1,unavailable
+2017,La Liga,unknown,33,low
+2017,Ligue 1,Attack,161,high
+2017,Ligue 1,Defender,196,high
+2017,Ligue 1,Goalkeeper,62,moderate
+2017,Ligue 1,Midfield,196,high
+2017,Ligue 1,Missing,2,unavailable
+2017,Ligue 1,unknown,36,low
+2017,Premier League,Attack,170,high
+2017,Premier League,Defender,199,high
+2017,Premier League,Goalkeeper,64,moderate
+2017,Premier League,Midfield,176,high
+2017,Premier League,unknown,35,low
+2017,Serie A,Attack,161,high
+2017,Serie A,Defender,219,high
+2017,Serie A,Goalkeeper,90,moderate
+2017,Serie A,Midfield,205,high
+2017,Serie A,unknown,107,high
+2018,Bundesliga,Attack,147,high
+2018,Bundesliga,Defender,185,high
+2018,Bundesliga,Goalkeeper,58,moderate
+2018,Bundesliga,Midfield,159,high
+2018,Bundesliga,unknown,1,unavailable
+2018,La Liga,Attack,185,high
+2018,La Liga,Defender,205,high
+2018,La Liga,Goalkeeper,71,moderate
+2018,La Liga,Midfield,175,high
+2018,La Liga,Missing,2,unavailable
+2018,La Liga,unknown,4,unavailable
+2018,Ligue 1,Attack,161,high
+2018,Ligue 1,Defender,211,high
+2018,Ligue 1,Goalkeeper,67,moderate
+2018,Ligue 1,Midfield,200,high
+2018,Ligue 1,unknown,2,unavailable
+2018,Premier League,Attack,175,high
+2018,Premier League,Defender,206,high
+2018,Premier League,Goalkeeper,65,moderate
+2018,Premier League,Midfield,172,high
+2018,Serie A,Attack,173,high
+2018,Serie A,Defender,246,high
+2018,Serie A,Goalkeeper,85,moderate
+2018,Serie A,Midfield,209,high
+2018,Serie A,unknown,4,unavailable
+2019,Bundesliga,Attack,144,high
+2019,Bundesliga,Defender,183,high
+2019,Bundesliga,Goalkeeper,59,moderate
+2019,Bundesliga,Midfield,148,high
+2019,La Liga,Attack,178,high
+2019,La Liga,Defender,207,high
+2019,La Liga,Goalkeeper,64,moderate
+2019,La Liga,Midfield,162,high
+2019,La Liga,Missing,1,unavailable
+2019,La Liga,unknown,3,unavailable
+2019,Ligue 1,Attack,177,high
+2019,Ligue 1,Defender,225,high
+2019,Ligue 1,Goalkeeper,62,moderate
+2019,Ligue 1,Midfield,189,high
+2019,Ligue 1,unknown,2,unavailable
+2019,Premier League,Attack,156,high
+2019,Premier League,Defender,196,high
+2019,Premier League,Goalkeeper,58,moderate
+2019,Premier League,Midfield,164,high
+2019,Premier League,unknown,2,unavailable
+2019,Serie A,Attack,166,high
+2019,Serie A,Defender,230,high
+2019,Serie A,Goalkeeper,91,moderate
+2019,Serie A,Midfield,227,high
+2019,Serie A,unknown,4,unavailable
+2020,Bundesliga,Attack,164,high
+2020,Bundesliga,Defender,188,high
+2020,Bundesliga,Goalkeeper,61,moderate
+2020,Bundesliga,Midfield,180,high
+2020,Bundesliga,unknown,1,unavailable
+2020,La Liga,Attack,194,high
+2020,La Liga,Defender,223,high
+2020,La Liga,Goalkeeper,74,moderate
+2020,La Liga,Midfield,173,high
+2020,La Liga,unknown,6,unavailable
+2020,Ligue 1,Attack,169,high
+2020,Ligue 1,Defender,203,high
+2020,Ligue 1,Goalkeeper,65,moderate
+2020,Ligue 1,Midfield,188,high
+2020,Ligue 1,unknown,1,unavailable
+2020,Premier League,Attack,160,high
+2020,Premier League,Defender,216,high
+2020,Premier League,Goalkeeper,68,moderate
+2020,Premier League,Midfield,176,high
+2020,Premier League,unknown,3,unavailable
+2020,Serie A,Attack,175,high
+2020,Serie A,Defender,255,high
+2020,Serie A,Goalkeeper,88,moderate
+2020,Serie A,Midfield,223,high
+2020,Serie A,unknown,2,unavailable
+2021,Bundesliga,Attack,159,high
+2021,Bundesliga,Defender,192,high
+2021,Bundesliga,Goalkeeper,62,moderate
+2021,Bundesliga,Midfield,164,high
+2021,Bundesliga,unknown,2,unavailable
+2021,La Liga,Attack,212,high
+2021,La Liga,Defender,238,high
+2021,La Liga,Goalkeeper,83,moderate
+2021,La Liga,Midfield,182,high
+2021,La Liga,Missing,1,unavailable
+2021,La Liga,unknown,4,unavailable
+2021,Ligue 1,Attack,188,high
+2021,Ligue 1,Defender,231,high
+2021,Ligue 1,Goalkeeper,74,moderate
+2021,Ligue 1,Midfield,207,high
+2021,Ligue 1,unknown,2,unavailable
+2021,Premier League,Attack,168,high
+2021,Premier League,Defender,225,high
+2021,Premier League,Goalkeeper,71,moderate
+2021,Premier League,Midfield,187,high
+2021,Premier League,unknown,3,unavailable
+2021,Serie A,Attack,190,high
+2021,Serie A,Defender,269,high
+2021,Serie A,Goalkeeper,95,moderate
+2021,Serie A,Midfield,248,high
+2021,Serie A,unknown,1,unavailable
+2022,Bundesliga,Attack,162,high
+2022,Bundesliga,Defender,194,high
+2022,Bundesliga,Goalkeeper,56,moderate
+2022,Bundesliga,Midfield,170,high
+2022,Bundesliga,unknown,20,low
+2022,La Liga,Attack,219,high
+2022,La Liga,Defender,231,high
+2022,La Liga,Goalkeeper,76,moderate
+2022,La Liga,Midfield,186,high
+2022,La Liga,unknown,56,moderate
+2022,Ligue 1,Attack,196,high
+2022,Ligue 1,Defender,225,high
+2022,Ligue 1,Goalkeeper,67,moderate
+2022,Ligue 1,Midfield,207,high
+2022,Ligue 1,unknown,38,low
+2022,Premier League,Attack,179,high
+2022,Premier League,Defender,225,high
+2022,Premier League,Goalkeeper,72,moderate
+2022,Premier League,Midfield,183,high
+2022,Premier League,unknown,34,low
+2022,Serie A,Attack,190,high
+2022,Serie A,Defender,237,high
+2022,Serie A,Goalkeeper,86,moderate
+2022,Serie A,Midfield,231,high
+2022,Serie A,unknown,66,moderate
+2023,Bundesliga,Attack,157,high
+2023,Bundesliga,Defender,190,high
+2023,Bundesliga,Goalkeeper,52,moderate
+2023,Bundesliga,Midfield,157,high
+2023,Bundesliga,unknown,43,low
+2023,La Liga,Attack,204,high
+2023,La Liga,Defender,206,high
+2023,La Liga,Goalkeeper,64,moderate
+2023,La Liga,Midfield,180,high
+2023,La Liga,unknown,76,moderate
+2023,Ligue 1,Attack,183,high
+2023,Ligue 1,Defender,223,high
+2023,Ligue 1,Goalkeeper,64,moderate
+2023,Ligue 1,Midfield,179,high
+2023,Ligue 1,unknown,68,moderate
+2023,Premier League,Attack,174,high
+2023,Premier League,Defender,215,high
+2023,Premier League,Goalkeeper,70,moderate
+2023,Premier League,Midfield,197,high
+2023,Premier League,unknown,69,moderate
+2023,Serie A,Attack,153,high
+2023,Serie A,Defender,230,high
+2023,Serie A,Goalkeeper,73,moderate
+2023,Serie A,Midfield,220,high
+2023,Serie A,unknown,87,moderate
+2024,Bundesliga,Attack,151,high
+2024,Bundesliga,Defender,185,high
+2024,Bundesliga,Goalkeeper,49,low
+2024,Bundesliga,Midfield,147,high
+2024,Bundesliga,unknown,51,moderate
+2024,La Liga,Attack,199,high
+2024,La Liga,Defender,216,high
+2024,La Liga,Goalkeeper,60,moderate
+2024,La Liga,Midfield,171,high
+2024,La Liga,unknown,97,moderate
+2024,Ligue 1,Attack,161,high
+2024,Ligue 1,Defender,202,high
+2024,Ligue 1,Goalkeeper,49,low
+2024,Ligue 1,Midfield,168,high
+2024,Ligue 1,unknown,77,moderate
+2024,Premier League,Attack,164,high
+2024,Premier League,Defender,209,high
+2024,Premier League,Goalkeeper,68,moderate
+2024,Premier League,Midfield,196,high
+2024,Premier League,unknown,111,high
+2024,Serie A,Attack,169,high
+2024,Serie A,Defender,222,high
+2024,Serie A,Goalkeeper,65,moderate
+2024,Serie A,Midfield,214,high
+2024,Serie A,unknown,117,high
+2025,Bundesliga,Attack,139,high
+2025,Bundesliga,Defender,184,high
+2025,Bundesliga,Goalkeeper,49,low
+2025,Bundesliga,Midfield,143,high
+2025,Bundesliga,unknown,64,moderate
+2025,La Liga,Attack,203,high
+2025,La Liga,Defender,214,high
+2025,La Liga,Goalkeeper,55,moderate
+2025,La Liga,Midfield,166,high
+2025,La Liga,unknown,120,high
+2025,Ligue 1,Attack,175,high
+2025,Ligue 1,Defender,200,high
+2025,Ligue 1,Goalkeeper,46,low
+2025,Ligue 1,Midfield,162,high
+2025,Ligue 1,unknown,86,moderate
+2025,Premier League,Attack,164,high
+2025,Premier League,Defender,218,high
+2025,Premier League,Goalkeeper,65,moderate
+2025,Premier League,Midfield,173,high
+2025,Premier League,unknown,86,moderate
+2025,Serie A,Attack,172,high
+2025,Serie A,Defender,229,high
+2025,Serie A,Goalkeeper,69,moderate
+2025,Serie A,Midfield,216,high
+2025,Serie A,unknown,129,high
+2026,Bundesliga,Attack,97,moderate
+2026,Bundesliga,Defender,124,high
+2026,Bundesliga,Goalkeeper,37,low
+2026,Bundesliga,Midfield,107,high
+2026,Bundesliga,unknown,66,moderate
+2026,La Liga,Attack,140,high
+2026,La Liga,Defender,154,high
+2026,La Liga,Goalkeeper,44,low
+2026,La Liga,Midfield,111,high
+2026,La Liga,unknown,112,high
+2026,Ligue 1,Attack,109,high
+2026,Ligue 1,Defender,122,high
+2026,Ligue 1,Goalkeeper,34,low
+2026,Ligue 1,Midfield,93,moderate
+2026,Ligue 1,unknown,112,high
+2026,Premier League,Attack,118,high
+2026,Premier League,Defender,157,high
+2026,Premier League,Goalkeeper,50,moderate
+2026,Premier League,Midfield,132,high
+2026,Premier League,unknown,47,low
+2026,Serie A,Attack,117,high
+2026,Serie A,Defender,161,high
+2026,Serie A,Goalkeeper,50,moderate
+2026,Serie A,Midfield,146,high
+2026,Serie A,unknown,96,moderate
