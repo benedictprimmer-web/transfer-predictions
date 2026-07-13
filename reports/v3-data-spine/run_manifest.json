@@ -1,0 +1,17 @@
+{
+  "club_crosswalk_match_rate": {
+    "total_club_names": 434,
+    "trusted": 332
+  },
+  "command": "python3 -m validate.v3_sporting_target",
+  "league_aliases": {
+    "LaLiga": "La Liga"
+  },
+  "locked_season_min": 2023,
+  "note": "transfer_performance_outcomes_future built entirely from in-repo fbref_perf + transfers_canonical. No ESTATE_B_DIR dependency anywhere in this module.",
+  "trusted_club_confidence": [
+    "alias",
+    "exact",
+    "high"
+  ]
+}

@@ -1,0 +1,435 @@
+tm_club_name,fbref_squad,confidence,comp,to_league,to_club_name
+AFC Bournemouth,Bournemouth,exact,Premier League,Premier League,AFC Bournemouth
+Arsenal,Arsenal,exact,Premier League,Premier League,Arsenal
+Arsenal FC,Arsenal,exact,Premier League,Premier League,Arsenal FC
+Aston Villa,Aston Villa,exact,Premier League,Premier League,Aston Villa
+Barnsley FC,Burnley,low,Premier League,Premier League,Barnsley FC
+Birmingham City,Birmingham City,exact,Premier League,Premier League,Birmingham City
+Blackburn Rovers,Blackburn,high,Premier League,Premier League,Blackburn Rovers
+Blackpool FC,Blackpool,exact,Premier League,Premier League,Blackpool FC
+Bolton Wanderers,Bolton,high,Premier League,Premier League,Bolton Wanderers
+Bournemouth,Bournemouth,exact,Premier League,Premier League,Bournemouth
+Bradford City,,unmatched,Premier League,Premier League,Bradford City
+Brentford,Brentford,exact,Premier League,Premier League,Brentford
+Brentford FC,Brentford,exact,Premier League,Premier League,Brentford FC
+Brighton,Brighton,exact,Premier League,Premier League,Brighton
+Brighton & Hove Albion,Brighton,high,Premier League,Premier League,Brighton & Hove Albion
+Burnley,Burnley,exact,Premier League,Premier League,Burnley
+Burnley FC,Burnley,exact,Premier League,Premier League,Burnley FC
+Cardiff,Cardiff City,low,Premier League,Premier League,Cardiff
+Cardiff City,Cardiff City,exact,Premier League,Premier League,Cardiff City
+Charlton Athletic,,unmatched,Premier League,Premier League,Charlton Athletic
+Chelsea,Chelsea,exact,Premier League,Premier League,Chelsea
+Chelsea FC,Chelsea,exact,Premier League,Premier League,Chelsea FC
+Coventry City,,unmatched,Premier League,Premier League,Coventry City
+Crystal Palace,Crystal Palace,exact,Premier League,Premier League,Crystal Palace
+Derby County,,unmatched,Premier League,Premier League,Derby County
+Everton,Everton,exact,Premier League,Premier League,Everton
+Everton FC,Everton,exact,Premier League,Premier League,Everton FC
+Fulham,Fulham,exact,Premier League,Premier League,Fulham
+Fulham FC,Fulham,exact,Premier League,Premier League,Fulham FC
+Huddersfield,Huddersfield,exact,Premier League,Premier League,Huddersfield
+Huddersfield Town,Huddersfield,high,Premier League,Premier League,Huddersfield Town
+Hull City,Hull City,exact,Premier League,Premier League,Hull City
+Ipswich,Ipswich Town,low,Premier League,Premier League,Ipswich
+Ipswich Town,Ipswich Town,exact,Premier League,Premier League,Ipswich Town
+Leeds,,unmatched,Premier League,Premier League,Leeds
+Leeds United,Leeds United,exact,Premier League,Premier League,Leeds United
+Leicester,Leicester City,low,Premier League,Premier League,Leicester
+Leicester City,Leicester City,exact,Premier League,Premier League,Leicester City
+Liverpool,Liverpool,exact,Premier League,Premier League,Liverpool
+Liverpool FC,Liverpool,exact,Premier League,Premier League,Liverpool FC
+Luton,Bolton,low,Premier League,Premier League,Luton
+Man City,,unmatched,Premier League,Premier League,Man City
+Man Utd,Manchester Utd,low,Premier League,Premier League,Man Utd
+Manchester City,Manchester City,exact,Premier League,Premier League,Manchester City
+Manchester United,Manchester Utd,exact,Premier League,Premier League,Manchester United
+Middlesbrough,Middlesbrough,exact,Premier League,Premier League,Middlesbrough
+Middlesbrough FC,Middlesbrough,exact,Premier League,Premier League,Middlesbrough FC
+Newcastle,Newcastle Utd,low,Premier League,Premier League,Newcastle
+Newcastle United,Newcastle Utd,exact,Premier League,Premier League,Newcastle United
+Norwich,Norwich City,low,Premier League,Premier League,Norwich
+Norwich City,Norwich City,exact,Premier League,Premier League,Norwich City
+Nott'm Forest,Nott'ham Forest,high,Premier League,Premier League,Nott'm Forest
+Nottingham Forest,Nott'ham Forest,low,Premier League,Premier League,Nottingham Forest
+Nottm Forest,Nott'ham Forest,low,Premier League,Premier League,Nottm Forest
+Oldham Athletic,,unmatched,Premier League,Premier League,Oldham Athletic
+Portsmouth,Portsmouth,exact,Premier League,Premier League,Portsmouth
+Portsmouth FC,Portsmouth,exact,Premier League,Premier League,Portsmouth FC
+QPR,QPR,exact,Premier League,Premier League,QPR
+Queens Park Rangers,,unmatched,Premier League,Premier League,Queens Park Rangers
+Reading,Reading,exact,Premier League,Premier League,Reading
+Reading FC,Reading,exact,Premier League,Premier League,Reading FC
+Sheff Utd,Sheffield Utd,low,Premier League,Premier League,Sheff Utd
+Sheffield United,Sheffield Utd,exact,Premier League,Premier League,Sheffield United
+Sheffield Wednesday,,unmatched,Premier League,Premier League,Sheffield Wednesday
+Southampton,Southampton,exact,Premier League,Premier League,Southampton
+Southampton FC,Southampton,exact,Premier League,Premier League,Southampton FC
+Stoke City,Stoke City,exact,Premier League,Premier League,Stoke City
+Sunderland,Sunderland,exact,Premier League,Premier League,Sunderland
+Sunderland AFC,Sunderland,exact,Premier League,Premier League,Sunderland AFC
+Swansea,Swansea City,low,Premier League,Premier League,Swansea
+Swansea City,Swansea City,exact,Premier League,Premier League,Swansea City
+Swindon Town,,unmatched,Premier League,Premier League,Swindon Town
+Tottenham,Tottenham,exact,Premier League,Premier League,Tottenham
+Tottenham Hotspur,Tottenham,high,Premier League,Premier League,Tottenham Hotspur
+Watford,Watford,exact,Premier League,Premier League,Watford
+Watford FC,Watford,exact,Premier League,Premier League,Watford FC
+West Brom,West Brom,exact,Premier League,Premier League,West Brom
+West Bromwich Albion,,unmatched,Premier League,Premier League,West Bromwich Albion
+West Ham,West Ham,exact,Premier League,Premier League,West Ham
+West Ham United,West Ham,high,Premier League,Premier League,West Ham United
+Wigan,,unmatched,Premier League,Premier League,Wigan
+Wigan Athletic,Wigan Athletic,exact,Premier League,Premier League,Wigan Athletic
+Wimbledon FC,,unmatched,Premier League,Premier League,Wimbledon FC
+Wolverhampton Wanderers,,unmatched,Premier League,Premier League,Wolverhampton Wanderers
+Wolves,Wolves,exact,Premier League,Premier League,Wolves
+AC Cesena,Cesena,exact,Serie A,Serie A,AC Cesena
+AC Fiorentina,Fiorentina,exact,Serie A,Serie A,AC Fiorentina
+AC Milan,Milan,exact,Serie A,Serie A,AC Milan
+AC Monza,Monza,exact,Serie A,Serie A,AC Monza
+AC Parma,Parma,exact,Serie A,Serie A,AC Parma
+AC Perugia,,unmatched,Serie A,Serie A,AC Perugia
+AC Reggiana,,unmatched,Serie A,Serie A,AC Reggiana
+AC Siena,Siena,exact,Serie A,Serie A,AC Siena
+AC Venezia 1907,Venezia,exact,Serie A,Serie A,AC Venezia 1907
+ACF Fiorentina,Fiorentina,high,Serie A,Serie A,ACF Fiorentina
+AS Bari,Bari,exact,Serie A,Serie A,AS Bari
+AS Livorno,Livorno,exact,Serie A,Serie A,AS Livorno
+AS Roma,Roma,exact,Serie A,Serie A,AS Roma
+Ancona,,unmatched,Serie A,Serie A,Ancona
+Ancona Calcio,,unmatched,Serie A,Serie A,Ancona Calcio
+Ascoli Calcio 1898,,unmatched,Serie A,Serie A,Ascoli Calcio 1898
+Atalanta,Atalanta,exact,Serie A,Serie A,Atalanta
+Atalanta BC,Atalanta,high,Serie A,Serie A,Atalanta BC
+Bari,Bari,exact,Serie A,Serie A,Bari
+Benevento,Benevento,exact,Serie A,Serie A,Benevento
+Benevento Calcio,Benevento,exact,Serie A,Serie A,Benevento Calcio
+Bologna,Bologna,exact,Serie A,Serie A,Bologna
+Bologna FC 1909,Bologna,exact,Serie A,Serie A,Bologna FC 1909
+Brescia,Brescia,exact,Serie A,Serie A,Brescia
+Brescia Calcio,Brescia,exact,Serie A,Serie A,Brescia Calcio
+Cagliari,Cagliari,exact,Serie A,Serie A,Cagliari
+Cagliari Calcio,Cagliari,exact,Serie A,Serie A,Cagliari Calcio
+Calcio Catania,Catania,exact,Serie A,Serie A,Calcio Catania
+Calcio Padova,,unmatched,Serie A,Serie A,Calcio Padova
+Carpi,Carpi,exact,Serie A,Serie A,Carpi
+Carpi FC 1909,Carpi,exact,Serie A,Serie A,Carpi FC 1909
+Catania,Catania,exact,Serie A,Serie A,Catania
+Catania SSD,Catania,high,Serie A,Serie A,Catania SSD
+Cesena,Cesena,exact,Serie A,Serie A,Cesena
+Chievo Verona,Chievo,high,Serie A,Serie A,Chievo Verona
+Como,Como,exact,Serie A,Serie A,Como
+Como Calcio,Como,exact,Serie A,Serie A,Como Calcio
+Cremonese,Cremonese,exact,Serie A,Serie A,Cremonese
+Crotone,Crotone,exact,Serie A,Serie A,Crotone
+Delfino Pescara 1936,Pescara,high,Serie A,Serie A,Delfino Pescara 1936
+Empoli,Empoli,exact,Serie A,Serie A,Empoli
+Empoli FC,Empoli,exact,Serie A,Serie A,Empoli FC
+FC Crotone,Crotone,exact,Serie A,Serie A,FC Crotone
+FC Empoli,Empoli,exact,Serie A,Serie A,FC Empoli
+FC Internazionale,Inter,exact,Serie A,Serie A,FC Internazionale
+FC Messina Peloro,,unmatched,Serie A,Serie A,FC Messina Peloro
+Fiorentina,Fiorentina,exact,Serie A,Serie A,Fiorentina
+Foggia,,unmatched,Serie A,Serie A,Foggia
+Foggia Calcio,,unmatched,Serie A,Serie A,Foggia Calcio
+Frosinone,Frosinone,exact,Serie A,Serie A,Frosinone
+Frosinone Calcio,Frosinone,exact,Serie A,Serie A,Frosinone Calcio
+Genoa,Genoa,exact,Serie A,Serie A,Genoa
+Genoa 1893,Genoa,exact,Serie A,Serie A,Genoa 1893
+Genoa CFC,Genoa,high,Serie A,Serie A,Genoa CFC
+Hellas Verona,Hellas Verona,exact,Serie A,Serie A,Hellas Verona
+Inter,Inter,exact,Serie A,Serie A,Inter
+Inter Milan,Inter,high,Serie A,Serie A,Inter Milan
+Juventus,Juventus,exact,Serie A,Serie A,Juventus
+Juventus FC,Juventus,exact,Serie A,Serie A,Juventus FC
+Lazio,Lazio,exact,Serie A,Serie A,Lazio
+Lecce,Lecce,exact,Serie A,Serie A,Lecce
+Livorno,Livorno,exact,Serie A,Serie A,Livorno
+Messina Peloro,,unmatched,Serie A,Serie A,Messina Peloro
+Milan,Milan,exact,Serie A,Serie A,Milan
+Milan AC,Milan,exact,Serie A,Serie A,Milan AC
+Modena,Monza,low,Serie A,Serie A,Modena
+Modena FC,Monza,low,Serie A,Serie A,Modena FC
+Monza,Monza,exact,Serie A,Serie A,Monza
+Napoli,Napoli,exact,Serie A,Serie A,Napoli
+Novara Calcio 1908,Novara,exact,Serie A,Serie A,Novara Calcio 1908
+Palermo,Palermo,exact,Serie A,Serie A,Palermo
+Parma,Parma,exact,Serie A,Serie A,Parma
+Parma Calcio 1913,Parma,exact,Serie A,Serie A,Parma Calcio 1913
+Parma FC,Parma,exact,Serie A,Serie A,Parma FC
+Perugia,,unmatched,Serie A,Serie A,Perugia
+Pescara,Pescara,exact,Serie A,Serie A,Pescara
+Piacenza,,unmatched,Serie A,Serie A,Piacenza
+Piacenza FC,,unmatched,Serie A,Serie A,Piacenza FC
+Pisa,Pisa,exact,Serie A,Serie A,Pisa
+Reggiana,,unmatched,Serie A,Serie A,Reggiana
+Reggina,,unmatched,Serie A,Serie A,Reggina
+Reggina Calcio,,unmatched,Serie A,Serie A,Reggina Calcio
+Robur Siena,Siena,high,Serie A,Serie A,Robur Siena
+Roma,Roma,exact,Serie A,Serie A,Roma
+SPAL,SPAL,exact,Serie A,Serie A,SPAL
+SPAL 2013,SPAL,exact,Serie A,Serie A,SPAL 2013
+SS Lazio,Lazio,exact,Serie A,Serie A,SS Lazio
+SSC Napoli,Napoli,exact,Serie A,Serie A,SSC Napoli
+Salernitana,Salernitana,exact,Serie A,Serie A,Salernitana
+Sampdoria,Sampdoria,exact,Serie A,Serie A,Sampdoria
+Sassuolo,Sassuolo,exact,Serie A,Serie A,Sassuolo
+Siena,Siena,exact,Serie A,Serie A,Siena
+Spezia Calcio,Spezia,exact,Serie A,Serie A,Spezia Calcio
+Torino,Torino,exact,Serie A,Serie A,Torino
+Torino Calcio,Torino,exact,Serie A,Serie A,Torino Calcio
+Torino FC,Torino,exact,Serie A,Serie A,Torino FC
+Treviso FBC 1993,,unmatched,Serie A,Serie A,Treviso FBC 1993
+UC Sampdoria,Sampdoria,high,Serie A,Serie A,UC Sampdoria
+US Cremonese,Cremonese,exact,Serie A,Serie A,US Cremonese
+US Lecce,Lecce,exact,Serie A,Serie A,US Lecce
+US Palermo,Palermo,exact,Serie A,Serie A,US Palermo
+US Salernitana,Salernitana,exact,Serie A,Serie A,US Salernitana
+US Salernitana 1919,Salernitana,exact,Serie A,Serie A,US Salernitana 1919
+US Sassuolo,Sassuolo,exact,Serie A,Serie A,US Sassuolo
+Udinese,Udinese,exact,Serie A,Serie A,Udinese
+Udinese Calcio,Udinese,exact,Serie A,Serie A,Udinese Calcio
+Venezia,Venezia,exact,Serie A,Serie A,Venezia
+Venezia FC,Venezia,exact,Serie A,Serie A,Venezia FC
+Vicenza,,unmatched,Serie A,Serie A,Vicenza
+Vicenza Calcio,,unmatched,Serie A,Serie A,Vicenza Calcio
+AC Ajaccio,Ajaccio,exact,Ligue 1,Ligue 1,AC Ajaccio
+AC Le Havre,Le Havre,exact,Ligue 1,Ligue 1,AC Le Havre
+AJ Auxerre,Auxerre,high,Ligue 1,Ligue 1,AJ Auxerre
+AS Cannes,,unmatched,Ligue 1,Ligue 1,AS Cannes
+AS Monaco,Monaco,exact,Ligue 1,Ligue 1,AS Monaco
+AS Nancy,Nancy,exact,Ligue 1,Ligue 1,AS Nancy
+AS Nancy-Lorraine,Nancy,high,Ligue 1,Ligue 1,AS Nancy-Lorraine
+AS Saint-Étienne,Saint-Étienne,exact,Ligue 1,Ligue 1,AS Saint-Étienne
+Amiens SC,Amiens,exact,Ligue 1,Ligue 1,Amiens SC
+Angers SCO,Angers,high,Ligue 1,Ligue 1,Angers SCO
+Association Troyes Aube Champagne,Troyes,high,Ligue 1,Ligue 1,Association Troyes Aube Champagne
+Athlétic Club Arlésien,,unmatched,Ligue 1,Ligue 1,Athlétic Club Arlésien
+CS Sedan-Ardennes,,unmatched,Ligue 1,Ligue 1,CS Sedan-Ardennes
+Cannes,,unmatched,Ligue 1,Ligue 1,Cannes
+Clermont Foot,Clermont Foot,exact,Ligue 1,Ligue 1,Clermont Foot
+Clermont Foot 63,Clermont Foot,exact,Ligue 1,Ligue 1,Clermont Foot 63
+Dijon,Dijon,exact,Ligue 1,Ligue 1,Dijon
+Dijon FCO,Dijon,high,Ligue 1,Ligue 1,Dijon FCO
+EA Guingamp,Guingamp,high,Ligue 1,Ligue 1,EA Guingamp
+ESTAC Troyes,Troyes,high,Ligue 1,Ligue 1,ESTAC Troyes
+FC Girondins Bordeaux,Bordeaux,high,Ligue 1,Ligue 1,FC Girondins Bordeaux
+FC Gueugnon,,unmatched,Ligue 1,Ligue 1,FC Gueugnon
+FC Istres Ouest Provence,,unmatched,Ligue 1,Ligue 1,FC Istres Ouest Provence
+FC Lorient,Lorient,exact,Ligue 1,Ligue 1,FC Lorient
+FC Martigues,,unmatched,Ligue 1,Ligue 1,FC Martigues
+FC Metz,Metz,exact,Ligue 1,Ligue 1,FC Metz
+FC Nantes,Nantes,exact,Ligue 1,Ligue 1,FC Nantes
+FC Sochaux,Sochaux,exact,Ligue 1,Ligue 1,FC Sochaux
+FC Sochaux-Montbéliard,Sochaux,high,Ligue 1,Ligue 1,FC Sochaux-Montbéliard
+FC Toulouse,Toulouse,exact,Ligue 1,Ligue 1,FC Toulouse
+FC Évian Thonon Gaillard,Evian,high,Ligue 1,Ligue 1,FC Évian Thonon Gaillard
+G. Bordeaux,Bordeaux,high,Ligue 1,Ligue 1,G. Bordeaux
+GFC Ajaccio,Ajaccio,high,Ligue 1,Ligue 1,GFC Ajaccio
+Grenoble Foot 38,Grenoble,high,Ligue 1,Ligue 1,Grenoble Foot 38
+Guingamp,Guingamp,exact,Ligue 1,Ligue 1,Guingamp
+LB Châteauroux,,unmatched,Ligue 1,Ligue 1,LB Châteauroux
+LOSC Lille,Lille,high,Ligue 1,Ligue 1,LOSC Lille
+Le Havre AC,Le Havre,exact,Ligue 1,Ligue 1,Le Havre AC
+Le Mans Union Club 72,Le Mans,high,Ligue 1,Ligue 1,Le Mans Union Club 72
+Lens,Lens,exact,Ligue 1,Ligue 1,Lens
+Lille,Lille,exact,Ligue 1,Ligue 1,Lille
+Lyon,Lyon,exact,Ligue 1,Ligue 1,Lyon
+Marseille,Marseille,exact,Ligue 1,Ligue 1,Marseille
+Monaco,Monaco,exact,Ligue 1,Ligue 1,Monaco
+Montpellier,Montpellier,exact,Ligue 1,Ligue 1,Montpellier
+Montpellier HSC,Montpellier,high,Ligue 1,Ligue 1,Montpellier HSC
+Nice,Nice,exact,Ligue 1,Ligue 1,Nice
+Nîmes Olympique,Nîmes,high,Ligue 1,Ligue 1,Nîmes Olympique
+OGC Nice,Nice,exact,Ligue 1,Ligue 1,OGC Nice
+Olympique Lyon,Lyon,high,Ligue 1,Ligue 1,Olympique Lyon
+Olympique Marseille,Marseille,high,Ligue 1,Ligue 1,Olympique Marseille
+PSG,,unmatched,Ligue 1,Ligue 1,PSG
+Paris FC,Paris FC,exact,Ligue 1,Ligue 1,Paris FC
+Paris SG,Paris FC,high,Ligue 1,Ligue 1,Paris SG
+Paris Saint-Germain,Paris S-G,alias,Ligue 1,Ligue 1,Paris Saint-Germain
+R. Strasbourg,Strasbourg,high,Ligue 1,Ligue 1,R. Strasbourg
+RC Lens,Lens,exact,Ligue 1,Ligue 1,RC Lens
+RC Strasbourg Alsace,Strasbourg,high,Ligue 1,Ligue 1,RC Strasbourg Alsace
+SC Bastia,Bastia,exact,Ligue 1,Ligue 1,SC Bastia
+SCO Angers,Angers,high,Ligue 1,Ligue 1,SCO Angers
+SM Caen,Caen,high,Ligue 1,Ligue 1,SM Caen
+Saint-Étienne,Saint-Étienne,exact,Ligue 1,Ligue 1,Saint-Étienne
+Sporting Club de Toulon et du Var,,unmatched,Ligue 1,Ligue 1,Sporting Club de Toulon et du Var
+Stade Brestois,,unmatched,Ligue 1,Ligue 1,Stade Brestois
+Stade Brestois 29,,unmatched,Ligue 1,Ligue 1,Stade Brestois 29
+Stade Reims,Reims,high,Ligue 1,Ligue 1,Stade Reims
+Stade Rennais,,unmatched,Ligue 1,Ligue 1,Stade Rennais
+Stade Rennais FC,,unmatched,Ligue 1,Ligue 1,Stade Rennais FC
+Toulouse,Toulouse,exact,Ligue 1,Ligue 1,Toulouse
+Troyes,Troyes,exact,Ligue 1,Ligue 1,Troyes
+US Boulogne,Boulogne,exact,Ligue 1,Ligue 1,US Boulogne
+Union Sportive Valenciennes-Anzin Arrondissement,Valenciennes,high,Ligue 1,Ligue 1,Union Sportive Valenciennes-Anzin Arrondissement
+Valenciennes FC,Valenciennes,exact,Ligue 1,Ligue 1,Valenciennes FC
+Alavés,Alavés,exact,La Liga,LaLiga,Alavés
+Albacete Balompié,,unmatched,La Liga,La Liga,Albacete Balompié
+Athletic,Athletic Club,exact,La Liga,LaLiga,Athletic
+Athletic Bilbao,,unmatched,La Liga,La Liga,Athletic Bilbao
+Athletic Club,Athletic Club,exact,La Liga,LaLiga,Athletic Club
+Atlético,Athletic Club,low,La Liga,LaLiga,Atlético
+Atlético Madrid,Atlético Madrid,exact,La Liga,LaLiga,Atlético Madrid
+Atlético de Madrid,Atlético Madrid,exact,La Liga,La Liga,Atlético de Madrid
+Barcelona,Barcelona,exact,La Liga,La Liga,Barcelona
+Barcelona,Barcelona,exact,La Liga,LaLiga,Barcelona
+CA Osasuna,Osasuna,high,La Liga,LaLiga,CA Osasuna
+CA Osasuna,Osasuna,high,La Liga,La Liga,CA Osasuna
+CD Leganés,Leganés,exact,La Liga,La Liga,CD Leganés
+CD Leganés,Leganés,exact,La Liga,LaLiga,CD Leganés
+CD Logroñés,,unmatched,La Liga,La Liga,CD Logroñés
+CD Numancia,,unmatched,La Liga,La Liga,CD Numancia
+CD Tenerife,Tenerife,exact,La Liga,La Liga,CD Tenerife
+CF Extremadura (- 2010),,unmatched,La Liga,La Liga,CF Extremadura (- 2010)
+CP Mérida,,unmatched,La Liga,La Liga,CP Mérida
+Celta de Vigo,Celta Vigo,exact,La Liga,La Liga,Celta de Vigo
+Celta de Vigo,Celta Vigo,exact,La Liga,LaLiga,Celta de Vigo
+Cádiz CF,Cádiz,exact,La Liga,LaLiga,Cádiz CF
+Cádiz CF,Cádiz,exact,La Liga,La Liga,Cádiz CF
+Córdoba CF,Córdoba,exact,La Liga,LaLiga,Córdoba CF
+Córdoba CF,Córdoba,exact,La Liga,La Liga,Córdoba CF
+Dep. La Coruña,La Coruña,high,La Liga,LaLiga,Dep. La Coruña
+Deportivo Alavés,Alavés,exact,La Liga,La Liga,Deportivo Alavés
+Deportivo de La Coruña,La Coruña,exact,La Liga,La Liga,Deportivo de La Coruña
+Elche CF,Elche,exact,La Liga,La Liga,Elche CF
+Elche CF,Elche,exact,La Liga,LaLiga,Elche CF
+Espanyol,Espanyol,exact,La Liga,LaLiga,Espanyol
+FC Barcelona,Barcelona,exact,La Liga,La Liga,FC Barcelona
+Getafe,Getafe,exact,La Liga,La Liga,Getafe
+Getafe,Getafe,exact,La Liga,LaLiga,Getafe
+Getafe CF,Getafe,exact,La Liga,La Liga,Getafe CF
+Gimnàstic de Tarragona,,unmatched,La Liga,La Liga,Gimnàstic de Tarragona
+Girona,Girona,exact,La Liga,LaLiga,Girona
+Girona,Girona,exact,La Liga,La Liga,Girona
+Girona FC,Girona,exact,La Liga,La Liga,Girona FC
+Granada CF,Granada,exact,La Liga,La Liga,Granada CF
+Granada CF,Granada,exact,La Liga,LaLiga,Granada CF
+Hércules CF,Hércules,exact,La Liga,La Liga,Hércules CF
+Levante,Levante,exact,La Liga,La Liga,Levante
+Levante,Levante,exact,La Liga,LaLiga,Levante
+Levante UD,Levante,exact,La Liga,La Liga,Levante UD
+Málaga CF,Málaga,exact,La Liga,La Liga,Málaga CF
+Málaga CF,Málaga,exact,La Liga,LaLiga,Málaga CF
+RCD Espanyol Barcelona,,unmatched,La Liga,La Liga,RCD Espanyol Barcelona
+RCD Mallorca,Mallorca,high,La Liga,La Liga,RCD Mallorca
+RCD Mallorca,Mallorca,high,La Liga,LaLiga,RCD Mallorca
+Racing Santander,Racing Sant,low,La Liga,La Liga,Racing Santander
+Rayo Vallecano,Rayo Vallecano,exact,La Liga,La Liga,Rayo Vallecano
+Rayo Vallecano,Rayo Vallecano,exact,La Liga,LaLiga,Rayo Vallecano
+Real Betis,Betis,high,La Liga,LaLiga,Real Betis
+Real Betis Balompié,Betis,high,La Liga,La Liga,Real Betis Balompié
+Real Madrid,Real Madrid,exact,La Liga,LaLiga,Real Madrid
+Real Madrid,Real Madrid,exact,La Liga,La Liga,Real Madrid
+Real Murcia,Real Madrid,low,La Liga,La Liga,Real Murcia
+Real Murcia CF,Real Madrid,low,La Liga,La Liga,Real Murcia CF
+Real Oviedo,Oviedo,high,La Liga,LaLiga,Real Oviedo
+Real Oviedo,Oviedo,high,La Liga,La Liga,Real Oviedo
+Real Sociedad,Real Sociedad,exact,La Liga,La Liga,Real Sociedad
+Real Sociedad,Real Sociedad,exact,La Liga,LaLiga,Real Sociedad
+Real Valladolid,Valladolid,high,La Liga,La Liga,Real Valladolid
+Real Valladolid,Valladolid,high,La Liga,LaLiga,Real Valladolid
+Real Valladolid CF,Valladolid,high,La Liga,La Liga,Real Valladolid CF
+Real Zaragoza,Zaragoza,high,La Liga,LaLiga,Real Zaragoza
+Real Zaragoza,Zaragoza,high,La Liga,La Liga,Real Zaragoza
+Recreativo Huelva,,unmatched,La Liga,La Liga,Recreativo Huelva
+SD Compostela,,unmatched,La Liga,La Liga,SD Compostela
+SD Eibar,Eibar,high,La Liga,LaLiga,SD Eibar
+SD Eibar,Eibar,high,La Liga,La Liga,SD Eibar
+SD Huesca,Huesca,high,La Liga,La Liga,SD Huesca
+SD Huesca,Huesca,high,La Liga,LaLiga,SD Huesca
+Sevilla FC,Sevilla,exact,La Liga,La Liga,Sevilla FC
+Sevilla FC,Sevilla,exact,La Liga,LaLiga,Sevilla FC
+Sporting Gijón,Sporting Gijón,exact,La Liga,La Liga,Sporting Gijón
+Sporting Gijón,Sporting Gijón,exact,La Liga,LaLiga,Sporting Gijón
+UD Almería,Almería,exact,La Liga,La Liga,UD Almería
+UD Almería,Almería,exact,La Liga,LaLiga,UD Almería
+UD Las Palmas,Las Palmas,exact,La Liga,La Liga,UD Las Palmas
+UD Las Palmas,Las Palmas,exact,La Liga,LaLiga,UD Las Palmas
+UD Salamanca,,unmatched,La Liga,La Liga,UD Salamanca
+UE Lleida,,unmatched,La Liga,La Liga,UE Lleida
+Valencia,Valencia,exact,La Liga,La Liga,Valencia
+Valencia,Valencia,exact,La Liga,LaLiga,Valencia
+Valencia CF,Valencia,exact,La Liga,La Liga,Valencia CF
+Villarreal,Villarreal,exact,La Liga,LaLiga,Villarreal
+Villarreal CF,Villarreal,exact,La Liga,La Liga,Villarreal CF
+Xerez CD,Xerez,exact,La Liga,La Liga,Xerez CD
+1. FC Köln,Köln,exact,Bundesliga,Bundesliga,1. FC Köln
+1.FC Kaiserslautern,Kaiserslautern,exact,Bundesliga,Bundesliga,1.FC Kaiserslautern
+1.FC Köln,Köln,exact,Bundesliga,Bundesliga,1.FC Köln
+1.FC Nuremberg,Nürnberg,low,Bundesliga,Bundesliga,1.FC Nuremberg
+1.FC Saarbrücken,,unmatched,Bundesliga,Bundesliga,1.FC Saarbrücken
+1.FC Union Berlin,Union Berlin,exact,Bundesliga,Bundesliga,1.FC Union Berlin
+1.FSV Mainz 05,Mainz 05,high,Bundesliga,Bundesliga,1.FSV Mainz 05
+Alemannia Aachen,,unmatched,Bundesliga,Bundesliga,Alemannia Aachen
+Arm. Bielefeld,,unmatched,Bundesliga,Bundesliga,Arm. Bielefeld
+Arminia Bielefeld,Arminia,high,Bundesliga,Bundesliga,Arminia Bielefeld
+Augsburg,Augsburg,exact,Bundesliga,Bundesliga,Augsburg
+B. Leverkusen,Leverkusen,high,Bundesliga,Bundesliga,B. Leverkusen
+Bayer 04 Leverkusen,Leverkusen,high,Bundesliga,Bundesliga,Bayer 04 Leverkusen
+Bayer 05 Uerdingen,,unmatched,Bundesliga,Bundesliga,Bayer 05 Uerdingen
+Bayern Munich,Bayern Munich,exact,Bundesliga,Bundesliga,Bayern Munich
+Bor. Dortmund,Dortmund,high,Bundesliga,Bundesliga,Bor. Dortmund
+Bor. M'gladbach,M'Gladbach,low,Bundesliga,Bundesliga,Bor. M'gladbach
+Borussia Dortmund,Dortmund,high,Bundesliga,Bundesliga,Borussia Dortmund
+Borussia Mönchengladbach,M'Gladbach,alias,Bundesliga,Bundesliga,Borussia Mönchengladbach
+Darmstadt 98,Darmstadt 98,exact,Bundesliga,Bundesliga,Darmstadt 98
+Dortmund,Dortmund,exact,Bundesliga,Bundesliga,Dortmund
+E. Braunschweig,Braunschweig,high,Bundesliga,Bundesliga,E. Braunschweig
+E. Frankfurt,Eint Frankfurt,low,Bundesliga,Bundesliga,E. Frankfurt
+Eintracht Braunschweig,Braunschweig,high,Bundesliga,Bundesliga,Eintracht Braunschweig
+Eintracht Frankfurt,Eint Frankfurt,low,Bundesliga,Bundesliga,Eintracht Frankfurt
+Energie Cottbus,,unmatched,Bundesliga,Bundesliga,Energie Cottbus
+F. Düsseldorf,Düsseldorf,high,Bundesliga,Bundesliga,F. Düsseldorf
+FC Augsburg,Augsburg,exact,Bundesliga,Bundesliga,FC Augsburg
+FC Energie Cottbus,,unmatched,Bundesliga,Bundesliga,FC Energie Cottbus
+FC Hansa Rostock,,unmatched,Bundesliga,Bundesliga,FC Hansa Rostock
+FC Ingolstadt,Ingolstadt 04,exact,Bundesliga,Bundesliga,FC Ingolstadt
+FC Ingolstadt 04,Ingolstadt 04,exact,Bundesliga,Bundesliga,FC Ingolstadt 04
+FC Schalke 04,Schalke 04,exact,Bundesliga,Bundesliga,FC Schalke 04
+FC St. Pauli,St. Pauli,exact,Bundesliga,Bundesliga,FC St. Pauli
+Fortuna Düsseldorf,Düsseldorf,high,Bundesliga,Bundesliga,Fortuna Düsseldorf
+Frankfurt,Eint Frankfurt,low,Bundesliga,Bundesliga,Frankfurt
+Freiburg,Freiburg,exact,Bundesliga,Bundesliga,Freiburg
+Greuther Fürth,Greuther Fürth,exact,Bundesliga,Bundesliga,Greuther Fürth
+Hamburg,Hamburger SV,low,Bundesliga,Bundesliga,Hamburg
+Hamburger SV,Hamburger SV,exact,Bundesliga,Bundesliga,Hamburger SV
+Hannover 96,Hannover 96,exact,Bundesliga,Bundesliga,Hannover 96
+Hansa Rostock,,unmatched,Bundesliga,Bundesliga,Hansa Rostock
+Heidenheim,Heidenheim,exact,Bundesliga,Bundesliga,Heidenheim
+Hertha BSC,Hertha BSC,exact,Bundesliga,Bundesliga,Hertha BSC
+Hoffenheim,Hoffenheim,exact,Bundesliga,Bundesliga,Hoffenheim
+Holstein Kiel,Holstein Kiel,exact,Bundesliga,Bundesliga,Holstein Kiel
+KFC Uerdingen 05,,unmatched,Bundesliga,Bundesliga,KFC Uerdingen 05
+Karlsruher SC,,unmatched,Bundesliga,Bundesliga,Karlsruher SC
+Leipzig,RB Leipzig,low,Bundesliga,Bundesliga,Leipzig
+Leverkusen,Leverkusen,exact,Bundesliga,Bundesliga,Leverkusen
+MSV Duisburg,,unmatched,Bundesliga,Bundesliga,MSV Duisburg
+Mainz,Mainz 05,exact,Bundesliga,Bundesliga,Mainz
+Mönchengladbach,M'Gladbach,low,Bundesliga,Bundesliga,Mönchengladbach
+RB Leipzig,RB Leipzig,exact,Bundesliga,Bundesliga,RB Leipzig
+SC Freiburg,Freiburg,exact,Bundesliga,Bundesliga,SC Freiburg
+SC Paderborn,Paderborn 07,exact,Bundesliga,Bundesliga,SC Paderborn
+SC Paderborn 07,Paderborn 07,exact,Bundesliga,Bundesliga,SC Paderborn 07
+SG Dynamo Dresden,,unmatched,Bundesliga,Bundesliga,SG Dynamo Dresden
+SG Wattenscheid 09,,unmatched,Bundesliga,Bundesliga,SG Wattenscheid 09
+SSV Ulm 1846,,unmatched,Bundesliga,Bundesliga,SSV Ulm 1846
+SV Darmstadt 98,Darmstadt 98,exact,Bundesliga,Bundesliga,SV Darmstadt 98
+SV Werder Bremen,Werder Bremen,exact,Bundesliga,Bundesliga,SV Werder Bremen
+SpVgg Greuther Fürth,Greuther Fürth,high,Bundesliga,Bundesliga,SpVgg Greuther Fürth
+SpVgg Unterhaching,,unmatched,Bundesliga,Bundesliga,SpVgg Unterhaching
+St. Pauli,St. Pauli,exact,Bundesliga,Bundesliga,St. Pauli
+Stuttgart,Stuttgart,exact,Bundesliga,Bundesliga,Stuttgart
+TSG 1899 Hoffenheim,Hoffenheim,high,Bundesliga,Bundesliga,TSG 1899 Hoffenheim
+TSG Hoffenheim,Hoffenheim,high,Bundesliga,Bundesliga,TSG Hoffenheim
+TSV 1860 Munich,,unmatched,Bundesliga,Bundesliga,TSV 1860 Munich
+Union Berlin,Union Berlin,exact,Bundesliga,Bundesliga,Union Berlin
+VfB Leipzig (- 2004),RB Leipzig,low,Bundesliga,Bundesliga,VfB Leipzig (- 2004)
+VfB Stuttgart,Stuttgart,exact,Bundesliga,Bundesliga,VfB Stuttgart
+VfL Bochum,Bochum,exact,Bundesliga,Bundesliga,VfL Bochum
+VfL Wolfsburg,Wolfsburg,exact,Bundesliga,Bundesliga,VfL Wolfsburg
+Werder Bremen,Werder Bremen,exact,Bundesliga,Bundesliga,Werder Bremen
+Wolfsburg,Wolfsburg,exact,Bundesliga,Bundesliga,Wolfsburg
