@@ -14,8 +14,8 @@ checks:
 	@for m in ingest.understat ingest.crosswalk ingest.crosswalk_players \
 	          ingest.players_master ingest.fbref_perf ingest.contracts \
 	          ingest.injuries ingest.wages ingest.wages_fifa ingest.data_index \
-	          ingest.warehouse impact.usage impact.wowy impact.xg_model \
-	          impact.talent impact.evidence validate.talent_gate; do \
+	          ingest.warehouse ingest.club_crosswalk impact.usage impact.wowy \
+	          impact.xg_model impact.talent impact.evidence validate.talent_gate; do \
 	  printf "%-26s " $$m; $(PY) -m $$m 2>&1 | grep -v Warning | tail -1; \
 	done
 
