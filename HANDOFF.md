@@ -2,6 +2,16 @@
 
 *Written 2026-07-11 for a fresh chat. Read this, then `MEMORY.md` (auto-loaded), then the memo files it points to. Everything below is real — computed from data on disk, not planned.*
 
+**Update 2026-07-13 (this branch, `agent/data-audit-pr`, PR #1):** this branch
+has since merged `main` and added a Phase 0 data audit, V1 modelling
+contract, and a scoped V2 pass (Mustermann evidence layer, full-data
+descriptive analysis, one gated fee-model prototype comparison). Start with
+`docs/reconciliation.md` (what changed and what was reconciled),
+`docs/v2-results.md` (V2 verdict), and §9 below before trusting any number
+in this file against the current branch — several (notably the NPV board
+count) were superseded. `main` itself is unchanged from what's described
+below.
+
 ---
 
 ## 0. What this is
@@ -81,3 +91,35 @@ https://claude.ai/code/artifact/3e282ec9-0aae-4f2a-8b9c-b0d3c1a82bf4
 
 ## 8. Working style that fit this project
 Parallel sub-agents for independent grunt work (each: one module, tidy fns + offline `_check()`, `build` for real pull, report data not prose). Judgment/synthesis + anything feeding the gate: do inline. Every gate falsifiable, never loosened; a surviving FAIL becomes a documented finding. Show error bars — a point estimate here is a lie. Memory files in `~/.claude/projects/.../memory/` track the durable facts.
+
+## 9. PR #1 branch repair + V2 pass (2026-07-13, `agent/data-audit-pr`)
+
+**Read `docs/reconciliation.md` first** — it supersedes some numbers above
+(notably: NPV board is 120 rows / 5 positive, not 98/0; that was a stale
+artifact, not new data). Then `docs/v2-results.md` for what the V2 pass
+found, and `docs/mustermann.md` for the evidence-layer design.
+
+**One-line status**: git repair clean (no conflicts); Phase 0 audit and V1
+contract both reproduce on the combined branch; one gated fee-prototype
+comparison ran and passed (F1 minimal beats F0 market-value baseline by
++11.3%, CI [+6.2%,+12.0%]); sporting-target prototypes are **blocked**, not
+run — `transfer_performance_link_safe` needs an external `ESTATE_B_DIR` this
+environment doesn't have; locked period (`season>=2023`) was never loaded,
+proven in `reports/v2-full-data/locked_test_audit.json`.
+
+**New this branch**: `impact/evidence.py` (per-90/shrinkage/percentile/
+evidence-card primitives, self-tested), `validate/locked_guard.py` (the
+locked-period exclusion helper — route any new dev-only loader through
+`dev_only()`), `validate/v2_full_data.py` and `validate/v2_fee_prototypes.py`
+(the two commands that produced `reports/v2-full-data/`).
+
+**Biggest open gap**: Estate B. Without `transfer_performance_link_safe` (or
+an in-repo rebuild of it from `fbref_perf` + `transfers_canonical`), the
+sporting-contribution component — the more interesting half of the product —
+stays unvalidatable here. See `docs/v2-results.md` "Remaining decisions".
+
+**Also found, not fixed**: `transfers_canonical` league labels split
+`"La Liga"`/`"LaLiga"` at the 2023 rebrand (`ingest/merge.py` normalization
+bug); `main`'s `talent_pctl` scout-board column is wired but joins to
+nothing on the live board (0/120 non-null). Both in
+`docs/contradiction-log.md`.
