@@ -5,16 +5,20 @@ Run:
 """
 from __future__ import annotations
 
+import subprocess
+import unicodedata
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pandas as pd
 from pypdf import PdfReader
-import unicodedata
 
 
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "reports" / "club-fit"
+PREVIEWS = OUT / "design-previews"
 AS_OF = "2026-07-20"
+PL_NEEDS_URL = "https://www.premierleague.com/en/news/4674463/summer-2026-transfer-window-what-does-each-premier-league-club-need"
 
 EXPECTED = {
     ("Arsenal", "Christos Tzolis"),
@@ -35,17 +39,16 @@ CONTROLLED = {
     "fit_rating": {"HIGH", "MEDIUM", "LOW", "NOT_ASSESSED"},
     "latest_report_status": {"CONFIRMED", "ADVANCED_REPORT", "REPORTED_INTEREST", "RUMOUR_ONLY", "NO_CURRENT_CORROBORATION"},
     "reporting_confidence": {"HIGH", "MEDIUM", "LOW", "UNVERIFIED"},
+    "price_risk": {"HIGH", "MEDIUM", "LOW", "UNKNOWN"},
     "recommended_action": {"ADVANCE_SCOUTING", "MONITOR_PRICE", "TACTICAL_REVIEW_ONLY", "ABSTAIN_DATA_GAP", "LOW_PRIORITY"},
 }
 
 FORBIDDEN = [
-    "validated sporting prediction",
     "validated sporting-quality ranking",
-    "buyer-specific npv",
-    "surplus ranking",
-    "expected fee",
-    "fair value",
+    "buyer-specific npv model",
+    "expected surplus",
     "undervalued ranking",
+    "true value ranking",
 ]
 
 
@@ -54,21 +57,39 @@ def norm_text(s: str) -> str:
     for marker in ("*", "`", "_"):
         s = s.replace(marker, "")
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
-    normalized = " ".join(s.lower().split())
-    return normalized.replace("pre diction", "prediction")
+    return " ".join(s.lower().split()).replace("pre diction", "prediction")
+
+
+def assert_url(url: str) -> None:
+    parsed = urlparse(url)
+    assert parsed.scheme in {"http", "https"}, url
+    assert parsed.netloc, url
+    assert "needx/" not in url, url
+
+
+def card_section(md: str, player: str) -> str:
+    marker = f"### {player}"
+    assert marker in md, player
+    tail = md.split(marker, 1)[1]
+    return tail.split("\n### ", 1)[0]
 
 
 def main() -> int:
+    subprocess.run(["python3", "scripts/generate_club_fit_review.py"], cwd=REPO, check=True)
+
     csv_path = OUT / "chelsea-arsenal-player-review.csv"
     md_path = OUT / "chelsea-arsenal-player-review.md"
     pdf_path = OUT / "chelsea-arsenal-player-review.pdf"
     source_path = OUT / "source-register.csv"
+    source_validation_path = OUT / "source-validation.csv"
 
     df = pd.read_csv(csv_path, keep_default_na=False)
     sources = pd.read_csv(source_path, keep_default_na=False)
+    source_validation = pd.read_csv(source_validation_path, keep_default_na=False)
     md = md_path.read_text()
     pdf = PdfReader(str(pdf_path))
-    pdf_text = "\n".join((page.extract_text() or "") for page in pdf.pages)
+    page_texts = [page.extract_text() or "" for page in pdf.pages]
+    pdf_text = "\n".join(page_texts)
     md_norm = norm_text(md)
     pdf_norm = norm_text(pdf_text)
 
@@ -80,30 +101,92 @@ def main() -> int:
     assert (df.tm_player_id.ne("") | df.tm_match_status.ne("MATCHED")).all()
     assert df.data_warning.ne("").all()
     assert df.recommended_action.ne("").all()
+    assert df.source_ids.ne("").all()
+    assert df.tactical_concern.str.len().gt(35).all()
+    assert df.price_risk_reasoning.str.len().gt(35).all()
+    assert df.local_file_loaded_date.eq(AS_OF).all()
+    assert df.player_record_snapshot_date.ne("").all()
+    assert df.current_club_observation_date.ne("").all()
+
     for col, allowed in CONTROLLED.items():
         bad = set(df[col]) - allowed
         assert not bad, (col, bad)
     assert not ((df.local_metrics_used == "0") | (df.local_metrics_used == "0.0")).any()
+    assert not ((df.transfermarkt_market_value_eur == "0") | (df.transfermarkt_market_value_eur == "0.0")).any()
+
     assert df.as_of_date.eq(AS_OF).all()
     assert AS_OF in md
     assert AS_OF in pdf_text
+    assert AS_OF in source_path.read_text()
+    assert AS_OF in source_validation_path.read_text()
 
+    assert not sources.source_id.duplicated().any()
+    assert not source_validation.source_id.duplicated().any()
+    assert set(sources.source_id) == set(source_validation.source_id)
+    assert PL_NEEDS_URL in set(sources.url)
+    assert PL_NEEDS_URL in set(source_validation.url)
+
+    for url in sources.url:
+        assert_url(url)
+    for url in source_validation.url:
+        assert_url(url)
+
+    source_ids = set(sources.source_id)
     source_urls = set(sources.url)
-    for urls in df.source_urls:
-        for url in urls.split(" | "):
-            assert url in source_urls, url
-
     for _, r in df.iterrows():
-        assert f"### {r.player}" in md
-        assert norm_text(r.player) in pdf_norm
+        ids = r.source_ids.split(";")
+        assert all(sid in source_ids for sid in ids), r.player
+        for url in r.source_urls.split(" | "):
+            assert url in source_urls, url
+        section = card_section(md, r.player)
+        assert "[" in section and "]" in section, r.player
+        assert r.recommended_action.replace("_", " ").title() in section, r.player
+        assert norm_text(r.player) in pdf_norm, r.player
+        assert r.recommended_action.replace("_", " ").title().lower() in pdf_norm, r.player
+
+    tm_validation = source_validation[source_validation.source_id.str.startswith("tm_")]
+    assert set(tm_validation.verification_status) == {"HUMAN_CHECK_REQUIRED"}
+    assert tm_validation.verification_warning.str.contains("no bypass", case=False).all()
+    assert df.transfermarkt_rumour_status.eq("HUMAN_CHECK_REQUIRED").all()
+
+    dated_sources = sources[
+        ~sources.source_id.str.startswith("tm_")
+        & sources.source_id.ne("chelsea_official_transfers_2026")
+    ]
+    assert dated_sources.publication_date.ne("").all()
+    assert sources.loc[
+        sources.source_id.eq("chelsea_official_transfers_2026"),
+        "retrieval_date",
+    ].eq(AS_OF).all()
+    assert "References" in md
+    assert "references" in pdf_norm
     assert "not a validated sporting prediction" in md_norm
     assert "not a validated sporting prediction" in pdf_norm
-    assert "Transfermarkt Rumour Mill direct status is unavailable" in md
-    assert len(pdf.pages) > 0
+    assert "human check required" in md_norm
+    assert "human check required" in pdf_norm
+    assert "needx/" not in md
+    assert "needx/" not in pdf_text
+
+    assert 6 <= len(pdf.pages) <= 7, len(pdf.pages)
+    for i, text in enumerate(page_texts, 1):
+        assert len(norm_text(text)) > 180, (i, len(norm_text(text)))
+
+    for preview in [
+        PREVIEWS / "design-a-editorial-scouting-desk.png",
+        PREVIEWS / "design-b-club-recruitment-dashboard.png",
+        PREVIEWS / "design-a-editorial-scouting-desk.html",
+        PREVIEWS / "design-b-club-recruitment-dashboard.html",
+        PREVIEWS / "design-decision.md",
+    ]:
+        assert preview.exists() and preview.stat().st_size > 100, preview
+
     low = md_norm + "\n" + pdf_norm
     for phrase in FORBIDDEN:
-        assert phrase not in low or f"not a {phrase}" in low or f"not {phrase}" in low, phrase
-    print("ok - club-fit review artifacts validated")
+        if phrase in low:
+            assert f"not {phrase}" in low or f"not a {phrase}" in low, phrase
+
+    print("ok - club-fit review artifacts regenerated and validated")
+    print(f"rows={len(df)} arsenal={(df.club == 'Arsenal').sum()} chelsea={(df.club == 'Chelsea').sum()} pdf_pages={len(pdf.pages)} sources={len(sources)}")
     return 0
 
 

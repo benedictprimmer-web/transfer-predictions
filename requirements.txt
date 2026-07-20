@@ -4,3 +4,6 @@ scikit-learn==1.6.1
 rdata==0.11.2
 duckdb==1.4.5
 pyarrow==21.0.0
+matplotlib==3.9.4
+pypdf==6.9.2
+reportlab==4.4.10
