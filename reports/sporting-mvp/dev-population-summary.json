@@ -1,0 +1,54 @@
+{
+  "all_destination_pairs": 408,
+  "generating_command": "python3 -m validate.sporting_mvp_integrity",
+  "league_alias_audit": {
+    "from_laliga_rows_after_fix": 0,
+    "from_laliga_rows_before_fix": 0,
+    "to_laliga_rows_after_fix": 0,
+    "to_laliga_rows_before_fix": 731
+  },
+  "league_counts": {
+    "Bundesliga": 350,
+    "La Liga": 438,
+    "Ligue 1": 317,
+    "Premier League": 470,
+    "Serie A": 542
+  },
+  "locked_season_min": 2023,
+  "manifest_hash_sha256": "d971a2aa0c44e3f08c1046c42e05da7515e0184c15b574662ea43dfda6989508",
+  "max_observations_per_player": 9,
+  "one_season_support_rows": 2067,
+  "role_counts": {
+    "DEF": 716,
+    "FWD": 736,
+    "MID": 665
+  },
+  "row_count": 2117,
+  "season_counts": {
+    "2012": 36,
+    "2013": 45,
+    "2014": 78,
+    "2015": 104,
+    "2016": 181,
+    "2017": 191,
+    "2018": 225,
+    "2019": 267,
+    "2020": 327,
+    "2021": 341,
+    "2022": 322
+  },
+  "source_commit": "2398f242b147d94ac46b9c97895bdd9a7a9c93d0",
+  "talent_pctl_audit": {
+    "current_join_valid": false,
+    "exact_historical_non_null": 14891,
+    "metric_status": "removed_from_current_scout_board",
+    "reason": "talent_scores are labelled historical walk-forward rows; the current scout board has no leak-safe current-season inference path.",
+    "right_duplicate_keys": 0,
+    "right_rows": 14891
+  },
+  "trusted_destination_pairs": 306,
+  "two_season_support_rows": 1047,
+  "unique_destination_clubs": 144,
+  "unique_leagues": 5,
+  "unique_players": 1024
+}
