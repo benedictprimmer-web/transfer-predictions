@@ -1,5 +1,6 @@
 {
   "all_destination_pairs": 408,
+  "determinism_note": "No git commit SHA is embedded in deterministic model/data artifacts.",
   "generating_command": "python3 -m validate.sporting_mvp_integrity",
   "league_alias_audit": {
     "from_laliga_rows_after_fix": 0,
@@ -9,21 +10,23 @@
   },
   "league_counts": {
     "Bundesliga": 350,
-    "La Liga": 438,
+    "La Liga": 436,
     "Ligue 1": 317,
     "Premier League": 470,
     "Serie A": 542
   },
   "locked_season_min": 2023,
-  "manifest_hash_sha256": "d971a2aa0c44e3f08c1046c42e05da7515e0184c15b574662ea43dfda6989508",
+  "manifest_hash_sha256": "a32621ef87e152e3b6ff761da0c794ccbb33d3254a9a42170029508b03593b0e",
   "max_observations_per_player": 9,
-  "one_season_support_rows": 2067,
+  "one_season_support_rows": 2065,
+  "previous_merged_row_count": 2117,
   "role_counts": {
     "DEF": 716,
-    "FWD": 736,
+    "FWD": 734,
     "MID": 665
   },
-  "row_count": 2117,
+  "row_count": 2115,
+  "rows_removed_by_event_identity_quarantine": 2,
   "season_counts": {
     "2012": 36,
     "2013": 45,
@@ -35,9 +38,8 @@
     "2019": 267,
     "2020": 327,
     "2021": 341,
-    "2022": 322
+    "2022": 320
   },
-  "source_commit": "25dd9a8a642f8f240073f41831ed186d13888876",
   "talent_pctl_audit": {
     "current_join_valid": false,
     "exact_historical_non_null": 14891,
@@ -50,5 +52,5 @@
   "two_season_support_rows": 1047,
   "unique_destination_clubs": 144,
   "unique_leagues": 5,
-  "unique_players": 1024
+  "unique_players": 1022
 }

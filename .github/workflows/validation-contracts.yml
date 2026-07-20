@@ -1,0 +1,24 @@
+name: Validation contracts
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  lightweight-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install minimal dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile validators
+        run: python -m compileall validate
+      - name: Sporting MVP synthetic integrity fixtures
+        run: python -m validate.sporting_mvp_unit_tests
+      - name: Locked-period guard
+        run: python -m validate.locked_guard

@@ -1,6 +1,6 @@
-comparison,decision
-one_vs_two_season,"one-season selected; two-season support is 1,266 rows and would collapse coverage"
-direct_vs_rate_minutes,direct minutes ranking kept; rate x minutes retained as decomposition only
-minimal_vs_rich,minimal S1 tested; performance-rich rejected for MVP because detailed metrics are sparse
-pooled_vs_role_specific,partial pooling selected; role-specific models too thin by fold
-small_clean_vs_large_noisy,exact/PIT and trusted destination rows selected; wider confidence not admitted
+comparison,execution_status,estimand,target,rows,failure_or_abstention_reason
+one_vs_two_season_minutes,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT,future availability/minutes,next_minutes/two_season_cumulative_minutes,1042,see reports/sporting-mvp/design-feasibility.csv for fold counts
+direct_vs_rate_minutes,ABSTAIN_INSUFFICIENT_TARGET,future total sporting contribution,not_supported,0,future sporting-rate target coverage is insufficient
+minimal_vs_performance_rich,STOPPED_BY_GATE,future availability/minutes,next_minutes,1806,S1 did not clear the minimum temporal-rate coverage gate; rich model not fit
+pooled_vs_role_specific,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT,future availability/minutes,next_minutes,1806,see reports/sporting-mvp/design-feasibility.csv for fold-role counts
+complete_case_vs_broader,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT,future availability/minutes,next_minutes,2065,broader/noisier populations not admitted without timestamp and denominator support

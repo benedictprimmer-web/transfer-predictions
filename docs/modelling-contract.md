@@ -36,6 +36,20 @@ FACT - The strict negotiated-fee candidate sample has 5,151 rows after excluding
 | buyer_specific_economic_value | Economic benefit to named buyer before acquisition cost | buyer-player-contract scenario | buyer decision date | expected contract | named buyer only | NOT V1-SUPPORTED headline label | contribution, minutes, points-to-money, wages, fee, resale | absent buyer context returns unavailable | full uncertainty propagation | retrospective multi-outcome diagnostics | no-deal/replacement scenario | NOT V1-SUPPORTED |
 | expected_surplus_ranking | Benefit minus total acquisition cost | buyer-player-contract scenario | buyer decision date | expected contract | named buyer only | derived scenario, not training label | all upstream component outputs | abstain if any critical component unsupported | conservative lower-bound surplus | top-k precision, false-positive control | shortlist sorted by simpler conservative score | NOT V1-SUPPORTED |
 
+## Sporting MVP Correction
+
+FACT - The merged Sporting MVP validated a next-season minutes target. It did not validate future sporting quality, future sporting rate, total sporting contribution, transfer fee, market-consensus value, or buyer-specific economic value.
+
+FACT - The corrected model ladder is S0 age/role, M0 prior availability/freshness, and S1 incremental sporting-rate evidence over M0. M0 features must not be attributed to sporting rate.
+
+FACT - The official Sporting MVP correction decision is `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE`: only the 2021 and 2022 folds contain informative S1 predictions. The event-safe minutes baseline is usable for development diagnostics, but current prior sporting-rate coverage is too recent and sparse for a credible temporal persistence test.
+
+FACT - The supported-rate M0-versus-S1 bootstrap interval is labelled `EXPLORATORY_CONDITIONAL_OOF_INTERVAL`. It is conditional on generated out-of-fold predictions, not parameter uncertainty, not proof of temporal stability, and not a substitute for sufficient informative folds.
+
+REQUIREMENT - Minutes/availability, sporting rate, total contribution, negotiated fee, market-consensus value, and buyer-specific economic value must remain separate outputs. A minutes model must not be described as a sporting-quality model, and a Transfermarkt market-consensus value must not be described as expected fee or economic value.
+
+REQUIREMENT - Future sporting-rate targets require role-normalized metrics fitted inside each temporal training fold. If coverage is insufficient, the output is `ABSTAIN`; missing performance data must remain null.
+
 ## Required Contract Fields
 
 | Component | Feature cutoff | Allowed features | Prohibited features | Subgroup reporting | Inclusion threshold | Removal criterion | Downstream consumers |

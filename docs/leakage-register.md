@@ -18,7 +18,16 @@ FACT - `transfer_performance_link_safe` contains 91,081 rows, but its tested `(t
 
 INFERENCE - Proxy-dated transfers with market values require stricter audit before use as fee-model features because the feature timestamp is a window proxy, not a transfer announcement or registration timestamp.
 
+## Sporting MVP corrections
+
+FACT - Sporting MVP prediction events now carry immutable `prediction_event_key` before feature aggregation and outcome attachment. `transfer_uid` remains preserved but is not sufficient as the event identity.
+
+FACT - Material joins are audited in `reports/sporting-mvp/join-audit.csv`; executable checks prohibit row expansion, many-to-many joins, and non-unique right-hand keys after explicit ambiguous-event quarantine.
+
+FACT - Locked outcomes remain excluded by `outcome_season >= 2023`. The locked final test was not opened for the correction PR.
+
+FACT - Missing prior performance metrics and unobserved future outcomes remain null. They are not filled with zero for modelling or participation labels.
+
 INFERENCE - Current-state contract fields in `players_master` and `contracts` are not valid historical acquisition features unless `contract_is_pit` or an explicit pre-transfer snapshot rule is enforced.
 
 INFERENCE - Buyer identity must be excluded from buyer-agnostic value models; it can only appear in buyer-specific surplus models where the estimand explicitly conditions on buyer context.
-

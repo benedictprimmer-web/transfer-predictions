@@ -18,7 +18,11 @@ Timestamped player/transfer snapshot, strictly pre-cutoff market-consensus value
 
 Market bargain: low expected negotiated fee relative to market consensus.
 
-Sporting bargain: high expected future sporting contribution relative to acquisition cost. NOT V1-SUPPORTED until sporting target builder is approved.
+Minutes/availability: future playing minutes over a specified horizon. Development evidence exists for an event-safe minutes diagnostic, but the sporting-rate challenger lacks sufficient temporal rate coverage.
+
+Sporting rate: future role-normalized performance conditional on observed playing time. NOT V1-SUPPORTED until coverage and fold-local normalization are approved.
+
+Total sporting contribution: derived challenger from direct contribution or minutes x sporting rate. NOT V1-SUPPORTED and must not be substituted with minutes.
 
 Buyer-specific bargain: expected economic benefit to a named buyer exceeds acquisition cost. NOT V1-SUPPORTED as headline score.
 
@@ -42,6 +46,18 @@ FACT - No sporting-contribution prototype (S0-S7) was attempted in the original 
 
 FACT - This V2 pass is development-only. F1's provisional status is NOT a claim that it would clear the locked final test; the locked period was never loaded (`reports/v2-full-data/locked_test_audit.json`).
 
+## Sporting MVP correction (2026-07-20)
+
+FACT - The merged Sporting MVP tested next-season minutes, not future sporting quality or total sporting contribution. Reproduced on commit `75d5781ded752d13bcac5043f6c4fa2eb9855302`.
+
+FACT - Frozen development population is now 2,115 rows after two ambiguous prediction events are quarantined from the merged 2,117-row population. It covers 1,022 players, five leagues, and three supported outfield roles. Corrected manifest hash: `a32621ef87e152e3b6ff761da0c794ccbb33d3254a9a42170029508b03593b0e`.
+
+FACT - On 1,806 temporal development rows with observed next-season minutes, S0 joint age-role ridge baseline Spearman is 0.1462. M0, which adds prior minutes and data freshness, Spearman is 0.1806. S1, which adds role-appropriate shrunk prior sporting-rate evidence to M0, Spearman is 0.1757 on the deployment population with fallback behaviour.
+
+FACT - The clean M0-versus-S1 supported-rate comparison has 614 rows and 500 players. M0 Spearman is 0.2072 and S1 Spearman is 0.1836. Only two temporal folds are informative for S1, below the required three-fold minimum, so the official decision is `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE`. The 1,000-repetition player-cluster interval [-0.0687, +0.0230] is an `EXPLORATORY_CONDITIONAL_OOF_INTERVAL`, not proof of temporal stability. S2 was not fit.
+
+FACT - Missing prior sporting-rate components remain missing, unobserved outcomes are not encoded as zero, and available-minute denominators are competition-season based. Where a denominator is not defensible, raw minutes are retained but minutes share is null with `ABSTAIN_UNSUPPORTED_DENOMINATOR`.
+
 ## Evaluation Plan
 
 Sporting: temporal rank correlation, minutes-weighted error, contribution-tier calibration, interval coverage, subgroup stability.
@@ -55,4 +71,3 @@ No single positive recommendation label is currently approved.
 ## Baselines and Complexity
 
 Every nonlinear model must beat the baseline ladder in `docs/modelling-contract.md`. LightGBM, XGBoost and CatBoost are not approved by name; they require temporal evidence.
-

@@ -4,20 +4,19 @@ Status: accepted for development evidence only.
 
 ## Context
 
-The V3 data spine produced a leak-tested destination-season sporting target. The next question was whether strict-prior sporting evidence improves enough over age/role history to support a scouting shortlist.
+The V3 data spine produced a development-only next-season minutes target. The next question was whether strict-prior sporting-rate evidence improved enough over age, role, prior minutes and data freshness to support further sporting modelling.
 
 ## Decision
 
 Build the MVP as two views over one validated output contract:
 
 - Scouting Desk: light evidence-list view for rapid retrospective comparison;
-- Recruitment Lab: dark diagnostic view for folds, uncertainty, support, and subgroup health.
+- Recruitment Lab: dark diagnostic view for folds, support, denominator health, and subgroup health.
 
 Both views use `reports/sporting-mvp/validated-output-contract.csv` and label rows as retrospective development examples.
 
 ## Consequences
 
-Because S1 failed its gate, the MVP does not rank unsupported current players. It shows what would have been predicted on development rows, the uncertainty, and why production scoring is blocked.
+Because only 2021 and 2022 contain informative S1 predictions, the MVP formally abstains with `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE` and does not rank unsupported current players. It shows what would have been predicted on development rows for next-season minutes, with calibrated intervals omitted because they were not fitted.
 
-This preserves the product surface while preventing a weak signal from becoming a misleading shortlist.
-
+This preserves the product surface while preventing a minutes-only negative result from becoming a misleading sporting-quality or buyer-value claim.

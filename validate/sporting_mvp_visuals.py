@@ -16,12 +16,12 @@ OUT = REPO / "reports" / "sporting-mvp"
 
 def _rows() -> list[dict]:
     d = pd.read_csv(OUT / "validated-output-contract.csv")
-    d["uncertainty_width"] = d.s1_hi - d.s1_lo
-    d["baseline_gap"] = d.s1_pred - d.s0_pred
+    d["baseline_gap"] = d.s1_pred - d.m0_pred
     d = d.sort_values(["outcome_season", "player_name"]).head(240)
     cols = ["player_name", "role", "to_league", "outcome_season", "next_minutes",
-            "s0_pred", "s1_pred", "s1_lo", "s1_hi", "shrunk_prior_sporting_rate",
-            "feature_tier", "club_match_confidence", "uncertainty_width", "baseline_gap"]
+            "s0_pred", "m0_pred", "s1_pred", "s1_evidence_status", "next_available_minutes", "next_minutes_share",
+            "shrunk_prior_sporting_rate", "feature_tier", "club_match_confidence",
+            "baseline_gap"]
     return json.loads(d[cols].round(3).to_json(orient="records"))
 
 
@@ -60,7 +60,7 @@ function options(){
 function bars(){
   const folds = metrics.overall.map(x=>`${x.model}: Spearman ${pct(x.temporal_spearman)}, top precision ${pct(x.top_tier_precision)}`).join(' | ');
   document.querySelector('#model-health').textContent = folds;
-  document.querySelector('#gate').textContent = `S1 gate failed: Spearman lift ${pct(metrics.gate.spearman_lift)}, top precision lift ${metrics.gate.top_precision_lift_pp.toFixed(2)} pp, positive folds ${metrics.gate.positive_spearman_folds}/${metrics.gate.folds}. Locked test not opened.`;
+  document.querySelector('#gate').textContent = `Formal decision: ${metrics.gate.official_decision}. Informative S1 folds ${metrics.gate.informative_s1_folds}/${metrics.gate.minimum_informative_folds_required}; exploratory M0-S1 Spearman lift ${pct(metrics.gate.spearman_lift)}. Locked test not opened.`;
 }
 """
 
@@ -85,16 +85,14 @@ select{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9p
 .metric{display:grid;grid-template-columns:1fr auto;gap:12px;border-bottom:1px solid var(--line);padding:11px 0}.metric:last-child{border-bottom:0}
 button{border:0;background:var(--ink);color:#fff;border-radius:6px;padding:9px 12px}
 </style>
-<header><div><h1>Scouting Desk</h1><p class="status"><strong>Development evidence explorer.</strong> S1 did not beat the age/role baseline, so this screen does not rank unsupported current players.</p></div><div id="gate" class="status"></div></header>
+<header><div><h1>Scouting Desk</h1><p class="status"><strong>Development evidence explorer.</strong> S1 evidence is temporally under-covered, so this screen does not rank unsupported current players.</p></div><div id="gate" class="status"></div></header>
 <main class="wrap"><div class="toolbar"><select id="role"><option value="all">All roles</option></select><select id="league"><option value="all">All leagues</option></select></div><section class="grid"><div id="list" class="list"></div><aside class="panel"><h2>Model vs Baseline</h2><div id="model-health" class="meta"></div><div class="metric"><span>Frozen rows</span><b id="rows"></b></div><div class="metric"><span>Players</span><b id="players"></b></div><div class="metric"><span>Manifest hash</span><b id="hash"></b></div><p class="meta">Every row shows horizon, support tier, uncertainty, data freshness proxy, and support status. Missing outcomes are abstained, not zero-filled.</p></aside></section></main>
 <script>
 function render(){
  const list=document.querySelector('#list'); list.innerHTML='';
  filtered().slice(0,60).forEach(r=>{
-  const width=Math.min(100, Math.max(8, r.uncertainty_width/25));
-  const left=Math.max(0, Math.min(95, r.s1_lo/34.2));
   const el=document.createElement('article'); el.className='row';
-  el.innerHTML=`<div><div class="name">${r.player_name}</div><div class="meta">${r.role} | ${r.to_league} | outcome ${r.outcome_season} | one-season minutes</div></div><div><span class="pill">${r.feature_tier}</span> <span class="pill">${r.club_match_confidence}</span><div class="meta">SUPPORTED retrospective dev row</div></div><div><b>${fmt(r.s1_pred)}</b><div class="meta">S1 estimate vs observed ${fmt(r.next_minutes)}</div><div class="range"><i style="left:${left}%;width:${width}%"></i></div></div><div><b>${fmt(r.s0_pred)}</b><div class="meta">age/role baseline</div></div>`;
+  el.innerHTML=`<div><div class="name">${r.player_name}</div><div class="meta">${r.role} | ${r.to_league} | outcome ${r.outcome_season} | one-season minutes</div></div><div><span class="pill">${r.feature_tier}</span> <span class="pill">${r.club_match_confidence}</span><div class="meta">${r.s1_evidence_status}</div></div><div><b>${fmt(r.s1_pred)}</b><div class="meta">S1 vs observed ${fmt(r.next_minutes)}; calibrated interval unavailable</div><div class="range"><i style="left:0;width:${Math.max(3, Math.min(100, r.next_minutes_share*100))}%"></i></div></div><div><b>${fmt(r.m0_pred)}</b><div class="meta">M0 prior availability</div></div>`;
   list.appendChild(el);
  });
 }
@@ -131,8 +129,8 @@ function render(){
   const x=Math.max(3,Math.min(97,r.s1_pred/34.2));
   const y=100-Math.max(3,Math.min(97,r.next_minutes/34.2));
   const dot=document.createElement('i'); dot.className='dot'; dot.dataset.tier=r.feature_tier; dot.style.left=x+'%'; dot.style.top=y+'%';
-  dot.title=`${r.player_name}: predicted ${fmt(r.s1_pred)}, observed ${fmt(r.next_minutes)}, uncertainty ${fmt(r.uncertainty_width)}`;
-  dot.onmouseenter=()=>document.querySelector('#detail').innerHTML=`<b>${r.player_name}</b><br>${r.role} | ${r.to_league} | ${r.outcome_season}<br>S1 ${fmt(r.s1_pred)} [${fmt(r.s1_lo)}, ${fmt(r.s1_hi)}], observed ${fmt(r.next_minutes)}<br>Evidence ${r.feature_tier}, club match ${r.club_match_confidence}`;
+  dot.title=`${r.player_name}: predicted ${fmt(r.s1_pred)}, observed ${fmt(r.next_minutes)}, interval unavailable`;
+  dot.onmouseenter=()=>document.querySelector('#detail').innerHTML=`<b>${r.player_name}</b><br>${r.role} | ${r.to_league} | ${r.outcome_season}<br>S1 ${fmt(r.s1_pred)}, M0 ${fmt(r.m0_pred)}, observed ${fmt(r.next_minutes)}; calibrated interval unavailable<br>Evidence ${r.s1_evidence_status}, feature ${r.feature_tier}, club match ${r.club_match_confidence}`;
   chart.appendChild(dot);
  });
 }

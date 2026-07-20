@@ -28,25 +28,50 @@ Audit result:
 - current-board join validity: false;
 - current board no longer exposes `talent_pctl`.
 
-## Prediction Key
+## Prediction Event Key
 
-`validate.sporting_mvp_integrity` creates deterministic `spmvp1` keys from:
+`validate.sporting_mvp_integrity` creates immutable deterministic `spmvp1` prediction-event keys before feature aggregation or outcome attachment. The key is exposed as `prediction_event_key`; `prediction_key` is retained as a backward-compatible alias.
+
+The key is built from:
 
 - player id;
-- decision date, or season fallback where the transfer date is unavailable;
+- decision date;
+- transfer season;
 - origin club id/name;
 - destination club id/name;
+- destination league;
 - transaction type;
-- original transfer uid as source-event id;
-- deterministic collision sequence.
+- original transfer uid as source-event id.
 
 `transfer_uid` is preserved but is not trusted as globally unique.
 
-`reports/sporting-mvp/key-collisions.csv` records base-key collisions and the two duplicate-null outcome rows that are explicitly collapsed into the 2,117-row frozen manifest.
+Identical duplicate source rows are collapsed only when all material event fields agree. Conflicting duplicate event identities are quarantined as `ABSTAIN_AMBIGUOUS_EVENT`; the corrected frozen manifest has 2,115 rows after two ambiguous rows are removed from the merged 2,117-row population.
+
+`reports/sporting-mvp/key-collisions.csv` records event-identity collisions and duplicate outcome rows. The adversarial fixtures inside `python3 -m validate.sporting_mvp_integrity` prove that shared `transfer_uid` values do not merge different players, repeat transfers, or different destinations.
+
+Executable assertions now require:
+
+- no duplicate `prediction_event_key`;
+- no material join expansion;
+- unique right-hand keys for material joins where expected;
+- no target assigned to multiple unrelated events.
+
+`reports/sporting-mvp/join-audit.csv` records the actual composite join columns, before/after row counts, unmatched counts, right-key uniqueness, and many-to-many status for material Sporting MVP joins.
+
+## Available Minutes and Missingness
+
+The universal 38-match denominator has been removed. Available minutes now come from an explicit competition-season table:
+
+- Bundesliga normal seasons: 34 matches, 3,060 minutes;
+- Premier League, La Liga, Ligue 1 and Serie A normal seasons: 38 matches, 3,420 minutes;
+- interrupted or unsupported competition-seasons, including Ligue 1 2019/20 as represented by outcome season 2020, return `ABSTAIN_UNSUPPORTED_DENOMINATOR`.
+
+Unsupported or interrupted competition formats retain raw future minutes, set minutes share to null, and return `ABSTAIN_UNSUPPORTED_DENOMINATOR` rather than a fabricated share. The corrected manifest has 2,067 supported denominator rows and 48 denominator abstentions.
+
+Missing prior sporting-rate components and unobserved outcomes remain null. `meaningful_participation` is only defined when next-season minutes are observed. Missingness by role, league, season and fold is reported in `reports/sporting-mvp/missingness-summary.csv`.
 
 ## Locked Protection
 
 Development artifacts filter on `outcome_season`, not transfer season.
 
 Rows with `outcome_season >= 2023` are not scored, summarised, fitted, or calibrated in the MVP scripts. The locked test remains closed.
-
