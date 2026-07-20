@@ -1,0 +1,11 @@
+step,stage,rows,note,parent_step
+1,canonical transfer,134147,,0
+2,stable player_id (tm_player_id),101524,,1
+3,exact/PIT decision date,29032,,2
+4,supported outfield role,25954,,3
+5,"has prior performance (any club, fbref_perf)",4594,built entirely in-repo from fbref_perf; independent of transfer_performance_link_safe,4
+6,prior performance with known minutes/exposure,4196,,5
+7,destination-club outcome link (trusted club-name match),2778,"club match confidence in ['alias', 'exact', 'high'] only; 102 club names excluded as low-confidence/unmatched",6
+8,one-season (next-season) outcome observed,2117,,7
+9,two-season outcome observed (both windows),1266,,8
+10,"eligible development fold (outcome_season < locked, one-season outcome)",2117,"locked period outcome_season>=2023 excluded directly (not via transfer_season, which under-protects 2-season horizons); branches off step 8 (one-season outcome), not step 9 (two-season)",8

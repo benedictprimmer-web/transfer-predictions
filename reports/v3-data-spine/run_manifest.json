@@ -1,7 +1,7 @@
 {
   "club_crosswalk_match_rate": {
-    "total_club_names": 434,
-    "trusted": 332
+    "total_club_names": 408,
+    "trusted": 306
   },
   "command": "python3 -m validate.v3_sporting_target",
   "league_aliases": {

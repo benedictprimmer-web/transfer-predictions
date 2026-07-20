@@ -1,0 +1,3 @@
+artifact,change,to_laliga_rows_before_fix,to_laliga_rows_after_fix,from_laliga_rows_before_fix,from_laliga_rows_after_fix,metric_status,reason,right_rows,right_duplicate_keys,exact_historical_non_null,current_join_valid
+data/merged/transfers_canonical.parquet,LaLiga to La Liga canonicalisation,731.0,0.0,0.0,0.0,,,,,,
+money/scout.py,removed invalid current-board talent_pctl join,,,,,removed_from_current_scout_board,talent_scores are labelled historical walk-forward rows; the current scout board has no leak-safe current-season inference path.,14891.0,0.0,14891.0,False
