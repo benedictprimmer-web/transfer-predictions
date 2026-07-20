@@ -1,6 +1,6 @@
 comparison,execution_status,estimand,target,rows,failure_or_abstention_reason
-one_vs_two_season,executed_counts_only,future availability/minutes,next_minutes/two_season_cumulative_minutes,2067,two-season outcome rows are incomplete; no winner selected
-direct_vs_rate_minutes,abstained,future total sporting contribution,not_supported,0,future sporting-rate target coverage is insufficient
-minimal_vs_performance_rich,executed_minimal_only,future availability/minutes,next_minutes,1808,performance-rich row coverage is sparse and not compared as evidence
-pooled_vs_role_specific,executed_pooled_only,future availability/minutes,next_minutes,1808,role-specific folds are too thin; no role-specific model reported
-complete_case_vs_broader,executed_counts_only,future availability/minutes,next_minutes,2067,broader/noisier populations not admitted without timestamp and denominator support
+one_vs_two_season_minutes,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT,future availability/minutes,next_minutes/two_season_cumulative_minutes,1042,two-season common population lacks sufficient fold support after locked-boundary exclusion
+direct_vs_rate_minutes,ABSTAIN_INSUFFICIENT_TARGET,future total sporting contribution,not_supported,0,future sporting-rate target coverage is insufficient
+minimal_vs_performance_rich,STOPPED_BY_GATE,future availability/minutes,next_minutes,1806,S1 failed predefined gate; rich model not fit
+pooled_vs_role_specific,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT,future availability/minutes,next_minutes,1806,role-specific folds fail minimum 50 rows per role in multiple validation seasons
+complete_case_vs_broader,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT,future availability/minutes,next_minutes,2065,broader/noisier populations not admitted without timestamp and denominator support

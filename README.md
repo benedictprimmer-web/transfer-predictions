@@ -62,8 +62,8 @@ re-verified) graded the estate honestly rather than generously:
   [`MODEL_verdict.md`](MODEL_verdict.md)): a star's injury-shortened season can misread as an
   ordinary one, and non-Big-5 sellers (e.g. Eredivisie) aren't covered yet. **Verdict: edge
   present, not yet proven** — reported as such, not rounded up.
-- **The Sporting MVP correction** (`validate/sporting_mvp_*`) shows the tested handcrafted
-  prior sporting-rate score did not produce stable temporal improvement over an age/role
+- **The Sporting MVP correction** (`validate/sporting_mvp_*`) shows the revised fold-fitted
+  prior sporting-rate challenger did not pass its temporal gate over a joint age/role
   baseline for next-season minutes. This is a minutes/availability result, not evidence that
   future sporting quality is predictable or unpredictable.
 - **The NPV chain** (`money/npv.py`, `money/price.py`) remains exploratory. It is not the

@@ -10,22 +10,26 @@ Primary artifact: `reports/sporting-mvp/dev-population-manifest.csv`.
 
 Manifest hash:
 
-`d971a2aa0c44e3f08c1046c42e05da7515e0184c15b574662ea43dfda6989508`
+`a32621ef87e152e3b6ff761da0c794ccbb33d3254a9a42170029508b03593b0e`
 
 ## Frozen Development Population
 
-- rows: 2,117;
-- unique players: 1,024;
+- rows: 2,115;
+- previous merged row count before semantic event quarantine: 2,117;
+- rows quarantined as ambiguous events: 2;
+- unique players: 1,022;
 - destination clubs: 144;
 - leagues: 5;
 - max observations per player: 9;
-- one-season rows with observed minutes: 2,067;
+- one-season rows with observed minutes: 2,065;
+- competition-season denominator supported rows: 2,067;
+- denominator abstentions with raw minutes retained and share set null: 48;
 - two-season support rows: 1,047;
 - locked season minimum: 2023.
 
 ## Roles
 
-- FWD: 736;
+- FWD: 734;
 - MID: 665;
 - DEF: 716;
 - GK: abstained.
@@ -34,7 +38,7 @@ Manifest hash:
 
 - Serie A: 542;
 - Premier League: 470;
-- La Liga: 438;
+- La Liga: 436;
 - Bundesliga: 350;
 - Ligue 1: 317.
 
@@ -56,3 +60,4 @@ Supported rows require:
 
 Rows outside that policy return `ABSTAIN`; see `reports/sporting-mvp/abstention-summary.csv`.
 
+The prediction-event key exists before prior-performance aggregation and outcome attachment. It uses player, decision date, transfer season, origin club, destination club, destination league, transaction type, and source transfer id; `transfer_uid` is provenance only.

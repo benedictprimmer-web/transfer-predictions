@@ -22,7 +22,7 @@ INFERENCE - Proxy-dated transfers with market values require stricter audit befo
 
 FACT - Sporting MVP prediction events now carry immutable `prediction_event_key` before feature aggregation and outcome attachment. `transfer_uid` remains preserved but is not sufficient as the event identity.
 
-FACT - Material joins are audited in `reports/sporting-mvp/join-audit.csv`; executable checks require unchanged left-hand row counts and unique right-hand keys where expected.
+FACT - Material joins are audited in `reports/sporting-mvp/join-audit.csv`; executable checks prohibit row expansion, many-to-many joins, and non-unique right-hand keys after explicit ambiguous-event quarantine.
 
 FACT - Locked outcomes remain excluded by `outcome_season >= 2023`. The locked final test was not opened for the correction PR.
 

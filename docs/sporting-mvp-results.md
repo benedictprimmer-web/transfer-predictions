@@ -1,49 +1,49 @@
 # Sporting MVP Results
 
-Decision: `HANDCRAFTED SPORTING RATE DID NOT IMPROVE NEXT-SEASON MINUTES`.
+Decision: `PRIOR SPORTING RATE CHALLENGER DID NOT PASS NEXT-SEASON MINUTES GATE`.
 
 The merged experiment predicts `next_minutes`. It does not properly test future sporting quality or total sporting contribution.
 
-S1 did not pass the predeclared gate, so S2 was not fit and no sporting shortlist is shipped. The supported conclusion is narrower: the tested handcrafted prior sporting-rate score did not produce stable temporal improvement over the age/role baseline for next-season minutes.
+S1 did not pass the predeclared gate, so S2 was not fit and no sporting shortlist is shipped. The supported conclusion is narrower: the revised fold-fitted prior sporting-rate challenger did not pass the temporal gate over the joint age-role baseline for next-season minutes.
 
 ## Models
 
-S0: age/role historical baseline.
+S0: fitted joint age-role ridge baseline using age, age band, role, and age-role interactions inside each training fold.
 
-S1: role-appropriate prior sporting-rate evidence with exposure-aware shrinkage. Missing role-relevant rates remain missing; they are not encoded as zero.
+S1: S0 plus role-appropriate prior sporting-rate evidence with exposure-aware shrinkage and a fold-trained ridge coefficient. Missing role-relevant rates remain missing; rows without supported rate evidence fall back to S0 with an explicit status.
 
 S2: compact elastic net, not fit because S1 failed.
 
 ## Overall Development Metrics
 
-Same-row temporal development rows with observed next-season minutes: 1,808. Target: future availability/playing minutes over the next-season horizon.
+Same-row temporal development rows with observed next-season minutes: 1,806. Target: future availability/playing minutes over the next-season horizon.
 
 | Model | Rows | Spearman | NDCG top decile | Top-tier precision | MAE minutes | RMSE minutes |
 |---|---:|---:|---:|---:|---:|---:|
-| S0 age/role history | 1,808 | 0.1278 | 0.5482 | 0.3370 | 730.9 | 858.7 |
-| S1 shrunk prior sporting | 1,808 | 0.0974 | 0.5187 | 0.3039 | 761.8 | 909.0 |
+| S0 age/role history | 1,806 | 0.1462 | 0.5763 | 0.3425 | 731.9 | 862.7 |
+| S1 shrunk prior sporting | 1,806 | 0.1576 | 0.5650 | 0.3260 | 730.0 | 858.8 |
 
 Gate:
 
-- Spearman lift: -0.0304;
-- player-clustered 90% CI for Spearman lift: [-0.0615, -0.0039];
-- top-tier precision lift: -3.31 percentage points;
-- positive Spearman folds: 0/7;
+- Spearman lift: +0.0113;
+- player-clustered 90% CI for out-of-fold Spearman lift: [-0.0106, +0.0305] using 1,000 deterministic player-cluster bootstrap repetitions;
+- top-tier precision lift: -1.66 percentage points;
+- positive Spearman folds: 1/7;
 - S1 gate: failed;
 - S2: not fit because S1 failed;
 - locked test: not opened.
 
 ## Design Comparisons
 
-One-season versus two-season: count comparison executed. Two-season support falls to 1,047 rows in the frozen manifest, so it is useful as support metadata, not a selected MVP target.
+One-season versus two-season: `ABSTAIN_INSUFFICIENT_FOLD_SUPPORT`. Two-season support is 1,047 rows in the frozen manifest and 1,042 rows in the observed modelling population; it is useful as support metadata, not a selected MVP target.
 
 Direct contribution versus rate x minutes: abstained. Future sporting-rate target coverage is insufficient, so rate x minutes is not reported as ground truth or as a validated challenger.
 
-Minimal versus rich: minimal S1 was tested. Performance-rich features were not compared as evidence because detailed metrics are sparse and would change the population.
+Minimal versus rich: `STOPPED_BY_GATE`. Performance-rich features were not fit because S1 failed the predefined gate.
 
-Pooled versus role-specific: pooled/shrunk S1 was tested. Role-specific models are too thin by fold for this sample and are not reported as executed.
+Pooled versus role-specific: `ABSTAIN_INSUFFICIENT_FOLD_SUPPORT`. Role-specific folds fail the minimum fold-role support threshold.
 
-Small clean versus large noisy: count comparison executed. Wider/noisier populations are not admitted without timestamp, destination-link and denominator support.
+Small clean versus large noisy: `ABSTAIN_INSUFFICIENT_FOLD_SUPPORT`. Wider/noisier populations are not admitted without timestamp, destination-link and denominator support.
 
 ## Minimum Design
 

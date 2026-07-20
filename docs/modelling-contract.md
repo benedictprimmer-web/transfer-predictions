@@ -40,7 +40,9 @@ FACT - The strict negotiated-fee candidate sample has 5,151 rows after excluding
 
 FACT - The merged Sporting MVP validated a next-season minutes target. It did not validate future sporting quality, future sporting rate, total sporting contribution, transfer fee, market-consensus value, or buyer-specific economic value.
 
-FACT - The corrected conclusion is: the tested handcrafted prior sporting-rate score did not produce stable temporal improvement over the age/role baseline for next-season minutes.
+FACT - The corrected conclusion is: the revised fold-fitted prior sporting-rate challenger did not pass the temporal gate over the joint age-role baseline for next-season minutes.
+
+FACT - The stricter correction replaces the handcrafted adjustment with fold-fitted ridge models: S0 is a joint age-role baseline, and S1 adds role-appropriate prior sporting-rate evidence with transparent exposure shrinkage. The S1 gate still fails, so prior sporting evidence has not yet received a statistically valid positive test of future sporting quality or total contribution.
 
 REQUIREMENT - Minutes/availability, sporting rate, total contribution, negotiated fee, market-consensus value, and buyer-specific economic value must remain separate outputs. A minutes model must not be described as a sporting-quality model, and a Transfermarkt market-consensus value must not be described as expected fee or economic value.
 

@@ -50,11 +50,11 @@ FACT - This V2 pass is development-only. F1's provisional status is NOT a claim 
 
 FACT - The merged Sporting MVP tested next-season minutes, not future sporting quality or total sporting contribution. Reproduced on commit `75d5781ded752d13bcac5043f6c4fa2eb9855302`.
 
-FACT - Frozen development population remains 2,117 rows, 1,024 players, five leagues, and three supported outfield roles. Corrected manifest hash: `8df9e5662689ac9d83d963685b261166fec98d61ba2636cfcf2e2a138f03eef0`.
+FACT - Frozen development population is now 2,115 rows after two ambiguous prediction events are quarantined from the merged 2,117-row population. It covers 1,022 players, five leagues, and three supported outfield roles. Corrected manifest hash: `a32621ef87e152e3b6ff761da0c794ccbb33d3254a9a42170029508b03593b0e`.
 
-FACT - On 1,808 temporal development rows with observed next-season minutes, S0 age/role baseline Spearman is 0.1278 and S1 role-appropriate shrunk prior sporting rate Spearman is 0.0974. S1 lift is -0.0304 with player-clustered 90% CI [-0.0615, -0.0039], top-tier precision lift -3.31 percentage points, and 0/7 positive Spearman folds. S2 was not fit.
+FACT - On 1,806 temporal development rows with observed next-season minutes, S0 joint age-role ridge baseline Spearman is 0.1462 and S1 role-appropriate shrunk prior sporting-rate ridge challenger Spearman is 0.1576. S1 lift is +0.0113 with player-clustered 90% CI [-0.0106, +0.0305] from 1,000 deterministic bootstrap repetitions, top-tier precision lift -1.66 percentage points, and 1/7 positive Spearman folds. S2 was not fit.
 
-FACT - Missing prior sporting-rate components remain missing, unobserved outcomes are not encoded as zero, and available-minute denominators are competition-season based.
+FACT - Missing prior sporting-rate components remain missing, unobserved outcomes are not encoded as zero, and available-minute denominators are competition-season based. Where a denominator is not defensible, raw minutes are retained but minutes share is null with `ABSTAIN_UNSUPPORTED_DENOMINATOR`.
 
 ## Evaluation Plan
 

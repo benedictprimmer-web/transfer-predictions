@@ -1,5 +1,5 @@
-join_name,left_rows,right_rows,output_rows,unmatched_left_rows,expected_right_key_unique
-outcomes_next_to_two_season,2117,1147,2117,1070,True
-prediction_event_key_attachment,2117,2117,2117,0,True
-canonical_transfer_metadata,2117,133648,2117,0,True
-prior_performance_aggregation,2117,4595,2117,0,True
+join_name,join_columns,left_rows,right_rows,output_rows,unmatched_left_rows,expected_right_key_unique,many_to_many
+outcomes_next_to_two_season,prediction_key,2115,1147,2115,1068,True,False
+next_outcome_event_key_attachment,transfer_uid|player_id|transfer_season|to_league|to_club_name,2119,133648,2115,0,True,False
+canonical_transfer_metadata,prediction_key=prediction_event_key,2115,134147,2115,0,True,False
+prior_performance_aggregation,prediction_key,2115,9996,2115,0,True,False

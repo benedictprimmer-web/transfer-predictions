@@ -29,6 +29,6 @@ OWNER DECISION REQUIRED - No single label currently proves genuine undervaluatio
 
 FACT - `reports/sporting-mvp/validated-output-contract.csv` is a development-only next-season minutes output contract. It is not a validated sporting-quality, total-contribution, fee, market-consensus-value, or buyer-specific economic-value contract.
 
-FACT - Available-minute shares now use competition-season denominators: Bundesliga uses 34 matches where supported; Premier League, La Liga, Ligue 1 and Serie A use 38 matches where supported. Unsupported or interrupted formats must abstain rather than use a universal denominator.
+FACT - Available-minute shares now use an audited competition-season table: Bundesliga uses 34 matches where supported; Premier League, La Liga, Ligue 1 and Serie A use 38 matches where supported. Unsupported or interrupted formats, including Ligue 1 2019/20 as represented by outcome season 2020, keep raw minutes but set share to null with `ABSTAIN_UNSUPPORTED_DENOMINATOR`.
 
 FACT - Missing future outcomes and missing prior sporting-rate components remain null. A genuine zero is valid only when observation coverage is established through the corresponding observation-status field.
