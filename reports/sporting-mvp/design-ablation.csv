@@ -1,0 +1,6 @@
+comparison,decision
+one_vs_two_season,"one-season selected; two-season support is 1,266 rows and would collapse coverage"
+direct_vs_rate_minutes,direct minutes ranking kept; rate x minutes retained as decomposition only
+minimal_vs_rich,minimal S1 tested; performance-rich rejected for MVP because detailed metrics are sparse
+pooled_vs_role_specific,partial pooling selected; role-specific models too thin by fold
+small_clean_vs_large_noisy,exact/PIT and trusted destination rows selected; wider confidence not admitted
