@@ -36,6 +36,16 @@ FACT - The strict negotiated-fee candidate sample has 5,151 rows after excluding
 | buyer_specific_economic_value | Economic benefit to named buyer before acquisition cost | buyer-player-contract scenario | buyer decision date | expected contract | named buyer only | NOT V1-SUPPORTED headline label | contribution, minutes, points-to-money, wages, fee, resale | absent buyer context returns unavailable | full uncertainty propagation | retrospective multi-outcome diagnostics | no-deal/replacement scenario | NOT V1-SUPPORTED |
 | expected_surplus_ranking | Benefit minus total acquisition cost | buyer-player-contract scenario | buyer decision date | expected contract | named buyer only | derived scenario, not training label | all upstream component outputs | abstain if any critical component unsupported | conservative lower-bound surplus | top-k precision, false-positive control | shortlist sorted by simpler conservative score | NOT V1-SUPPORTED |
 
+## Sporting MVP Correction
+
+FACT - The merged Sporting MVP validated a next-season minutes target. It did not validate future sporting quality, future sporting rate, total sporting contribution, transfer fee, market-consensus value, or buyer-specific economic value.
+
+FACT - The corrected conclusion is: the tested handcrafted prior sporting-rate score did not produce stable temporal improvement over the age/role baseline for next-season minutes.
+
+REQUIREMENT - Minutes/availability, sporting rate, total contribution, negotiated fee, market-consensus value, and buyer-specific economic value must remain separate outputs. A minutes model must not be described as a sporting-quality model, and a Transfermarkt market-consensus value must not be described as expected fee or economic value.
+
+REQUIREMENT - Future sporting-rate targets require role-normalized metrics fitted inside each temporal training fold. If coverage is insufficient, the output is `ABSTAIN`; missing performance data must remain null.
+
 ## Required Contract Fields
 
 | Component | Feature cutoff | Allowed features | Prohibited features | Subgroup reporting | Inclusion threshold | Removal criterion | Downstream consumers |

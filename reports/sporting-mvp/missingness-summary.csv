@@ -1,0 +1,25 @@
+group_1,grouping,rows,next_minutes_missing,prior_attack_rate_missing,prior_progression_rate_missing,prior_defensive_rate_missing,next_minutes_share_missing,two_season_cumulative_minutes_missing
+DEF,role,716,29,398,398,398,29,360
+FWD,role,736,11,413,413,413,11,419
+MID,role,665,10,380,380,380,10,296
+Bundesliga,to_league,350,6,176,176,176,6,170
+La Liga,to_league,438,7,247,247,247,7,246
+Ligue 1,to_league,317,4,185,185,185,4,160
+Premier League,to_league,470,22,304,304,304,22,215
+Serie A,to_league,542,11,279,279,279,11,284
+2012,outcome_season,36,0,36,36,36,0,11
+2013,outcome_season,45,0,45,45,45,0,13
+2014,outcome_season,78,0,78,78,78,0,32
+2015,outcome_season,104,4,104,104,104,4,48
+2016,outcome_season,181,7,181,181,181,7,94
+2017,outcome_season,191,3,191,191,191,3,74
+2018,outcome_season,225,4,225,225,225,4,83
+2019,outcome_season,267,8,267,267,267,8,127
+2020,outcome_season,327,4,35,35,35,4,123
+2021,outcome_season,341,9,18,18,18,9,148
+2022,outcome_season,322,11,11,11,11,11,322
+fold_2013_2017,fold,635,14,635,635,635,14,272
+fold_2018,fold,225,4,225,225,225,4,83
+fold_2019,fold,267,8,267,267,267,8,127
+fold_2020,fold,327,4,35,35,35,4,123
+fold_2021,fold,663,20,29,29,29,20,470

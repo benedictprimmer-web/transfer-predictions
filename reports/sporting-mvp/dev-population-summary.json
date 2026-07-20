@@ -15,7 +15,7 @@
     "Serie A": 542
   },
   "locked_season_min": 2023,
-  "manifest_hash_sha256": "d971a2aa0c44e3f08c1046c42e05da7515e0184c15b574662ea43dfda6989508",
+  "manifest_hash_sha256": "8df9e5662689ac9d83d963685b261166fec98d61ba2636cfcf2e2a138f03eef0",
   "max_observations_per_player": 9,
   "one_season_support_rows": 2067,
   "role_counts": {
@@ -37,7 +37,7 @@
     "2021": 341,
     "2022": 322
   },
-  "source_commit": "25dd9a8a642f8f240073f41831ed186d13888876",
+  "source_commit": "e48c4073d9a5c66b721cca5f4ad529a24ace79d0",
   "talent_pctl_audit": {
     "current_join_valid": false,
     "exact_historical_non_null": 14891,

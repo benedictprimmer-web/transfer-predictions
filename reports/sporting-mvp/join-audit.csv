@@ -1,0 +1,5 @@
+join_name,left_rows,right_rows,output_rows,unmatched_left_rows,expected_right_key_unique
+outcomes_next_to_two_season,2117,1147,2117,1070,True
+prediction_event_key_attachment,2117,2117,2117,0,True
+canonical_transfer_metadata,2117,133648,2117,0,True
+prior_performance_aggregation,2117,4595,2117,0,True

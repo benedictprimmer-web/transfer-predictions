@@ -28,9 +28,11 @@ Audit result:
 - current-board join validity: false;
 - current board no longer exposes `talent_pctl`.
 
-## Prediction Key
+## Prediction Event Key
 
-`validate.sporting_mvp_integrity` creates deterministic `spmvp1` keys from:
+`validate.sporting_mvp_integrity` creates immutable deterministic `spmvp1` prediction-event keys before feature aggregation or outcome attachment. The key is exposed as `prediction_event_key`; `prediction_key` is retained as a backward-compatible alias.
+
+The key is built from:
 
 - player id;
 - decision date, or season fallback where the transfer date is unavailable;
@@ -44,9 +46,28 @@ Audit result:
 
 `reports/sporting-mvp/key-collisions.csv` records base-key collisions and the two duplicate-null outcome rows that are explicitly collapsed into the 2,117-row frozen manifest.
 
+Executable assertions now require:
+
+- no duplicate `prediction_event_key`;
+- no material join expansion;
+- unique right-hand keys for material joins where expected;
+- no target assigned to multiple unrelated events.
+
+`reports/sporting-mvp/join-audit.csv` records before/after row counts and unmatched counts for material Sporting MVP joins.
+
+## Available Minutes and Missingness
+
+The universal 38-match denominator has been removed. Available minutes now come from the supported competition format:
+
+- Bundesliga: 34 matches, 3,060 minutes;
+- Premier League, La Liga, Ligue 1 and Serie A: 38 matches, 3,420 minutes.
+
+Unsupported or interrupted competition formats must return `abstain_no_supported_format` rather than a fabricated share.
+
+Missing prior sporting-rate components and unobserved outcomes remain null. `meaningful_participation` is only defined when next-season minutes are observed. Missingness by role, league, season and fold is reported in `reports/sporting-mvp/missingness-summary.csv`.
+
 ## Locked Protection
 
 Development artifacts filter on `outcome_season`, not transfer season.
 
 Rows with `outcome_season >= 2023` are not scored, summarised, fitted, or calibrated in the MVP scripts. The locked test remains closed.
-

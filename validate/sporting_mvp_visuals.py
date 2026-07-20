@@ -16,12 +16,12 @@ OUT = REPO / "reports" / "sporting-mvp"
 
 def _rows() -> list[dict]:
     d = pd.read_csv(OUT / "validated-output-contract.csv")
-    d["uncertainty_width"] = d.s1_hi - d.s1_lo
     d["baseline_gap"] = d.s1_pred - d.s0_pred
     d = d.sort_values(["outcome_season", "player_name"]).head(240)
     cols = ["player_name", "role", "to_league", "outcome_season", "next_minutes",
-            "s0_pred", "s1_pred", "s1_lo", "s1_hi", "shrunk_prior_sporting_rate",
-            "feature_tier", "club_match_confidence", "uncertainty_width", "baseline_gap"]
+            "s0_pred", "s1_pred", "next_available_minutes", "next_minutes_share",
+            "shrunk_prior_sporting_rate", "feature_tier", "club_match_confidence",
+            "baseline_gap"]
     return json.loads(d[cols].round(3).to_json(orient="records"))
 
 
@@ -91,10 +91,8 @@ button{border:0;background:var(--ink);color:#fff;border-radius:6px;padding:9px 1
 function render(){
  const list=document.querySelector('#list'); list.innerHTML='';
  filtered().slice(0,60).forEach(r=>{
-  const width=Math.min(100, Math.max(8, r.uncertainty_width/25));
-  const left=Math.max(0, Math.min(95, r.s1_lo/34.2));
   const el=document.createElement('article'); el.className='row';
-  el.innerHTML=`<div><div class="name">${r.player_name}</div><div class="meta">${r.role} | ${r.to_league} | outcome ${r.outcome_season} | one-season minutes</div></div><div><span class="pill">${r.feature_tier}</span> <span class="pill">${r.club_match_confidence}</span><div class="meta">SUPPORTED retrospective dev row</div></div><div><b>${fmt(r.s1_pred)}</b><div class="meta">S1 estimate vs observed ${fmt(r.next_minutes)}</div><div class="range"><i style="left:${left}%;width:${width}%"></i></div></div><div><b>${fmt(r.s0_pred)}</b><div class="meta">age/role baseline</div></div>`;
+  el.innerHTML=`<div><div class="name">${r.player_name}</div><div class="meta">${r.role} | ${r.to_league} | outcome ${r.outcome_season} | one-season minutes</div></div><div><span class="pill">${r.feature_tier}</span> <span class="pill">${r.club_match_confidence}</span><div class="meta">SUPPORTED retrospective dev row</div></div><div><b>${fmt(r.s1_pred)}</b><div class="meta">S1 estimate vs observed ${fmt(r.next_minutes)}; calibrated interval unavailable</div><div class="range"><i style="left:0;width:${Math.max(3, Math.min(100, r.next_minutes_share*100))}%"></i></div></div><div><b>${fmt(r.s0_pred)}</b><div class="meta">age/role baseline</div></div>`;
   list.appendChild(el);
  });
 }
@@ -131,8 +129,8 @@ function render(){
   const x=Math.max(3,Math.min(97,r.s1_pred/34.2));
   const y=100-Math.max(3,Math.min(97,r.next_minutes/34.2));
   const dot=document.createElement('i'); dot.className='dot'; dot.dataset.tier=r.feature_tier; dot.style.left=x+'%'; dot.style.top=y+'%';
-  dot.title=`${r.player_name}: predicted ${fmt(r.s1_pred)}, observed ${fmt(r.next_minutes)}, uncertainty ${fmt(r.uncertainty_width)}`;
-  dot.onmouseenter=()=>document.querySelector('#detail').innerHTML=`<b>${r.player_name}</b><br>${r.role} | ${r.to_league} | ${r.outcome_season}<br>S1 ${fmt(r.s1_pred)} [${fmt(r.s1_lo)}, ${fmt(r.s1_hi)}], observed ${fmt(r.next_minutes)}<br>Evidence ${r.feature_tier}, club match ${r.club_match_confidence}`;
+  dot.title=`${r.player_name}: predicted ${fmt(r.s1_pred)}, observed ${fmt(r.next_minutes)}, interval unavailable`;
+  dot.onmouseenter=()=>document.querySelector('#detail').innerHTML=`<b>${r.player_name}</b><br>${r.role} | ${r.to_league} | ${r.outcome_season}<br>S1 ${fmt(r.s1_pred)}, observed ${fmt(r.next_minutes)}; calibrated interval unavailable<br>Evidence ${r.feature_tier}, club match ${r.club_match_confidence}`;
   chart.appendChild(dot);
  });
 }

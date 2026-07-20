@@ -24,6 +24,13 @@ DOCS = REPO / "docs"
 PRICE_FEATURE_RE = re.compile(r"(fee|market|value|mv|price|wage|npv|surplus)", re.I)
 ROLE_MAP = {"FWD": "FWD", "Attack": "FWD", "MID": "MID", "Midfield": "MID",
             "DEF": "DEF", "Defender": "DEF"}
+LEAGUE_SEASON_MATCHES = {
+    "Bundesliga": 34,
+    "Premier League": 38,
+    "La Liga": 38,
+    "Ligue 1": 38,
+    "Serie A": 38,
+}
 
 
 def _sha_file(path: Path) -> str:
@@ -48,6 +55,17 @@ def _season_band(year: int) -> str:
     if year == 2020:
         return "fold_2020"
     return "fold_2021"
+
+
+def available_minutes(league: pd.Series, outcome_season: pd.Series) -> tuple[pd.Series, pd.Series]:
+    """Competition-season denominator for league minutes share.
+
+    This intentionally uses a league-format table, not a universal 38-match
+    denominator. Interrupted or unsupported formats abstain.
+    """
+    matches = league.map(LEAGUE_SEASON_MATCHES).astype("Float64")
+    status = np.where(matches.notna(), "competition_format_supported", "abstain_no_supported_format")
+    return matches * 90, pd.Series(status, index=league.index)
 
 
 def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -134,11 +152,12 @@ def prediction_keys_for_events(events: pd.DataFrame, transfers: pd.DataFrame) ->
 def aggregate_prior(features: pd.DataFrame) -> pd.DataFrame:
     f = features.copy()
     f["prior_minutes"] = pd.to_numeric(f.minutes, errors="coerce")
-    f["prior_npxg"] = pd.to_numeric(f.npxg, errors="coerce").fillna(0)
-    f["prior_xag"] = pd.to_numeric(f.xag, errors="coerce").fillna(0)
-    f["prior_prog"] = pd.to_numeric(f.prog_actions, errors="coerce").fillna(0)
-    f["prior_def"] = (pd.to_numeric(f.tackles, errors="coerce").fillna(0) +
-                      pd.to_numeric(f.interceptions, errors="coerce").fillna(0))
+    f["prior_npxg"] = pd.to_numeric(f.npxg, errors="coerce")
+    f["prior_xag"] = pd.to_numeric(f.xag, errors="coerce")
+    f["prior_prog"] = pd.to_numeric(f.prog_actions, errors="coerce")
+    tackles = pd.to_numeric(f.tackles, errors="coerce")
+    interceptions = pd.to_numeric(f.interceptions, errors="coerce")
+    f["prior_def"] = tackles.add(interceptions, fill_value=np.nan)
     f = f.sort_values(["transfer_uid", "perf_season"])
     g = f.groupby("transfer_uid", dropna=False)
     agg = g.agg(
@@ -147,9 +166,9 @@ def aggregate_prior(features: pd.DataFrame) -> pd.DataFrame:
         transfer_decision_date=("transfer_date", "last"),
         prior_performance_season=("perf_season", "max"),
         prior_minutes=("prior_minutes", "sum"),
-        prior_attack_total=("prior_npxg", "sum"),
-        prior_progression_total=("prior_prog", "sum"),
-        prior_defensive_total=("prior_def", "sum"),
+        prior_attack_total=("prior_npxg", lambda s: s.sum(min_count=1)),
+        prior_progression_total=("prior_prog", lambda s: s.sum(min_count=1)),
+        prior_defensive_total=("prior_def", lambda s: s.sum(min_count=1)),
         prior_seasons=("perf_season", "nunique"),
     ).reset_index()
     denom = (agg.prior_minutes / 90).replace(0, np.nan)
@@ -194,31 +213,58 @@ def build_manifest() -> tuple[pd.DataFrame, dict, dict]:
         ["transfer_uid", "player_id", "transfer_season", "to_league", "to_club_name", "outcome_season"],
         keep="last",
     ))
-    next_y["next_npxg"] = pd.to_numeric(next_y.npxg, errors="coerce").fillna(0)
-    next_y["next_xag"] = pd.to_numeric(next_y.xag, errors="coerce").fillna(0)
-    next_y["next_prog"] = pd.to_numeric(next_y.prog_actions, errors="coerce").fillna(0)
-    next_y["next_def"] = (pd.to_numeric(next_y.tackles, errors="coerce").fillna(0) +
-                          pd.to_numeric(next_y.interceptions, errors="coerce").fillna(0))
-    next_y["next_available_minutes"] = 3420
+    next_y["next_npxg"] = pd.to_numeric(next_y.npxg, errors="coerce")
+    next_y["next_xag"] = pd.to_numeric(next_y.xag, errors="coerce")
+    next_y["next_prog"] = pd.to_numeric(next_y.prog_actions, errors="coerce")
+    next_tackles = pd.to_numeric(next_y.tackles, errors="coerce")
+    next_interceptions = pd.to_numeric(next_y.interceptions, errors="coerce")
+    next_y["next_def"] = next_tackles.add(next_interceptions, fill_value=np.nan)
+    next_y["next_available_minutes"], next_y["next_available_minutes_status"] = available_minutes(
+        next_y.to_league, next_y.outcome_season)
     next_y["next_minutes_share"] = next_y.next_minutes / next_y.next_available_minutes
-    next_y["meaningful_participation"] = (next_y.next_minutes >= 900).astype(int)
+    next_y["next_minutes_observation_status"] = np.where(
+        next_y.next_minutes.notna(), "observed", "unobserved")
+    next_y["meaningful_participation"] = np.where(
+        next_y.next_minutes.notna(), (next_y.next_minutes >= 900).astype(int), pd.NA)
 
     two = two_safe[["transfer_uid", "minutes"]].rename(columns={"minutes": "second_season_minutes"})
     m = next_y.merge(two, on="transfer_uid", how="left", validate="many_to_one")
     m["two_season_support"] = m.second_season_minutes.notna()
     m["two_season_cumulative_minutes"] = m.next_minutes + m.second_season_minutes
-    m["two_season_minutes_share"] = m.two_season_cumulative_minutes / (3420 * 2)
+    m["two_season_available_minutes"] = m.next_available_minutes * 2
+    m["two_season_minutes_share"] = m.two_season_cumulative_minutes / m.two_season_available_minutes
+    m["two_season_observation_status"] = np.where(
+        m.two_season_support, "observed_two_season", "incomplete_or_unobserved")
 
     event_keys = prediction_keys_for_events(m, transfers)
+    join_audit = []
+    join_audit.append({"join_name": "outcomes_next_to_two_season", "left_rows": len(next_y),
+                       "right_rows": len(two), "output_rows": len(m),
+                       "unmatched_left_rows": int(m.second_season_minutes.isna().sum()),
+                       "expected_right_key_unique": bool(not two.transfer_uid.duplicated().any())})
+    if len(m) != len(next_y):
+        raise AssertionError("two-season attachment multiplied rows")
+    t_join = t.rename(columns={"season": "transfer_season", "date": "canonical_transfer_date"})
     dev = (m.merge(event_keys, on=["transfer_uid", "player_id", "transfer_season", "to_league", "to_club_name"],
                    how="left", validate="one_to_one")
-             .merge(t.rename(columns={"season": "transfer_season", "date": "canonical_transfer_date"}),
+             .merge(t_join,
                     on=["transfer_uid", "player_id", "transfer_season", "to_league", "to_club_name"],
                     how="left", validate="many_to_one")
              .merge(x.drop(columns=["player_id", "transfer_season", "transfer_decision_date"]),
                     on="transfer_uid", how="left", validate="many_to_one"))
     if len(dev) != len(m):
         raise AssertionError("manifest joins multiplied rows")
+    join_audit.extend([
+        {"join_name": "prediction_event_key_attachment", "left_rows": len(m), "right_rows": len(event_keys),
+         "output_rows": len(m), "unmatched_left_rows": int(event_keys.prediction_key.isna().sum()),
+         "expected_right_key_unique": bool(not event_keys.prediction_key.duplicated().any())},
+        {"join_name": "canonical_transfer_metadata", "left_rows": len(m), "right_rows": len(t),
+         "output_rows": len(m), "unmatched_left_rows": int(dev.canonical_transfer_date.isna().sum()),
+         "expected_right_key_unique": bool(not t_join.duplicated(["transfer_uid", "player_id", "transfer_season", "to_league", "to_club_name"]).any())},
+        {"join_name": "prior_performance_aggregation", "left_rows": len(m), "right_rows": len(x),
+         "output_rows": len(m), "unmatched_left_rows": int(dev.prior_minutes.isna().sum()),
+         "expected_right_key_unique": bool(not x.transfer_uid.duplicated().any())},
+    ])
     dev["role"] = dev.pos_group.map(ROLE_MAP)
     dev["supported_role"] = dev.role.notna()
     dev["outcome_status"] = np.where(dev.next_minutes.notna(), "observed", "unobserved")
@@ -250,11 +296,15 @@ def build_manifest() -> tuple[pd.DataFrame, dict, dict]:
         "prior_performance_season", "club_match_confidence", "fold", "feature_tier",
         "support_status", "abstention_reason", "date_source", "transfer_type",
         "prior_minutes", "prior_attack_rate", "prior_progression_rate", "prior_defensive_rate",
-        "data_freshness_years", "next_minutes", "next_minutes_share",
-        "two_season_support", "two_season_cumulative_minutes", "two_season_minutes_share",
+        "data_freshness_years", "next_minutes", "next_available_minutes",
+        "next_available_minutes_status", "next_minutes_share", "next_minutes_observation_status",
+        "two_season_support", "two_season_cumulative_minutes", "two_season_available_minutes",
+        "two_season_minutes_share", "two_season_observation_status",
         "meaningful_participation",
     ]
     dev = dev[keep].sort_values("prediction_key").reset_index(drop=True)
+    dev.insert(0, "prediction_event_key", dev.pop("prediction_key"))
+    dev["prediction_key"] = dev.prediction_event_key
 
     all_transfer_keys = prediction_keys(transfers)
     key_dupes = pd.concat([
@@ -307,6 +357,7 @@ def build_manifest() -> tuple[pd.DataFrame, dict, dict]:
         "features": features,
         "outcomes": outcomes,
         "duplicate_outcome_rows": duplicate_outcome_rows,
+        "join_audit": pd.DataFrame(join_audit),
     }
 
 
@@ -330,6 +381,23 @@ def write_outputs() -> dict:
 
     pd.read_csv(V3 / "effective_sample_funnel.csv").rename(columns={"condition": "stage"}).to_csv(
         OUT / "join-funnel.csv", index=False)
+    aux["join_audit"].to_csv(OUT / "join-audit.csv", index=False)
+    miss_cols = [
+        "next_minutes", "prior_attack_rate", "prior_progression_rate", "prior_defensive_rate",
+        "next_minutes_share", "two_season_cumulative_minutes",
+    ]
+    miss = []
+    for group_cols in [["role"], ["to_league"], ["outcome_season"], ["fold"]]:
+        for keys, g in dev.groupby(group_cols, dropna=False):
+            if not isinstance(keys, tuple):
+                keys = (keys,)
+            base = {f"group_{i+1}": v for i, v in enumerate(keys)}
+            base["grouping"] = "+".join(group_cols)
+            base["rows"] = len(g)
+            for c in miss_cols:
+                base[f"{c}_missing"] = int(g[c].isna().sum())
+            miss.append(base.copy())
+    pd.DataFrame(miss).to_csv(OUT / "missingness-summary.csv", index=False)
     kc = aux["key_collisions"][["transfer_uid", "prediction_key_base", "prediction_key_collision_seq", "prediction_key"]]
     if len(aux["duplicate_outcome_rows"]):
         dup = aux["duplicate_outcome_rows"].copy()
@@ -356,7 +424,14 @@ def write_outputs() -> dict:
     ]).to_csv(OUT / "abstention-summary.csv", index=False)
 
     assert len(dev) == 2117, f"expected V3 one-season dev population of 2,117, got {len(dev)}"
+    assert not dev.prediction_event_key.duplicated().any(), "duplicate prediction_event_key"
+    assert aux["join_audit"].left_rows.eq(aux["join_audit"].output_rows).all(), "material join expansion"
+    assert aux["join_audit"].expected_right_key_unique.all(), "material right join key is not unique"
     assert not (dev.outcome_season >= LOCKED_SEASON_MIN).any()
+    assert dev.next_available_minutes_status.eq("competition_format_supported").all(), "invalid minutes denominator"
+    missing_prior_metric = dev[["prior_attack_rate", "prior_progression_rate", "prior_defensive_rate"]].isna()
+    assert missing_prior_metric.any().any(), "missing prior metrics were unexpectedly eliminated"
+    assert dev.loc[dev.next_minutes_observation_status.eq("unobserved"), "meaningful_participation"].isna().all()
     assert _sha_file(manifest_path) == summary["manifest_hash_sha256"]
     print(json.dumps(summary, indent=2, sort_keys=True))
     return summary

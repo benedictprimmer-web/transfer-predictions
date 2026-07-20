@@ -25,3 +25,10 @@ INFERENCE - Forward market-value growth is not independent ground truth. It is c
 
 OWNER DECISION REQUIRED - No single label currently proves genuine undervaluation. The recommended V1 keeps fee, sporting contribution, wage, replacement importance and surplus as separate outputs. Negotiated fee is the only V1-candidate supervised continuous target, and only under the strict exact-date paid-permanent scope.
 
+## Sporting MVP target correction
+
+FACT - `reports/sporting-mvp/validated-output-contract.csv` is a development-only next-season minutes output contract. It is not a validated sporting-quality, total-contribution, fee, market-consensus-value, or buyer-specific economic-value contract.
+
+FACT - Available-minute shares now use competition-season denominators: Bundesliga uses 34 matches where supported; Premier League, La Liga, Ligue 1 and Serie A use 38 matches where supported. Unsupported or interrupted formats must abstain rather than use a universal denominator.
+
+FACT - Missing future outcomes and missing prior sporting-rate components remain null. A genuine zero is valid only when observation coverage is established through the corresponding observation-status field.

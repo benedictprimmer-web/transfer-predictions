@@ -1,8 +1,8 @@
 # Transfer Predictions
 
-A football transfer valuation and scouting system: which players are worth signing, and how much
-should you pay? Built to keep sporting quality, market price, and the negotiated fee as separate,
-falsifiable questions instead of one black-box number.
+A football transfer valuation and scouting research system. Built to keep future availability,
+sporting rate, total contribution, market-consensus value, negotiated fee, and buyer-specific
+economics as separate, falsifiable questions instead of one black-box number.
 
 ## About
 
@@ -12,17 +12,17 @@ a single price prediction. This project keeps them apart on purpose:
 ```
 timestamped player snapshot
         ↓
-future performance & minutes forecast     (sporting quality — price-blind)
+future minutes / availability             (price-blind, not sporting quality)
         ↓
-replacement-based importance              (how much of it is his)
+future sporting rate                      (conditional on observed playing time)
         ↓
-economic player value                     (what that's worth to a specific club)
+total contribution challenger             (derived, not ground truth)
         ↓
-separate fee & wage models                (what the market actually charges)
+market-consensus and negotiated-fee diagnostics
         ↓
 uncertainty propagation                   (a point estimate is a lie)
         ↓
-underpriced-player ranking
+abstaining decision support
 ```
 
 The core mechanism is **usage is zero-sum**: `team_output = Σ(usage_i × efficiency_i)`. A signing
@@ -62,10 +62,13 @@ re-verified) graded the estate honestly rather than generously:
   [`MODEL_verdict.md`](MODEL_verdict.md)): a star's injury-shortened season can misread as an
   ordinary one, and non-Big-5 sellers (e.g. Eredivisie) aren't covered yet. **Verdict: edge
   present, not yet proven** — reported as such, not rounded up.
-- **The NPV chain** (`money/npv.py`, `money/price.py`) separates cost (fee + wages, amortised)
-  from benefit (xGD → league position → broadcast/prize revenue, with a real Champions-League
-  cliff) and correctly ranks known cases: Antony's £85m move to Manchester United reads deeply
-  negative NPV, Erling Haaland's £51m release clause reads as the bargain it was.
+- **The Sporting MVP correction** (`validate/sporting_mvp_*`) shows the tested handcrafted
+  prior sporting-rate score did not produce stable temporal improvement over an age/role
+  baseline for next-season minutes. This is a minutes/availability result, not evidence that
+  future sporting quality is predictable or unpredictable.
+- **The NPV chain** (`money/npv.py`, `money/price.py`) remains exploratory. It is not the
+  recommended headline product path and must not be used as a validated buyer-specific surplus
+  or player-ranking claim without a separately approved buyer context and validation design.
 - **A fee model** (`money/fees.py`) trained on real, disclosed transfer fees (the one part of the
   system with actual ground truth) with season-grouped, expanding-window validation — no random
   cross-validation anywhere near time-ordered data.
@@ -76,7 +79,7 @@ re-verified) graded the estate honestly rather than generously:
 |---|---|
 | `ingest/` | Data acquisition — Understat shots, Transfermarkt, FBref, StatsBomb, injuries, wages, the DuckDB warehouse |
 | `impact/` | On-pitch value — usage/efficiency, aging curves, WOWY, the price-blind talent model |
-| `money/` | Economic layer — fees, wages, revenue, NPV, the scouting board |
+| `money/` | Economic diagnostics — fees, wages, revenue, archived exploratory NPV/scout board |
 | `validate/` | Every falsifiable gate, run independently of the model that must pass it |
 | `data/` | ~1.2GB local warehouse (gitignored raw cache; parquet working set tracked) — see `data/README.md` |
 | `HANDOFF.md` | Full current state and next steps, for picking this up cold |
@@ -88,7 +91,8 @@ re-verified) graded the estate honestly rather than generously:
 python3 -m ingest.warehouse build      # assemble the DuckDB warehouse from data/ (once)
 make checks                            # every module's offline self-check (no network)
 python3 -m validate.talent_gate run    # the talent model's four gates, on real data
-python3 -m money.scout run --to Arsenal --top 20
+python3 -m validate.sporting_mvp_integrity
+python3 -m validate.sporting_mvp_models
 ```
 
 ## Honest limits

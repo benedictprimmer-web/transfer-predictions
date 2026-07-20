@@ -1,13 +1,17 @@
 {
   "command": "python3 -m validate.sporting_mvp_models",
-  "decision": "SPORTING SIGNAL TOO WEAK - FEE DIAGNOSTIC MVP ONLY",
+  "decision": "HANDCRAFTED SPORTING RATE DID NOT IMPROVE NEXT-SEASON MINUTES",
+  "estimand": "next-season availability/minutes, not future sporting quality or total contribution",
   "gate": {
     "folds": 7,
+    "player_cluster_bootstrap_reps": 120,
     "positive_spearman_folds": 0,
     "s1_passed": false,
     "s2_status": "not_fit_s1_gate_failed",
-    "spearman_lift": -0.05161112847724579,
-    "top_precision_lift_pp": 2.209944751381215
+    "spearman_lift": -0.03041449532805006,
+    "spearman_lift_ci90_hi": -0.003939840857682117,
+    "spearman_lift_ci90_lo": -0.06149881699593811,
+    "top_precision_lift_pp": -3.314917127071826
   },
   "locked_test_status": "not_opened",
   "models_fit": [
