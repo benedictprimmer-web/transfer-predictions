@@ -5,6 +5,7 @@ import textwrap
 import unicodedata
 from datetime import date
 from pathlib import Path
+from html import escape
 from urllib.parse import urlparse
 
 import matplotlib.pyplot as plt
@@ -15,7 +16,7 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
-from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 
 REPO = Path(__file__).resolve().parent.parent
@@ -46,21 +47,129 @@ SOURCES = [
 
 
 SOURCE_VALIDATION = {
-    "pl_needs_2026": ("200", "VERIFIED", ""),
-    "chelsea_official_transfers_2026": ("200", "VERIFIED", "Does not confirm Morgan Rogers as completed."),
-    "tm_arsenal_rumour_attempt": ("403", "HUMAN_CHECK_REQUIRED", "JavaScript/anti-bot verification; no bypass attempted."),
-    "tm_chelsea_rumour_attempt": ("403", "HUMAN_CHECK_REQUIRED", "JavaScript/anti-bot verification; no bypass attempted."),
+    "pl_needs_2026": {
+        "http_status": "200",
+        "verification_status": "VERIFIED",
+        "verification_method": "MANUAL_BROWSER_CHECK",
+        "claim_checked": "Premier League need anchor checked: Arsenal direct left-winger first; Chelsea defender with back-three know-how first.",
+        "verification_warning": "",
+    },
+    "chelsea_official_transfers_2026": {
+        "http_status": "200",
+        "verification_status": "VERIFIED",
+        "verification_method": "OFFICIAL_PAGE_INSPECTION",
+        "claim_checked": "Official Chelsea tracker checked only for confirmation status; it did not confirm Morgan Rogers as completed in retrieved content.",
+        "verification_warning": "No publication date visible in source register; retrieval date controls this tracker check.",
+    },
+    "tm_arsenal_rumour_attempt": {
+        "http_status": "403",
+        "verification_status": "HUMAN_CHECK_REQUIRED",
+        "verification_method": "HUMAN_CHECK_REQUIRED",
+        "claim_checked": "Rumour Mill status could not be verified.",
+        "verification_warning": "JavaScript/anti-bot verification; no bypass attempted.",
+    },
+    "tm_chelsea_rumour_attempt": {
+        "http_status": "403",
+        "verification_status": "HUMAN_CHECK_REQUIRED",
+        "verification_method": "HUMAN_CHECK_REQUIRED",
+        "claim_checked": "Rumour Mill status could not be verified.",
+        "verification_warning": "JavaScript/anti-bot verification; no bypass attempted.",
+    },
+    "sky_tzolis_arsenal": {
+        "http_status": "200",
+        "verification_status": "VERIFIED",
+        "verification_method": "MANUAL_BROWSER_CHECK",
+        "claim_checked": "Title/date and Tzolis left-wing/Trossard-replacement claim checked.",
+        "verification_warning": "",
+    },
+    "guardian_tzolis_arsenal": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Used as a dated supporting report, but not reverified in this final pass.",
+        "verification_warning": "Retained as lower-weight corroboration; do not treat as independently verified here.",
+    },
+    "independent_alvarez_arsenal": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Used as dated interest reporting, but not reverified in this final pass.",
+        "verification_warning": "Treat as cited reporting, not verified claim inspection.",
+    },
+    "guardian_bruno_arsenal": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Used as dated interest/availability reporting, but not reverified in this final pass.",
+        "verification_warning": "Treat as cited reporting, not verified claim inspection.",
+    },
+    "sky_bruno_arsenal": {
+        "http_status": "200",
+        "verification_status": "VERIFIED",
+        "verification_method": "MANUAL_BROWSER_CHECK",
+        "claim_checked": "Title/date and Bruno-to-Arsenal reporting status checked.",
+        "verification_warning": "",
+    },
+    "sun_stones_arsenal": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Low-tier Stones item retained as unverified reporting only.",
+        "verification_warning": "Low source tier; fit remains NOT_ASSESSED and action TACTICAL_REVIEW_ONLY.",
+    },
+    "guardian_rogers_chelsea": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Used as dated advanced reporting, but not reverified in this final pass.",
+        "verification_warning": "Not official confirmation.",
+    },
+    "talksport_rogers_chelsea": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Used as dated integration context, but not reverified in this final pass.",
+        "verification_warning": "Treat as cited reporting, not verified claim inspection.",
+    },
+    "talksport_lacroix_chelsea": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Used as dated Lacroix interest reporting, but not reverified in this final pass.",
+        "verification_warning": "Fit downgraded because source does not prove Chelsea tactical suitability.",
+    },
+    "as_carreras_chelsea": {
+        "http_status": "200",
+        "verification_status": "VERIFIED",
+        "verification_method": "MANUAL_BROWSER_CHECK",
+        "claim_checked": "Title/date and Chelsea interest claim checked.",
+        "verification_warning": "",
+    },
+    "teamtalk_cambiaso_chelsea": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Low-tier Cambiaso item retained as unverified reporting only.",
+        "verification_warning": "Low source tier; fit remains NOT_ASSESSED and action TACTICAL_REVIEW_ONLY.",
+    },
+    "bundesliga_tapsoba_extension": {
+        "http_status": "200",
+        "verification_status": "NOT_VERIFIED",
+        "verification_method": "NOT_VERIFIED",
+        "claim_checked": "Used as dated contract-extension context, but not reverified in this final pass.",
+        "verification_warning": "Treat as availability caution, not live Chelsea reporting.",
+    },
 }
 
 
 CANDIDATES = [
     {"club": "Arsenal", "player": "Christos Tzolis", "target_role": "Direct left-wing solution", "latest_report_status": "ADVANCED_REPORT", "reporting_confidence": "HIGH", "source_ids": "pl_needs_2026;sky_tzolis_arsenal;guardian_tzolis_arsenal;tm_arsenal_rumour_attempt", "fit_rating": "HIGH", "price_risk": "UNKNOWN", "recommended_action": "ADVANCE_SCOUTING", "why": "Included because Arsenal's stated need is a direct left-winger and current reporting presents Tzolis as the clearest active left-wing solution.", "style": "Left-sided forward profile in the local identity file; the reviewed role is touchline/direct-wing coverage rather than central-forward depth.", "fit": "Best aligns with the Arsenal need anchor because the role is specifically left wing and current reporting frames him as Trossard replacement cover.", "concern": "The review has no validated local chance-creation or off-ball role model for Arsenal's left side.", "availability": "Advanced reporting is not official confirmation; Transfermarkt Rumour Mill could not be verified in this environment.", "price_reason": "Market-consensus snapshot is moderate for this set, but negotiated fee, wages and contract details are not verified here.", "warning": "Local evidence is identity and Transfermarkt market-consensus only; no Arsenal-specific sporting prediction.", "citations": "[1][5][6]"},
     {"club": "Arsenal", "player": "Julián Alvarez", "target_role": "Forward-ceiling option", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "MEDIUM", "source_ids": "pl_needs_2026;independent_alvarez_arsenal;tm_arsenal_rumour_attempt", "fit_rating": "MEDIUM", "price_risk": "HIGH", "recommended_action": "MONITOR_PRICE", "why": "Included as a forward-ceiling alternative, not as the primary left-wing answer.", "style": "Centre-forward in the local file; role fit is about elite front-line optionality rather than direct left-wing coverage.", "fit": "Could raise Arsenal's forward ceiling, but the role only indirectly addresses the left-wing need anchor.", "concern": "Role priority mismatch: this is not the direct winger profile identified as Arsenal's first need.", "availability": "Reported interest only; no official confirmation and no verified Rumour Mill status.", "price_reason": "High market-consensus snapshot plus unverified fee/wage terms make price risk high.", "warning": "Do not treat market consensus as expected fee or buyer-specific contribution.", "citations": "[1][7]"},
-    {"club": "Arsenal", "player": "Bradley Barcola", "target_role": "Direct left-wing solution", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "MEDIUM", "source_ids": "pl_needs_2026;guardian_tzolis_arsenal;tm_arsenal_rumour_attempt", "fit_rating": "HIGH", "price_risk": "HIGH", "recommended_action": "MONITOR_PRICE", "why": "Included because the Guardian reporting grouped him with Arsenal's left-wing search.", "style": "Left winger in the local file; reviewed as a wide one-v-one and depth option.", "fit": "Strong positional alignment with the left-wing need, but not the most advanced reporting in this set.", "concern": "PSG current-club context and sparse direct reporting make this more monitoring than action.", "availability": "Reported interest only; no official or verified Rumour Mill evidence.", "price_reason": "High market-consensus snapshot at a major club, with no reliable fee/wage evidence.", "warning": "No local validated scoring edge; tactical fit remains editorial.", "citations": "[1][6]"},
+    {"club": "Arsenal", "player": "Bradley Barcola", "target_role": "Direct left-wing solution", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "MEDIUM", "source_ids": "pl_needs_2026;guardian_tzolis_arsenal;tm_arsenal_rumour_attempt", "fit_rating": "MEDIUM", "price_risk": "HIGH", "recommended_action": "MONITOR_PRICE", "why": "Included because the Guardian reporting grouped him with Arsenal's left-wing search.", "style": "Left winger in the local file; reviewed as a wide one-v-one and depth option.", "fit": "Partial positional alignment with the left-wing need, but the current evidence does not prove tactical suitability beyond the broad role.", "concern": "PSG current-club context and sparse direct reporting make this more monitoring than action.", "availability": "Reported interest only; no official or verified Rumour Mill evidence.", "price_reason": "High market-consensus snapshot at a major club, with no reliable fee/wage evidence.", "warning": "No local validated scoring edge; tactical fit remains editorial.", "citations": "[1][6]"},
     {"club": "Arsenal", "player": "John Stones", "target_role": "Saliba-cover/backline contingency", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "LOW", "source_ids": "pl_needs_2026;sun_stones_arsenal;tm_arsenal_rumour_attempt", "fit_rating": "NOT_ASSESSED", "price_risk": "UNKNOWN", "recommended_action": "TACTICAL_REVIEW_ONLY", "why": "Included from the fixed candidate set as a backline contingency rather than a first-priority need.", "style": "Centre-back in the local file; no sourced tactical-detail claim is relied on here.", "fit": "Could only be assessed through video/squad planning because the live link is lower confidence.", "concern": "Low-tier sourcing and role not aligned with Arsenal's primary left-wing need.", "availability": "Only lower-confidence reporting was found; Rumour Mill requires human check.", "price_reason": "Market-consensus value is lower than most candidates, but wage, availability and negotiated fee are unknown.", "warning": "Defender review abstains from attacking metrics; no validated centre-back quality model.", "citations": "[1][10]"},
     {"club": "Arsenal", "player": "Bruno Guimarães", "target_role": "Midfield-control option", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "HIGH", "source_ids": "pl_needs_2026;guardian_bruno_arsenal;sky_bruno_arsenal;tm_arsenal_rumour_attempt", "fit_rating": "MEDIUM", "price_risk": "HIGH", "recommended_action": "MONITOR_PRICE", "why": "Included as a midfield-control option with high-quality reporting, not because it is the primary need.", "style": "Central midfielder in the local file; reviewed as control/retention profile rather than left-wing solution.", "fit": "Strong player-profile hypothesis for midfield control, but it does not solve the direct-wing priority.", "concern": "High tactical appeal can distract from the stated Arsenal squad-need order.", "availability": "Strong reporting of player desire/interest, but no completed transfer.", "price_reason": "High market-consensus snapshot and likely complex Newcastle availability make risk high.", "warning": "No buyer-specific value or validated ranking is produced.", "citations": "[1][8][9]"},
     {"club": "Chelsea", "player": "Morgan Rogers", "target_role": "Rogers integration and price-risk review", "latest_report_status": "ADVANCED_REPORT", "reporting_confidence": "HIGH", "source_ids": "chelsea_official_transfers_2026;guardian_rogers_chelsea;talksport_rogers_chelsea;tm_chelsea_rumour_attempt", "fit_rating": "MEDIUM", "price_risk": "HIGH", "recommended_action": "TACTICAL_REVIEW_ONLY", "why": "Included because established reporting presents an advanced Chelsea move, but the task is integration review, not discovery.", "style": "Attacking midfielder in the local file; reviewed around Palmer/Fernandez integration questions from reporting.", "fit": "Could add attacking-midfield power, but this does not directly answer Chelsea's defender-with-back-three-know-how need anchor.", "concern": "Role overlap and tactical integration risk should be reviewed before treating this as squad-need fulfilment.", "availability": "Advanced reporting exists; Chelsea official tracker did not confirm completion in the retrieved page.", "price_reason": "Reported large fee context, high market-consensus snapshot, and unknown wage terms make risk high.", "warning": "Strong reporting but not official confirmation; no validated Chelsea sporting prediction.", "citations": "[2][11][12]"},
-    {"club": "Chelsea", "player": "Maxence Lacroix", "target_role": "Back-three defensive need", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "HIGH", "source_ids": "pl_needs_2026;talksport_lacroix_chelsea;tm_chelsea_rumour_attempt", "fit_rating": "HIGH", "price_risk": "HIGH", "recommended_action": "ADVANCE_SCOUTING", "why": "Included because Chelsea's need anchor is a defender with back-three know-how and reporting links Chelsea to Lacroix.", "style": "Centre-back in the local file; reviewed only as a defensive recruitment fit, not through attacker metrics.", "fit": "Best Chelsea role alignment in the fixed set because the target role is directly the primary need.", "concern": "Local data does not validate defensive quality, possession fit, or back-three experience.", "availability": "Reported talks with Crystal Palace; no official completion.", "price_reason": "Reported fee context and Premier League seller dynamics make negotiated-price risk high.", "warning": "Centre-back quality is not assessed by attacking or shot-value metrics.", "citations": "[1][13]"},
+    {"club": "Chelsea", "player": "Maxence Lacroix", "target_role": "Back-three defensive need", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "HIGH", "source_ids": "pl_needs_2026;talksport_lacroix_chelsea;tm_chelsea_rumour_attempt", "fit_rating": "MEDIUM", "price_risk": "HIGH", "recommended_action": "TACTICAL_REVIEW_ONLY", "why": "Included because Chelsea's need anchor is a defender with back-three know-how and reporting links Chelsea to Lacroix, but suitability remains unproven.", "style": "Centre-back in the local file; reviewed only as a defensive recruitment fit, not through attacker metrics.", "fit": "Broad centre-back role alignment is useful, but the cited reporting does not prove back-three experience, possession fit, or defensive quality for Chelsea.", "concern": "Local data does not validate defensive quality, possession fit, or back-three experience.", "availability": "Reported talks with Crystal Palace; no official completion.", "price_reason": "Reported fee context and Premier League seller dynamics make negotiated-price risk high.", "warning": "Centre-back quality is not assessed by attacking or shot-value metrics.", "citations": "[1][13]"},
     {"club": "Chelsea", "player": "Andrea Cambiaso", "target_role": "Left-side defensive/wing-back need", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "LOW", "source_ids": "pl_needs_2026;teamtalk_cambiaso_chelsea;tm_chelsea_rumour_attempt", "fit_rating": "NOT_ASSESSED", "price_risk": "UNKNOWN", "recommended_action": "TACTICAL_REVIEW_ONLY", "why": "Included from the fixed set as a left-side defensive/wing-back option.", "style": "Left-back in the local file; wing-back suitability is not validated locally.", "fit": "Possible positional relevance, but the Chelsea link is low-tier and tactical facts are not independently sourced.", "concern": "TEAMtalk is retained only as lower-confidence reporting; no stronger source was used for a tactical claim.", "availability": "Reported interest only and requires Rumour Mill human check.", "price_reason": "Market-consensus snapshot is moderate, but fee, wage and Juventus availability are unknown.", "warning": "Low-confidence link; no validated local wing-back fit model.", "citations": "[1][15]"},
     {"club": "Chelsea", "player": "Álvaro Carreras", "target_role": "Left-side defensive/wing-back need", "latest_report_status": "REPORTED_INTEREST", "reporting_confidence": "MEDIUM", "source_ids": "pl_needs_2026;as_carreras_chelsea;tm_chelsea_rumour_attempt", "fit_rating": "MEDIUM", "price_risk": "HIGH", "recommended_action": "MONITOR_PRICE", "why": "Included as a left-side defensive option connected to Chelsea reporting.", "style": "Left-back in the local file; reviewed for defensive/wing-back cover rather than primary centre-back need.", "fit": "Positional fit is plausible for left-side cover but it is secondary to the back-three centre-back anchor.", "concern": "Current club and role context create availability and price questions.", "availability": "Reported interest only; no official confirmation.", "price_reason": "High market-consensus snapshot at Real Madrid plus unknown fee/wage terms makes price risk high.", "warning": "No validated local wing-back model; current-club timing is the latest local file value.", "citations": "[1][14]"},
     {"club": "Chelsea", "player": "Edmond Tapsoba", "target_role": "Back-three defensive need", "latest_report_status": "NO_CURRENT_CORROBORATION", "reporting_confidence": "UNVERIFIED", "source_ids": "pl_needs_2026;bundesliga_tapsoba_extension;tm_chelsea_rumour_attempt", "fit_rating": "NOT_ASSESSED", "price_risk": "HIGH", "recommended_action": "LOW_PRIORITY", "why": "Retained because the fixed set required him, not because current Chelsea reporting corroborated the move.", "style": "Centre-back in the local file; no current Chelsea-specific tactical claim is made.", "fit": "Back-three defensive role would match the need category, but no current Chelsea link is corroborated.", "concern": "Availability evidence points away from a live move because of the Leverkusen extension.", "availability": "Bundesliga reports a contract extension through 2031; no current Chelsea corroboration found.", "price_reason": "Contract extension materially raises availability and price risk; fee/wage information is unknown.", "warning": "No current Chelsea reporting corroborated; keep as low priority.", "citations": "[1][16]"},
@@ -163,14 +272,40 @@ def write_sources(path: Path) -> None:
 
 
 def write_source_validation(path: Path) -> None:
-    fields = ["source_id", "url", "resolved_url", "http_status", "page_title", "publication_date", "retrieval_date", "verification_status", "verification_warning"]
+    fields = [
+        "source_id", "url", "resolved_url", "http_status", "page_title",
+        "publication_date", "retrieval_date", "verification_status",
+        "verification_method", "claim_checked", "verification_warning",
+    ]
     rows = []
+    source_ids = {s["source_id"] for s in SOURCES}
+    if set(SOURCE_VALIDATION) != source_ids:
+        missing = source_ids - set(SOURCE_VALIDATION)
+        extra = set(SOURCE_VALIDATION) - source_ids
+        raise AssertionError(f"source validation records must be explicit for every source; missing={missing}, extra={extra}")
     for s in SOURCES:
-        status, verified, warning = SOURCE_VALIDATION.get(s["source_id"], ("200", "VERIFIED", ""))
+        validation = SOURCE_VALIDATION[s["source_id"]]
         parsed = urlparse(s["url"])
+        status = validation["http_status"]
+        verified = validation["verification_status"]
+        method = validation["verification_method"]
+        claim = validation["claim_checked"]
+        warning = validation["verification_warning"]
         if not parsed.scheme or not parsed.netloc:
-            status, verified, warning = "", "INVALID_URL", "Malformed URL"
-        rows.append({"source_id": s["source_id"], "url": s["url"], "resolved_url": s["url"], "http_status": status, "page_title": s["title"], "publication_date": s["publication_date"], "retrieval_date": str(AS_OF), "verification_status": verified, "verification_warning": warning})
+            status, verified, method, claim, warning = "", "NOT_VERIFIED", "NOT_VERIFIED", "URL syntax check failed.", "Malformed URL"
+        rows.append({
+            "source_id": s["source_id"],
+            "url": s["url"],
+            "resolved_url": s["url"],
+            "http_status": status,
+            "page_title": s["title"],
+            "publication_date": s["publication_date"],
+            "retrieval_date": str(AS_OF),
+            "verification_status": verified,
+            "verification_method": method,
+            "claim_checked": claim,
+            "verification_warning": warning,
+        })
     with path.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
@@ -261,18 +396,87 @@ Market value is labelled as **Transfermarkt market-consensus value at the record
     path.write_text(md)
 
 
+def design_html(rows: list[dict], design: str) -> str:
+    accent_a = "#b7192b"
+    accent_c = "#1455a0"
+    if design == "A":
+        title = "Editorial Scouting Desk"
+        body = "#fbfaf6"
+        panel = "#ffffff"
+        layout = "cards"
+    else:
+        title = "Club Recruitment Dashboard"
+        body = "#f4f7fa"
+        panel = "#ffffff"
+        layout = "dashboard"
+    cards = []
+    for r in rows:
+        accent = accent_a if r["club"] == "Arsenal" else accent_c
+        mv = f"EUR {int(r['transfermarkt_market_value_eur']):,}" if r["transfermarkt_market_value_eur"] != "" else "Unavailable"
+        cards.append(f"""
+<article class="card" style="--accent:{accent}">
+  <div class="card-head">
+    <div><span class="club">{escape(r['club'])}</span><h2>{escape(r['player'])}</h2><p>{escape(r['target_role'])}</p></div>
+    <div class="action">{badge(r['recommended_action'])}</div>
+  </div>
+  <div class="badges">
+    <span>{badge(r['latest_report_status'])}</span><span>{badge(r['reporting_confidence'])}</span><span>Local: {badge(r['local_data_status'])}</span><span>Fit: {badge(r['fit_rating'])}</span><span>Risk: {badge(r['price_risk'])}</span>
+  </div>
+  <p><b>Why:</b> {escape(r['why'])}</p>
+  <p><b>Tactical summary:</b> {escape(r['fit'])}</p>
+  <p><b>Concern:</b> {escape(r['concern'])}</p>
+  <div class="warning"><b>Data warning:</b> {escape(r['warning'])}</div>
+  <div class="market">Market-consensus snapshot: <b>{mv}</b> on {escape(str(r['market_value_snapshot_date']))}</div>
+  <div class="cite">Sources: {escape(r['source_ids'])}</div>
+</article>""")
+    if layout == "dashboard":
+        content = "".join(f"<section><h3>{club}</h3>{''.join(cards[i:i+5])}</section>" for i, club in [(0, "Arsenal"), (5, "Chelsea")])
+    else:
+        content = "".join(cards)
+    return f"""<!doctype html>
+<html><head><meta charset="utf-8"><title>Design {design} - {title}</title>
+<style>
+@page {{ size:A4; margin:18mm; }}
+body {{ margin:0; background:{body}; color:#172333; font:10pt/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }}
+main {{ max-width:1120px; margin:0 auto; padding:34px; }}
+header {{ display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #d9ded8; padding-bottom:18px; margin-bottom:22px; }}
+h1 {{ font-family:Georgia,serif; font-size:34px; margin:0; letter-spacing:0; }}
+h2 {{ margin:0; font-size:20px; }}
+h3 {{ border-left:5px solid #667; padding-left:10px; font-size:22px; }}
+.deck {{ max-width:680px; color:#52606d; }}
+.grid {{ display:grid; grid-template-columns:{'1fr 1fr' if layout == 'dashboard' else 'repeat(2,minmax(0,1fr))'}; gap:16px; }}
+.card {{ background:{panel}; border:1px solid #d8ddd8; border-top:5px solid var(--accent); border-radius:10px; padding:15px; break-inside:avoid; box-shadow:0 8px 20px rgba(20,35,50,.06); }}
+.card-head {{ display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }}
+.club {{ color:var(--accent); font-weight:700; text-transform:uppercase; font-size:10px; }}
+.action {{ background:#edf3ec; border:1px solid #cfdccc; border-radius:999px; padding:5px 8px; font-weight:700; white-space:nowrap; }}
+.badges {{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }}
+.badges span {{ background:#eef1f4; border:1px solid #d8dde3; border-radius:999px; padding:3px 7px; font-size:9px; }}
+.warning {{ background:#fff6e5; border-left:4px solid #d39b2a; padding:8px; margin:8px 0; }}
+.market,.cite {{ color:#596774; font-size:9px; margin-top:7px; }}
+section {{ display:flex; flex-direction:column; gap:12px; }}
+</style></head>
+<body><main>
+<header><div><h1>Design {design}: {title}</h1><p class="deck">As-of {AS_OF}. Editorial decision support only: no validated sporting prediction, no NPV, no surplus, no ranking.</p></div></header>
+<div class="grid">{content}</div>
+</main></body></html>"""
+
+
 def draw_preview(path: Path, rows: list[dict], title: str, palette: tuple[str, str]) -> None:
-    fig, ax = plt.subplots(figsize=(11, 7))
+    fig, ax = plt.subplots(figsize=(11, 15))
     ax.axis("off")
     ax.set_title(title, fontsize=20, loc="left", color=palette[0], pad=18, weight="bold")
-    y = 0.88
-    for r in rows[:6]:
-        ax.text(0.02, y, r["player"], fontsize=13, weight="bold", color=palette[0])
-        ax.text(0.25, y, badge(r["latest_report_status"]), fontsize=10, bbox={"boxstyle": "round,pad=.25", "fc": palette[1], "ec": "none"})
-        ax.text(0.48, y, f"Fit: {badge(r['fit_rating'])}", fontsize=10)
-        ax.text(0.64, y, f"Risk: {badge(r['price_risk'])}", fontsize=10)
-        ax.text(0.80, y, badge(r["recommended_action"]), fontsize=10)
-        y -= 0.12
+    y = 0.93
+    for r in rows:
+        ax.add_patch(plt.Rectangle((0.02, y - 0.075), 0.96, 0.07, color="white", ec="#d7dde2", lw=1))
+        accent = "#b7192b" if r["club"] == "Arsenal" else "#1455a0"
+        ax.add_patch(plt.Rectangle((0.02, y - 0.075), 0.01, 0.07, color=accent, ec=accent))
+        ax.text(0.04, y - 0.022, r["player"], fontsize=12, weight="bold", color=palette[0])
+        ax.text(0.04, y - 0.052, r["target_role"], fontsize=8.5, color="#596774")
+        ax.text(0.36, y - 0.025, badge(r["latest_report_status"]), fontsize=8.5, bbox={"boxstyle": "round,pad=.22", "fc": palette[1], "ec": "none"})
+        ax.text(0.56, y - 0.025, f"Fit {badge(r['fit_rating'])}", fontsize=8.5)
+        ax.text(0.68, y - 0.025, f"Risk {badge(r['price_risk'])}", fontsize=8.5)
+        ax.text(0.80, y - 0.025, badge(r["recommended_action"]), fontsize=8.5)
+        y -= 0.085
     fig.savefig(path, dpi=160, bbox_inches="tight")
     plt.close(fig)
 
@@ -281,9 +485,9 @@ def write_previews(rows: list[dict]) -> None:
     PREVIEWS.mkdir(parents=True, exist_ok=True)
     draw_preview(PREVIEWS / "design-a-editorial-scouting-desk.png", rows, "Design A - Editorial Scouting Desk", ("#18324a", "#dfeee5"))
     draw_preview(PREVIEWS / "design-b-club-recruitment-dashboard.png", rows, "Design B - Club Recruitment Dashboard", ("#24364b", "#d8e5f2"))
-    (PREVIEWS / "design-a-editorial-scouting-desk.html").write_text("<h1>Design A - Editorial Scouting Desk</h1><p>Selected for final PDF: clearer long-form player cards and readable citations.</p>\n")
-    (PREVIEWS / "design-b-club-recruitment-dashboard.html").write_text("<h1>Design B - Club Recruitment Dashboard</h1><p>Alternative compact status-strip layout using the same CSV/source contract.</p>\n")
-    (PREVIEWS / "design-decision.md").write_text("# Club-Fit Design Decision\n\nDesign A is selected for the final PDF because the review is editorial and citation-heavy. Design B remains as a compact dashboard preview using the same data contract.\n")
+    (PREVIEWS / "design-a-editorial-scouting-desk.html").write_text(design_html(rows, "A"))
+    (PREVIEWS / "design-b-club-recruitment-dashboard.html").write_text(design_html(rows, "B"))
+    (PREVIEWS / "design-decision.md").write_text("# Club-Fit Design Decision\n\nDesign A is selected for the final PDF because the review is citation-heavy and the editorial card hierarchy makes the caveats easier to read. Design B uses the same data but groups candidates into denser side-by-side club panels with stronger status strips for recruitment operations. The two designs differ in information density, club-section structure, and hierarchy; they are not separate statistical products.\n")
 
 
 def para(text: str, style) -> Paragraph:
@@ -293,21 +497,23 @@ def para(text: str, style) -> Paragraph:
 def write_pdf(path: Path, rows: list[dict]) -> None:
     rl_config.invariant = 1
     styles = getSampleStyleSheet()
-    title = ParagraphStyle("TitleLocal", parent=styles["Title"], fontName="Helvetica-Bold", fontSize=22, leading=27, textColor=colors.HexColor("#14283a"), alignment=TA_LEFT)
-    h2 = ParagraphStyle("H2", parent=styles["Heading2"], fontName="Helvetica-Bold", fontSize=15, leading=18, spaceBefore=8, textColor=colors.HexColor("#14283a"))
-    body = ParagraphStyle("Body", parent=styles["BodyText"], fontName="Helvetica", fontSize=8.4, leading=10.7, spaceAfter=3)
-    small = ParagraphStyle("Small", parent=body, fontSize=7.05, leading=8.55)
+    title = ParagraphStyle("TitleLocal", parent=styles["Title"], fontName="Helvetica-Bold", fontSize=24, leading=29, textColor=colors.HexColor("#14283a"), alignment=TA_LEFT)
+    h2 = ParagraphStyle("H2", parent=styles["Heading2"], fontName="Helvetica-Bold", fontSize=16, leading=19, spaceBefore=8, textColor=colors.HexColor("#14283a"))
+    body = ParagraphStyle("Body", parent=styles["BodyText"], fontName="Helvetica", fontSize=9.5, leading=11.4, spaceAfter=3)
+    small = ParagraphStyle("Small", parent=body, fontSize=8.15, leading=9.35)
     doc = SimpleDocTemplate(str(path), pagesize=A4, rightMargin=1.25*cm, leftMargin=1.25*cm, topMargin=1.2*cm, bottomMargin=1.2*cm)
 
     nums = citation_map()
 
     def card(r: dict) -> list:
         cite_nums = " ".join(f"[{nums[sid]}]" for sid in r["source_ids"].split(";") if not sid.startswith("tm_"))
+        accent = colors.HexColor("#b7192b" if r["club"] == "Arsenal" else "#1455a0")
         bits = [
             para(r["player"].upper(), h2),
             para(
-                f"<b>Role:</b> {r['target_role']} | <b>Reporting:</b> {badge(r['latest_report_status'])}/{badge(r['reporting_confidence'])} {cite_nums} | "
-                f"<b>Local:</b> {badge(r['local_data_status'])} | <b>Fit:</b> {badge(r['fit_rating'])} | <b>Risk:</b> {badge(r['price_risk'])} | "
+                f"<b>Role:</b> {r['target_role']}<br/>"
+                f"<b>Reporting:</b> {badge(r['latest_report_status'])} / {badge(r['reporting_confidence'])} {cite_nums}; "
+                f"<b>Local:</b> {badge(r['local_data_status'])}; <b>Fit:</b> {badge(r['fit_rating'])}; <b>Risk:</b> {badge(r['price_risk'])}<br/>"
                 f"<b>Action:</b> {badge(r['recommended_action'])}",
                 body,
             ),
@@ -322,8 +528,18 @@ def write_pdf(path: Path, rows: list[dict]) -> None:
             ("Data warning", r["warning"]),
         ]:
             bits.append(para(f"<b>{label}:</b> {val}", small))
-        bits.append(Spacer(1, 0.08*cm))
-        return bits
+        bits.append(para(f"<b>Market-consensus snapshot:</b> EUR {int(r['transfermarkt_market_value_eur']):,} on {r['market_value_snapshot_date']}.", small))
+        box = Table([[bits]], colWidths=[18.2*cm])
+        box.setStyle(TableStyle([
+            ("BOX", (0, 0), (-1, -1), 0.7, colors.HexColor("#cfd7df")),
+            ("LEFTPADDING", (0, 0), (-1, -1), 9),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 9),
+            ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("LINEABOVE", (0, 0), (-1, 0), 3, accent),
+            ("BACKGROUND", (0, 0), (-1, -1), colors.white),
+        ]))
+        return [KeepTogether([box, Spacer(1, 0.18*cm)])]
 
     story = [
         para("Chelsea + Arsenal 10-Player Club-Fit Review", title),
@@ -353,7 +569,7 @@ def write_pdf(path: Path, rows: list[dict]) -> None:
     story.append(para("No numeric overall ranking is produced. The action tags separate reporting confidence, local evidence coverage, tactical fit and price risk.", body))
     data = [["Club", "Player", "Reporting", "Local", "Fit", "Risk", "Action"]] + [[r["club"], r["player"], badge(r["latest_report_status"]), badge(r["local_data_status"]), badge(r["fit_rating"]), badge(r["price_risk"]), badge(r["recommended_action"])] for r in rows]
     table = Table(data, colWidths=[1.6*cm, 3.2*cm, 2.5*cm, 1.7*cm, 1.8*cm, 1.8*cm, 3.0*cm])
-    table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8efe9")), ("GRID", (0, 0), (-1, -1), .25, colors.lightgrey), ("FONT", (0, 0), (-1, -1), "Helvetica", 7.2), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 7.5), ("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8efe9")), ("GRID", (0, 0), (-1, -1), .25, colors.lightgrey), ("FONT", (0, 0), (-1, -1), "Helvetica", 8.2), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.4), ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story.append(table)
     story.append(PageBreak())
     story.append(para("References", h2))

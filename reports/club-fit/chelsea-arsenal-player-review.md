@@ -89,7 +89,7 @@ Data warning: Do not treat market consensus as expected fee or buyer-specific co
 
 **Local data status:** Partial
 
-**Fit rating:** High
+**Fit rating:** Medium
 
 **Price risk:** High
 
@@ -99,7 +99,7 @@ Why included: Included because the Guardian reporting grouped him with Arsenal's
 
 Style/profile summary: Left winger in the local file; reviewed as a wide one-v-one and depth option.
 
-Specific tactical fit: Strong positional alignment with the left-wing need, but not the most advanced reporting in this set.
+Specific tactical fit: Partial positional alignment with the left-wing need, but the current evidence does not prove tactical suitability beyond the broad role.
 
 Specific tactical concern: PSG current-club context and sparse direct reporting make this more monitoring than action.
 
@@ -216,17 +216,17 @@ Data warning: Strong reporting but not official confirmation; no validated Chels
 
 **Local data status:** Partial
 
-**Fit rating:** High
+**Fit rating:** Medium
 
 **Price risk:** High
 
-**Action:** Advance Scouting
+**Action:** Tactical Review Only
 
-Why included: Included because Chelsea's need anchor is a defender with back-three know-how and reporting links Chelsea to Lacroix.
+Why included: Included because Chelsea's need anchor is a defender with back-three know-how and reporting links Chelsea to Lacroix, but suitability remains unproven.
 
 Style/profile summary: Centre-back in the local file; reviewed only as a defensive recruitment fit, not through attacker metrics.
 
-Specific tactical fit: Best Chelsea role alignment in the fixed set because the target role is directly the primary need.
+Specific tactical fit: Broad centre-back role alignment is useful, but the cited reporting does not prove back-three experience, possession fit, or defensive quality for Chelsea.
 
 Specific tactical concern: Local data does not validate defensive quality, possession fit, or back-three experience.
 
@@ -340,11 +340,11 @@ Data warning: No current Chelsea reporting corroborated; keep as low priority.
 |---|---|---|---|---|---|---|
 | Arsenal | Christos Tzolis | Advanced Report | Partial | High | Unknown | Advance Scouting |
 | Arsenal | Julián Alvarez | Reported Interest | Partial | Medium | High | Monitor Price |
-| Arsenal | Bradley Barcola | Reported Interest | Partial | High | High | Monitor Price |
+| Arsenal | Bradley Barcola | Reported Interest | Partial | Medium | High | Monitor Price |
 | Arsenal | John Stones | Reported Interest | Partial | Not Assessed | Unknown | Tactical Review Only |
 | Arsenal | Bruno Guimarães | Reported Interest | Partial | Medium | High | Monitor Price |
 | Chelsea | Morgan Rogers | Advanced Report | Partial | Medium | High | Tactical Review Only |
-| Chelsea | Maxence Lacroix | Reported Interest | Partial | High | High | Advance Scouting |
+| Chelsea | Maxence Lacroix | Reported Interest | Partial | Medium | High | Tactical Review Only |
 | Chelsea | Andrea Cambiaso | Reported Interest | Partial | Not Assessed | Unknown | Tactical Review Only |
 | Chelsea | Álvaro Carreras | Reported Interest | Partial | Medium | High | Monitor Price |
 | Chelsea | Edmond Tapsoba | No Current Corroboration | Partial | Not Assessed | High | Low Priority |

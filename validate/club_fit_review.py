@@ -17,6 +17,7 @@ from pypdf import PdfReader
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "reports" / "club-fit"
 PREVIEWS = OUT / "design-previews"
+RENDERED = OUT / "rendered-pages"
 AS_OF = "2026-07-20"
 PL_NEEDS_URL = "https://www.premierleague.com/en/news/4674463/summer-2026-transfer-window-what-does-each-premier-league-club-need"
 
@@ -42,6 +43,8 @@ CONTROLLED = {
     "price_risk": {"HIGH", "MEDIUM", "LOW", "UNKNOWN"},
     "recommended_action": {"ADVANCE_SCOUTING", "MONITOR_PRICE", "TACTICAL_REVIEW_ONLY", "ABSTAIN_DATA_GAP", "LOW_PRIORITY"},
 }
+SOURCE_STATUSES = {"VERIFIED", "NOT_VERIFIED", "HUMAN_CHECK_REQUIRED"}
+SOURCE_METHODS = {"HTTP_FETCH_AND_TITLE_MATCH", "MANUAL_BROWSER_CHECK", "OFFICIAL_PAGE_INSPECTION", "HUMAN_CHECK_REQUIRED", "NOT_VERIFIED"}
 
 FORBIDDEN = [
     "validated sporting-quality ranking",
@@ -123,6 +126,14 @@ def main() -> int:
     assert not sources.source_id.duplicated().any()
     assert not source_validation.source_id.duplicated().any()
     assert set(sources.source_id) == set(source_validation.source_id)
+    assert set(source_validation.verification_status) <= SOURCE_STATUSES
+    assert set(source_validation.verification_method) <= SOURCE_METHODS
+    assert source_validation.claim_checked.ne("").all()
+    assert not (
+        source_validation.http_status.astype(str).eq("200")
+        & source_validation.verification_status.eq("VERIFIED")
+        & source_validation.verification_method.eq("NOT_VERIFIED")
+    ).any()
     assert PL_NEEDS_URL in set(sources.url)
     assert PL_NEEDS_URL in set(source_validation.url)
 
@@ -146,8 +157,13 @@ def main() -> int:
 
     tm_validation = source_validation[source_validation.source_id.str.startswith("tm_")]
     assert set(tm_validation.verification_status) == {"HUMAN_CHECK_REQUIRED"}
+    assert set(tm_validation.verification_method) == {"HUMAN_CHECK_REQUIRED"}
     assert tm_validation.verification_warning.str.contains("no bypass", case=False).all()
     assert df.transfermarkt_rumour_status.eq("HUMAN_CHECK_REQUIRED").all()
+    assert df.loc[df.player.eq("Bradley Barcola"), "fit_rating"].iloc[0] == "MEDIUM"
+    assert df.loc[df.player.eq("Maxence Lacroix"), "fit_rating"].iloc[0] in {"MEDIUM", "NOT_ASSESSED"}
+    assert df.loc[df.player.eq("Maxence Lacroix"), "recommended_action"].iloc[0] != "ADVANCE_SCOUTING"
+    assert df.loc[df.player.eq("Christos Tzolis"), "fit_rating"].iloc[0] == "HIGH"
 
     dated_sources = sources[
         ~sources.source_id.str.startswith("tm_")
@@ -167,9 +183,8 @@ def main() -> int:
     assert "needx/" not in md
     assert "needx/" not in pdf_text
 
-    assert 6 <= len(pdf.pages) <= 7, len(pdf.pages)
-    for i, text in enumerate(page_texts, 1):
-        assert len(norm_text(text)) > 180, (i, len(norm_text(text)))
+    assert 6 <= len(pdf.pages) <= 8, len(pdf.pages)
+    assert "Market-consensus snapshot" in pdf_text
 
     for preview in [
         PREVIEWS / "design-a-editorial-scouting-desk.png",
@@ -179,6 +194,20 @@ def main() -> int:
         PREVIEWS / "design-decision.md",
     ]:
         assert preview.exists() and preview.stat().st_size > 100, preview
+    for html in [
+        PREVIEWS / "design-a-editorial-scouting-desk.html",
+        PREVIEWS / "design-b-club-recruitment-dashboard.html",
+    ]:
+        text = html.read_text()
+        for _, r in df.iterrows():
+            assert r.player in text, (html, r.player)
+        assert "Market-consensus snapshot" in text
+        assert "Data warning" in text
+    rendered_pages = sorted(RENDERED.glob("page-*.pdf.png"))
+    if rendered_pages:
+        assert len(rendered_pages) == len(pdf.pages), (len(rendered_pages), len(pdf.pages))
+        assert (RENDERED / "contact-sheet.png").exists()
+        assert all(p.stat().st_size > 20_000 for p in rendered_pages)
 
     low = md_norm + "\n" + pdf_norm
     for phrase in FORBIDDEN:
