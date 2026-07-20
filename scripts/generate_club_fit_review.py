@@ -161,6 +161,151 @@ SOURCE_VALIDATION = {
     },
 }
 
+REPORTING_EVIDENCE_STATUSES = {
+    "OFFICIAL_CONFIRMED",
+    "MULTIPLE_VERIFIED_REPORTS",
+    "SINGLE_VERIFIED_REPORT",
+    "UNVERIFIED_REPORT_ONLY",
+    "NO_CURRENT_CORROBORATION",
+    "HUMAN_CHECK_REQUIRED",
+}
+OFFICIAL_CONFIRMATION_STATUSES = {
+    "OFFICIAL_CONFIRMED",
+    "OFFICIAL_NOT_CONFIRMED",
+    "NO_OFFICIAL_CONFIRMATION",
+}
+
+# Only these source-player pairs can count as player-specific reporting evidence.
+# General squad-need anchors, Transfermarkt human-check rows, and official pages
+# that do not name/confirm a candidate are intentionally excluded.
+PLAYER_SOURCE_CLAIMS = {
+    ("Christos Tzolis", "sky_tzolis_arsenal"): {"verified_player_claim": True, "official_confirmation": False, "independent": True},
+    ("Christos Tzolis", "guardian_tzolis_arsenal"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Julián Alvarez", "independent_alvarez_arsenal"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Bradley Barcola", "guardian_tzolis_arsenal"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("John Stones", "sun_stones_arsenal"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Bruno Guimarães", "guardian_bruno_arsenal"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Bruno Guimarães", "sky_bruno_arsenal"): {"verified_player_claim": True, "official_confirmation": False, "independent": True},
+    ("Morgan Rogers", "chelsea_official_transfers_2026"): {"verified_player_claim": False, "official_confirmation": False, "independent": False},
+    ("Morgan Rogers", "guardian_rogers_chelsea"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Morgan Rogers", "talksport_rogers_chelsea"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Maxence Lacroix", "talksport_lacroix_chelsea"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Andrea Cambiaso", "teamtalk_cambiaso_chelsea"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+    ("Álvaro Carreras", "as_carreras_chelsea"): {"verified_player_claim": True, "official_confirmation": False, "independent": True},
+    ("Edmond Tapsoba", "bundesliga_tapsoba_extension"): {"verified_player_claim": False, "official_confirmation": False, "independent": True},
+}
+
+DESIRED_REPORT_STATUS = {
+    "Christos Tzolis": "ADVANCED_REPORT",
+    "Julián Alvarez": "REPORTED_INTEREST",
+    "Bradley Barcola": "REPORTED_INTEREST",
+    "John Stones": "REPORTED_INTEREST",
+    "Bruno Guimarães": "REPORTED_INTEREST",
+    "Morgan Rogers": "ADVANCED_REPORT",
+    "Maxence Lacroix": "REPORTED_INTEREST",
+    "Andrea Cambiaso": "REPORTED_INTEREST",
+    "Álvaro Carreras": "REPORTED_INTEREST",
+    "Edmond Tapsoba": "NO_CURRENT_CORROBORATION",
+}
+
+
+def derive_reporting_evidence(
+    player: str,
+    source_ids: list[str],
+    source_validation: dict[str, dict] | None = None,
+    player_source_claims: dict[tuple[str, str], dict] | None = None,
+    desired_status: str | None = None,
+) -> dict:
+    validation = source_validation or SOURCE_VALIDATION
+    claim_map = player_source_claims or PLAYER_SOURCE_CLAIMS
+    desired = desired_status or DESIRED_REPORT_STATUS.get(player, "REPORTED_INTEREST")
+
+    official_confirmed = False
+    official_checked_not_confirmed = False
+    verified_sources: list[str] = []
+    unverified_sources: list[str] = []
+    independent_verified: set[str] = set()
+
+    for sid in source_ids:
+        source_status = validation[sid]["verification_status"]
+        claim = claim_map.get((player, sid))
+        if sid == "chelsea_official_transfers_2026" and claim and not claim["official_confirmation"]:
+            official_checked_not_confirmed = True
+        if not claim:
+            continue
+        if claim["official_confirmation"] and source_status == "VERIFIED":
+            official_confirmed = True
+            verified_sources.append(sid)
+            continue
+        if claim["verified_player_claim"] and source_status == "VERIFIED":
+            verified_sources.append(sid)
+            if claim["independent"]:
+                independent_verified.add(sid)
+        elif source_status in {"NOT_VERIFIED", "HUMAN_CHECK_REQUIRED"}:
+            unverified_sources.append(sid)
+
+    verified_count = len(verified_sources)
+    unverified_count = len(unverified_sources)
+    independent_count = len(independent_verified)
+
+    if official_confirmed:
+        official_status = "OFFICIAL_CONFIRMED"
+        evidence_status = "OFFICIAL_CONFIRMED"
+        confidence = "HIGH"
+        latest_status = "CONFIRMED"
+    else:
+        official_status = "OFFICIAL_NOT_CONFIRMED" if official_checked_not_confirmed else "NO_OFFICIAL_CONFIRMATION"
+        if verified_count >= 2 and independent_count >= 2:
+            evidence_status = "MULTIPLE_VERIFIED_REPORTS"
+            confidence = "HIGH"
+        elif verified_count == 1:
+            evidence_status = "SINGLE_VERIFIED_REPORT"
+            confidence = "MEDIUM"
+        elif desired == "NO_CURRENT_CORROBORATION":
+            evidence_status = "NO_CURRENT_CORROBORATION"
+            confidence = "UNVERIFIED"
+        elif unverified_count:
+            evidence_status = "UNVERIFIED_REPORT_ONLY"
+            confidence = "UNVERIFIED"
+        else:
+            evidence_status = "HUMAN_CHECK_REQUIRED"
+            confidence = "UNVERIFIED"
+
+        if desired == "NO_CURRENT_CORROBORATION":
+            latest_status = "NO_CURRENT_CORROBORATION"
+        elif desired == "ADVANCED_REPORT" and verified_count:
+            latest_status = "ADVANCED_REPORT"
+        elif verified_count:
+            latest_status = "REPORTED_INTEREST"
+        elif unverified_count:
+            latest_status = "RUMOUR_ONLY"
+        else:
+            latest_status = "NO_CURRENT_CORROBORATION"
+
+    if official_confirmed:
+        reason = "Official source confirmed the candidate-specific transfer status."
+    elif verified_count >= 2 and independent_count >= 2:
+        reason = "Two or more inspected independent player-specific sources support the status claim."
+    elif verified_count == 1:
+        reason = "One inspected player-specific source; no second verified independent corroboration."
+    elif unverified_count:
+        reason = "Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims."
+    elif desired == "NO_CURRENT_CORROBORATION":
+        reason = "No current club-specific corroboration was verified."
+    else:
+        reason = "Player-specific reporting could not be inspected; human verification is required."
+
+    return {
+        "player_specific_verified_source_count": verified_count,
+        "player_specific_unverified_source_count": unverified_count,
+        "official_confirmation_status": official_status,
+        "independent_verified_corroboration_count": independent_count,
+        "reporting_evidence_status": evidence_status,
+        "reporting_confidence_reason": reason,
+        "latest_report_status": latest_status,
+        "reporting_confidence": confidence,
+    }
+
 
 CANDIDATES = [
     {"club": "Arsenal", "player": "Christos Tzolis", "target_role": "Direct left-wing solution", "latest_report_status": "ADVANCED_REPORT", "reporting_confidence": "HIGH", "source_ids": "pl_needs_2026;sky_tzolis_arsenal;guardian_tzolis_arsenal;tm_arsenal_rumour_attempt", "fit_rating": "HIGH", "price_risk": "UNKNOWN", "recommended_action": "ADVANCE_SCOUTING", "why": "Included because Arsenal's stated need is a direct left-winger and current reporting presents Tzolis as the clearest active left-wing solution.", "style": "Left-sided forward profile in the local identity file; the reviewed role is touchline/direct-wing coverage rather than central-forward depth.", "fit": "Best aligns with the Arsenal need anchor because the role is specifically left wing and current reporting frames him as Trossard replacement cover.", "concern": "The review has no validated local chance-creation or off-ball role model for Arsenal's left side.", "availability": "Advanced reporting is not official confirmation; Transfermarkt Rumour Mill could not be verified in this environment.", "price_reason": "Market-consensus snapshot is moderate for this set, but negotiated fee, wages and contract details are not verified here.", "warning": "Local evidence is identity and Transfermarkt market-consensus only; no Arsenal-specific sporting prediction.", "citations": "[1][5][6]"},
@@ -215,7 +360,9 @@ def build_rows() -> list[dict]:
     for c in CANDIDATES:
         local = player_lookup(players, latest_vals, c["player"])
         ids = c["source_ids"].split(";")
+        evidence = derive_reporting_evidence(c["player"], ids)
         row = {**c, **local}
+        row.update(evidence)
         row.update({
             "as_of_date": str(AS_OF),
             "transfermarkt_rumour_status": "HUMAN_CHECK_REQUIRED",
@@ -235,6 +382,12 @@ CSV_FIELDS = [
     "as_of_date", "transfermarkt_rumour_status",
     "transfermarkt_market_value_eur", "market_value_snapshot_date",
     "latest_report_status", "reporting_confidence", "source_urls",
+    "player_specific_verified_source_count",
+    "player_specific_unverified_source_count",
+    "official_confirmation_status",
+    "independent_verified_corroboration_count",
+    "reporting_evidence_status",
+    "reporting_confidence_reason",
     "source_ids", "local_data_status", "local_file_loaded_date",
     "player_record_snapshot_date", "current_club_observation_date",
     "local_data_vintage", "local_metrics_used", "why_included",
@@ -333,7 +486,11 @@ def write_markdown(path: Path, rows: list[dict]) -> None:
 
 **Target role:** {r['target_role']}
 
+**Reporting evidence:** {badge(r['reporting_evidence_status'])}
+
 **Reporting status:** {badge(r['latest_report_status'])} / {badge(r['reporting_confidence'])} {cite_nums}
+
+**Reporting-confidence reason:** {r['reporting_confidence_reason']}
 
 **Local data status:** {badge(r['local_data_status'])}
 
@@ -361,7 +518,7 @@ Price-risk reasoning: {r['price_reason']}
 
 Data warning: {r['warning']}
 """)
-    table = "\n".join(f"| {r['club']} | {r['player']} | {badge(r['latest_report_status'])} | {badge(r['local_data_status'])} | {badge(r['fit_rating'])} | {badge(r['price_risk'])} | {badge(r['recommended_action'])} |" for r in rows)
+    table = "\n".join(f"| {r['club']} | {r['player']} | {badge(r['reporting_evidence_status'])} | {badge(r['latest_report_status'])} / {badge(r['reporting_confidence'])} | {badge(r['local_data_status'])} | {badge(r['fit_rating'])} | {badge(r['price_risk'])} | {badge(r['recommended_action'])} |" for r in rows)
     refs = "\n".join(f"{i+1}. {s['publisher']}. \"{s['title']}\". Published: {s['publication_date'] or 'not stated'}; retrieved: {AS_OF}. {s['url']}" for i, s in enumerate(SOURCES))
     md = f"""# Chelsea + Arsenal 10-Player Club-Fit Review
 
@@ -369,7 +526,7 @@ As-of / retrieval date: **{AS_OF}**
 
 ## Executive Summary
 
-This is an internal, human-in-the-loop decision-support review. It is **not** a validated sporting prediction, not a buyer-specific NPV model, not a surplus ranking, and not a numeric overall ranking.
+This is an internal, human-in-the-loop decision-support review. It is **not** a validated sporting prediction, not a buyer-specific NPV model, not a surplus ranking, not an underpriced-player claim, and not a numeric overall ranking.
 
 The fixed review set contains exactly five Arsenal players and five Chelsea players. Transfermarkt Rumour Mill direct status is **Human Check Required** because the pages required JavaScript/anti-bot verification; no bypass was attempted.
 
@@ -377,16 +534,20 @@ The fixed review set contains exactly five Arsenal players and five Chelsea play
 
 Fit labels use a transparent editorial rubric. `HIGH` requires positional alignment, sourced or locally supported role characteristics, plausible tactical use, and no major unresolved role contradiction. `MEDIUM` means partial alignment or material uncertainty. `LOW` means weak fit. `NOT_ASSESSED` means the available sources do not support a player-specific tactical judgement.
 
+Reporting confidence is generated by a deterministic evidence policy. `VERIFIED` means the source identity/title/date and the player-specific material claim were inspected and recorded. `NOT_VERIFIED` means the source is retained only as cited reporting and does not count as substantive corroboration. `HUMAN_CHECK_REQUIRED` means access restrictions or manual-only verification prevented inspection. `HIGH` reporting confidence requires official confirmation or at least two inspected independent player-specific sources; `MEDIUM` requires one inspected credible player-specific source; `UNVERIFIED` is used where no player-specific claim was inspected successfully. HTTP 200 status, matching page titles, general squad-needs articles and articles about other players do not verify candidate-specific transfer claims.
+
 Price risk considers market-consensus snapshot, age, reporting around likely fee where available, contract/availability evidence, wage-information availability, injury/availability concerns where sourced, and source uncertainty. `UNKNOWN` is used when market value alone is insufficient.
 
 Market value is labelled as **Transfermarkt market-consensus value at the recorded snapshot**. It is not fair value, not expected transfer fee and not buyer-specific economic value. Missing local performance evidence remains blank and does not become zero.
+
+The HTML/CSS previews are design prototypes using the same structured player records. The final PDF is generated by a deterministic ReportLab implementation that mirrors the selected Design A card hierarchy; it is not browser-printed from the preview HTML.
 
 {''.join(sections)}
 
 ## Comparison / Action Table
 
-| Club | Player | Reporting | Local data | Fit | Price risk | Action |
-|---|---|---|---|---|---|---|
+| Club | Player | Reporting evidence | Reporting | Local data | Fit | Price risk | Action |
+|---|---|---|---|---|---|---|---|
 {table}
 
 ## References
@@ -420,8 +581,9 @@ def design_html(rows: list[dict], design: str) -> str:
     <div class="action">{badge(r['recommended_action'])}</div>
   </div>
   <div class="badges">
-    <span>{badge(r['latest_report_status'])}</span><span>{badge(r['reporting_confidence'])}</span><span>Local: {badge(r['local_data_status'])}</span><span>Fit: {badge(r['fit_rating'])}</span><span>Risk: {badge(r['price_risk'])}</span>
+    <span>Evidence: {badge(r['reporting_evidence_status'])}</span><span>Report: {badge(r['latest_report_status'])}</span><span>Confidence: {badge(r['reporting_confidence'])}</span><span>Local: {badge(r['local_data_status'])}</span><span>Fit: {badge(r['fit_rating'])}</span><span>Risk: {badge(r['price_risk'])}</span>
   </div>
+  <p><b>Reporting reason:</b> {escape(r['reporting_confidence_reason'])}</p>
   <p><b>Why:</b> {escape(r['why'])}</p>
   <p><b>Tactical summary:</b> {escape(r['fit'])}</p>
   <p><b>Concern:</b> {escape(r['concern'])}</p>
@@ -456,7 +618,7 @@ h3 {{ border-left:5px solid #667; padding-left:10px; font-size:22px; }}
 section {{ display:flex; flex-direction:column; gap:12px; }}
 </style></head>
 <body><main>
-<header><div><h1>Design {design}: {title}</h1><p class="deck">As-of {AS_OF}. Editorial decision support only: no validated sporting prediction, no NPV, no surplus, no ranking.</p></div></header>
+<header><div><h1>Design {design}: {title}</h1><p class="deck">As-of {AS_OF}. Editorial decision support only: no validated sporting prediction, no NPV, no surplus, no underpriced-player claim, no ranking.</p></div></header>
 <div class="grid">{content}</div>
 </main></body></html>"""
 
@@ -472,10 +634,11 @@ def draw_preview(path: Path, rows: list[dict], title: str, palette: tuple[str, s
         ax.add_patch(plt.Rectangle((0.02, y - 0.075), 0.01, 0.07, color=accent, ec=accent))
         ax.text(0.04, y - 0.022, r["player"], fontsize=12, weight="bold", color=palette[0])
         ax.text(0.04, y - 0.052, r["target_role"], fontsize=8.5, color="#596774")
-        ax.text(0.36, y - 0.025, badge(r["latest_report_status"]), fontsize=8.5, bbox={"boxstyle": "round,pad=.22", "fc": palette[1], "ec": "none"})
-        ax.text(0.56, y - 0.025, f"Fit {badge(r['fit_rating'])}", fontsize=8.5)
-        ax.text(0.68, y - 0.025, f"Risk {badge(r['price_risk'])}", fontsize=8.5)
-        ax.text(0.80, y - 0.025, badge(r["recommended_action"]), fontsize=8.5)
+        ax.text(0.34, y - 0.025, badge(r["reporting_evidence_status"]), fontsize=7.7, bbox={"boxstyle": "round,pad=.22", "fc": palette[1], "ec": "none"})
+        ax.text(0.52, y - 0.025, badge(r["reporting_confidence"]), fontsize=8.0)
+        ax.text(0.63, y - 0.025, f"Fit {badge(r['fit_rating'])}", fontsize=8.0)
+        ax.text(0.74, y - 0.025, f"Risk {badge(r['price_risk'])}", fontsize=8.0)
+        ax.text(0.84, y - 0.025, badge(r["recommended_action"]), fontsize=7.7)
         y -= 0.085
     fig.savefig(path, dpi=160, bbox_inches="tight")
     plt.close(fig)
@@ -487,7 +650,7 @@ def write_previews(rows: list[dict]) -> None:
     draw_preview(PREVIEWS / "design-b-club-recruitment-dashboard.png", rows, "Design B - Club Recruitment Dashboard", ("#24364b", "#d8e5f2"))
     (PREVIEWS / "design-a-editorial-scouting-desk.html").write_text(design_html(rows, "A"))
     (PREVIEWS / "design-b-club-recruitment-dashboard.html").write_text(design_html(rows, "B"))
-    (PREVIEWS / "design-decision.md").write_text("# Club-Fit Design Decision\n\nDesign A is selected for the final PDF because the review is citation-heavy and the editorial card hierarchy makes the caveats easier to read. Design B uses the same data but groups candidates into denser side-by-side club panels with stronger status strips for recruitment operations. The two designs differ in information density, club-section structure, and hierarchy; they are not separate statistical products.\n")
+    (PREVIEWS / "design-decision.md").write_text("# Club-Fit Design Decision\n\nDesign A is selected for the final PDF because the review is citation-heavy and the editorial card hierarchy makes caveats, evidence status and player-level warnings easier to scan. Design B uses the same structured data but groups candidates into denser side-by-side club panels with stronger operational status strips. The two designs differ in information density, club-section structure, and hierarchy; they are not separate statistical products.\n\nThe committed HTML/CSS files are design prototypes. The final PDF is generated by the deterministic ReportLab renderer in `scripts/generate_club_fit_review.py`, which implements the selected Design A card hierarchy, Arsenal/Chelsea accent separation, evidence badges, warnings and references. The PDF is not browser-printed from the HTML prototypes, so the generation path is documented this way to avoid source-of-truth drift claims.\n")
 
 
 def para(text: str, style) -> Paragraph:
@@ -499,9 +662,9 @@ def write_pdf(path: Path, rows: list[dict]) -> None:
     styles = getSampleStyleSheet()
     title = ParagraphStyle("TitleLocal", parent=styles["Title"], fontName="Helvetica-Bold", fontSize=24, leading=29, textColor=colors.HexColor("#14283a"), alignment=TA_LEFT)
     h2 = ParagraphStyle("H2", parent=styles["Heading2"], fontName="Helvetica-Bold", fontSize=16, leading=19, spaceBefore=8, textColor=colors.HexColor("#14283a"))
-    body = ParagraphStyle("Body", parent=styles["BodyText"], fontName="Helvetica", fontSize=9.5, leading=11.4, spaceAfter=3)
-    small = ParagraphStyle("Small", parent=body, fontSize=8.15, leading=9.35)
-    doc = SimpleDocTemplate(str(path), pagesize=A4, rightMargin=1.25*cm, leftMargin=1.25*cm, topMargin=1.2*cm, bottomMargin=1.2*cm)
+    body = ParagraphStyle("Body", parent=styles["BodyText"], fontName="Helvetica", fontSize=10, leading=11.5, spaceAfter=3)
+    small = ParagraphStyle("Small", parent=body, fontSize=9.5, leading=10.6, spaceAfter=2)
+    doc = SimpleDocTemplate(str(path), pagesize=A4, rightMargin=1.05*cm, leftMargin=1.05*cm, topMargin=1.0*cm, bottomMargin=1.0*cm)
 
     nums = citation_map()
 
@@ -512,11 +675,13 @@ def write_pdf(path: Path, rows: list[dict]) -> None:
             para(r["player"].upper(), h2),
             para(
                 f"<b>Role:</b> {r['target_role']}<br/>"
+                f"<b>Reporting evidence:</b> {badge(r['reporting_evidence_status'])}; "
                 f"<b>Reporting:</b> {badge(r['latest_report_status'])} / {badge(r['reporting_confidence'])} {cite_nums}; "
                 f"<b>Local:</b> {badge(r['local_data_status'])}; <b>Fit:</b> {badge(r['fit_rating'])}; <b>Risk:</b> {badge(r['price_risk'])}<br/>"
                 f"<b>Action:</b> {badge(r['recommended_action'])}",
                 body,
             ),
+            para(f"<b>Reporting-confidence reason:</b> {r['reporting_confidence_reason']}", small),
         ]
         for label, val in [
             ("Why included", r["why"]),
@@ -546,7 +711,7 @@ def write_pdf(path: Path, rows: list[dict]) -> None:
         para(f"As-of / retrieval date: <b>{AS_OF}</b>", body),
         Spacer(1, .2*cm),
         para("Executive Summary", h2),
-        para("Internal decision support only. Not a validated sporting prediction, not buyer-specific NPV, not a surplus ranking, and not a numeric overall ranking.", body),
+        para("Internal decision support only. Not a validated sporting prediction, not buyer-specific NPV, not a surplus ranking, not an underpriced-player claim, and not a numeric overall ranking.", body),
         para("Methodology And Limitations", h2),
         para("Fit and price-risk labels follow the rubric in the Markdown report. Transfermarkt Rumour Mill status is HUMAN CHECK REQUIRED; no anti-bot bypass was attempted. Market value is Transfermarkt market-consensus value at the recorded snapshot, not expected fee or economic value.", body),
         para("Arsenal review order: direct left-wing solution, forward-ceiling option, midfield-control option, then Saliba-cover/backline contingency. Chelsea review order: back-three defensive need, left-side defensive/wing-back need, then Rogers integration and price-risk review.", body),
@@ -563,7 +728,7 @@ def write_pdf(path: Path, rows: list[dict]) -> None:
         story.append(PageBreak())
         for r in club_rows[2:]:
             story.extend(card(r))
-        story.append(PageBreak())
+        story.append(Spacer(1, 0.35*cm))
 
     story.append(para("Comparison / Action Table", h2))
     story.append(para("No numeric overall ranking is produced. The action tags separate reporting confidence, local evidence coverage, tactical fit and price risk.", body))
@@ -571,10 +736,24 @@ def write_pdf(path: Path, rows: list[dict]) -> None:
     table = Table(data, colWidths=[1.6*cm, 3.2*cm, 2.5*cm, 1.7*cm, 1.8*cm, 1.8*cm, 3.0*cm])
     table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8efe9")), ("GRID", (0, 0), (-1, -1), .25, colors.lightgrey), ("FONT", (0, 0), (-1, -1), "Helvetica", 8.2), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.4), ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story.append(table)
-    story.append(PageBreak())
+    story.append(Spacer(1, 0.25*cm))
     story.append(para("References", h2))
-    for i, s in enumerate(SOURCES, 1):
-        story.append(para(f"{i}. {s['publisher']}. {s['title']}. Published: {s['publication_date'] or 'not stated'}; retrieved: {AS_OF}. {s['url']}", small))
+    ref_cells = [
+        para(f"{i}. {s['publisher']}. {s['title']}. Published: {s['publication_date'] or 'not stated'}; retrieved: {AS_OF}. {s['url']}", small)
+        for i, s in enumerate(SOURCES, 1)
+    ]
+    ref_rows = []
+    for i in range(0, len(ref_cells), 2):
+        ref_rows.append([ref_cells[i], ref_cells[i + 1] if i + 1 < len(ref_cells) else ""])
+    ref_table = Table(ref_rows, colWidths=[9.15*cm, 9.15*cm])
+    ref_table.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 2),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 2),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    story.append(ref_table)
     doc.build(story)
 
 

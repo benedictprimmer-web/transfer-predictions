@@ -12,6 +12,8 @@ from urllib.parse import urlparse
 
 import pandas as pd
 from pypdf import PdfReader
+from scripts.generate_club_fit_review import derive_reporting_evidence
+from validate.club_fit_review_policy import main as run_policy_checks
 
 
 REPO = Path(__file__).resolve().parent.parent
@@ -42,6 +44,8 @@ CONTROLLED = {
     "reporting_confidence": {"HIGH", "MEDIUM", "LOW", "UNVERIFIED"},
     "price_risk": {"HIGH", "MEDIUM", "LOW", "UNKNOWN"},
     "recommended_action": {"ADVANCE_SCOUTING", "MONITOR_PRICE", "TACTICAL_REVIEW_ONLY", "ABSTAIN_DATA_GAP", "LOW_PRIORITY"},
+    "official_confirmation_status": {"OFFICIAL_CONFIRMED", "OFFICIAL_NOT_CONFIRMED", "NO_OFFICIAL_CONFIRMATION"},
+    "reporting_evidence_status": {"OFFICIAL_CONFIRMED", "MULTIPLE_VERIFIED_REPORTS", "SINGLE_VERIFIED_REPORT", "UNVERIFIED_REPORT_ONLY", "NO_CURRENT_CORROBORATION", "HUMAN_CHECK_REQUIRED"},
 }
 SOURCE_STATUSES = {"VERIFIED", "NOT_VERIFIED", "HUMAN_CHECK_REQUIRED"}
 SOURCE_METHODS = {"HTTP_FETCH_AND_TITLE_MATCH", "MANUAL_BROWSER_CHECK", "OFFICIAL_PAGE_INSPECTION", "HUMAN_CHECK_REQUIRED", "NOT_VERIFIED"}
@@ -78,6 +82,7 @@ def card_section(md: str, player: str) -> str:
 
 
 def main() -> int:
+    run_policy_checks()
     subprocess.run(["python3", "scripts/generate_club_fit_review.py"], cwd=REPO, check=True)
 
     csv_path = OUT / "chelsea-arsenal-player-review.csv"
@@ -105,6 +110,16 @@ def main() -> int:
     assert df.data_warning.ne("").all()
     assert df.recommended_action.ne("").all()
     assert df.source_ids.ne("").all()
+    for field in [
+        "player_specific_verified_source_count",
+        "player_specific_unverified_source_count",
+        "official_confirmation_status",
+        "independent_verified_corroboration_count",
+        "reporting_evidence_status",
+        "reporting_confidence_reason",
+    ]:
+        assert field in df.columns, field
+    assert df.reporting_confidence_reason.str.len().gt(35).all()
     assert df.tactical_concern.str.len().gt(35).all()
     assert df.price_risk_reasoning.str.len().gt(35).all()
     assert df.local_file_loaded_date.eq(AS_OF).all()
@@ -134,6 +149,11 @@ def main() -> int:
         & source_validation.verification_status.eq("VERIFIED")
         & source_validation.verification_method.eq("NOT_VERIFIED")
     ).any()
+    assert not (
+        source_validation.http_status.astype(str).eq("200")
+        & source_validation.verification_status.eq("VERIFIED")
+        & source_validation.claim_checked.str.contains("not reverified", case=False)
+    ).any()
     assert PL_NEEDS_URL in set(sources.url)
     assert PL_NEEDS_URL in set(source_validation.url)
 
@@ -152,8 +172,18 @@ def main() -> int:
         section = card_section(md, r.player)
         assert "[" in section and "]" in section, r.player
         assert r.recommended_action.replace("_", " ").title() in section, r.player
+        assert r.reporting_evidence_status.replace("_", " ").title() in section, r.player
+        assert r.reporting_confidence_reason in section, r.player
         assert norm_text(r.player) in pdf_norm, r.player
         assert r.recommended_action.replace("_", " ").title().lower() in pdf_norm, r.player
+        assert r.reporting_evidence_status.replace("_", " ").title().lower() in pdf_norm, r.player
+        derived = derive_reporting_evidence(r.player, ids)
+        assert r.reporting_evidence_status == derived["reporting_evidence_status"], r.player
+        assert r.reporting_confidence == derived["reporting_confidence"], r.player
+        if r.reporting_confidence == "HIGH":
+            assert r.official_confirmation_status == "OFFICIAL_CONFIRMED" or int(r.independent_verified_corroboration_count) >= 2, r.player
+        if r.latest_report_status == "ADVANCED_REPORT":
+            assert int(r.player_specific_verified_source_count) >= 1, r.player
 
     tm_validation = source_validation[source_validation.source_id.str.startswith("tm_")]
     assert set(tm_validation.verification_status) == {"HUMAN_CHECK_REQUIRED"}
@@ -164,6 +194,9 @@ def main() -> int:
     assert df.loc[df.player.eq("Maxence Lacroix"), "fit_rating"].iloc[0] in {"MEDIUM", "NOT_ASSESSED"}
     assert df.loc[df.player.eq("Maxence Lacroix"), "recommended_action"].iloc[0] != "ADVANCE_SCOUTING"
     assert df.loc[df.player.eq("Christos Tzolis"), "fit_rating"].iloc[0] == "HIGH"
+    assert df.loc[df.player.eq("Morgan Rogers"), "latest_report_status"].iloc[0] == "RUMOUR_ONLY"
+    assert df.loc[df.player.eq("Morgan Rogers"), "reporting_confidence"].iloc[0] == "UNVERIFIED"
+    assert df.loc[df.player.eq("Maxence Lacroix"), "reporting_confidence"].iloc[0] == "UNVERIFIED"
 
     dated_sources = sources[
         ~sources.source_id.str.startswith("tm_")
@@ -178,8 +211,11 @@ def main() -> int:
     assert "references" in pdf_norm
     assert "not a validated sporting prediction" in md_norm
     assert "not a validated sporting prediction" in pdf_norm
+    assert "underpriced-player claim" in md_norm
     assert "human check required" in md_norm
     assert "human check required" in pdf_norm
+    assert "http 200 status" in md_norm
+    assert "not browser-printed from the preview html" in md_norm
     assert "needx/" not in md
     assert "needx/" not in pdf_text
 
