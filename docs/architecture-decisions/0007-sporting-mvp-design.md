@@ -4,7 +4,7 @@ Status: accepted for development evidence only.
 
 ## Context
 
-The V3 data spine produced a development-only next-season minutes target. The next question was whether strict-prior sporting-rate evidence improved enough over age/role history to support further sporting modelling.
+The V3 data spine produced a development-only next-season minutes target. The next question was whether strict-prior sporting-rate evidence improved enough over age, role, prior minutes and data freshness to support further sporting modelling.
 
 ## Decision
 
@@ -17,6 +17,6 @@ Both views use `reports/sporting-mvp/validated-output-contract.csv` and label ro
 
 ## Consequences
 
-Because S1 failed its gate, the MVP does not rank unsupported current players. It shows what would have been predicted on development rows for next-season minutes, with calibrated intervals omitted because they were not fitted.
+Because only 2021 and 2022 contain informative S1 predictions, the MVP formally abstains with `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE` and does not rank unsupported current players. It shows what would have been predicted on development rows for next-season minutes, with calibrated intervals omitted because they were not fitted.
 
 This preserves the product surface while preventing a minutes-only negative result from becoming a misleading sporting-quality or buyer-value claim.

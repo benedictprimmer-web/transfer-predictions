@@ -4,9 +4,9 @@ Status: development-only evidence explorer. The locked test is not opened.
 
 ## Question
 
-Can strict-prior player data improve a next-season minutes/availability model over a simple age/role history baseline?
+Can strict-prior sporting-rate evidence improve a next-season minutes/availability model after controlling for age, role, prior minutes and data freshness?
 
-This corrected MVP answers: no, not on the tested development contract. The revised fold-fitted S1 prior sporting-rate challenger did not pass the predefined gate over the joint age-role baseline for next-season minutes. This does not establish whether future sporting quality or total sporting contribution is predictable.
+This corrected MVP formally abstains: `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE`. The event-safe minutes baseline is usable for development diagnostics, but current prior sporting-rate coverage is too recent and sparse for a credible temporal persistence test. This does not establish whether future sporting quality or total sporting contribution is predictable.
 
 ## Output Contract
 
@@ -20,7 +20,9 @@ Each row is a retrospective development prediction event with:
 - `next_minutes`: observed next-season minutes. Missing values are excluded from model metrics.
 - `next_available_minutes`, `next_minutes_share`, `next_minutes_observation_status`: competition-season denominator and observation status. Unsupported denominators retain raw minutes and null shares.
 - `s0_pred`: fold-fitted joint age-role ridge baseline.
-- `s1_pred`: fold-fitted shrunk prior sporting-rate challenger for next-season minutes. Calibrated intervals are not reported.
+- `m0_pred`: S0 plus prior minutes and data freshness.
+- `s1_pred`: M0 plus fold-fitted shrunk prior sporting-rate evidence for supported rows; otherwise fallback to M0.
+- `s1_evidence_status`: whether a row has supported rate evidence or a fallback reason.
 - `shrunk_prior_sporting_rate`: price-blind prior sporting rate after exposure shrinkage.
 - `feature_tier`, `club_match_confidence`: support indicators.
 

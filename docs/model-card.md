@@ -18,7 +18,7 @@ Timestamped player/transfer snapshot, strictly pre-cutoff market-consensus value
 
 Market bargain: low expected negotiated fee relative to market consensus.
 
-Minutes/availability: future playing minutes over a specified horizon. Development evidence exists, but the tested S1 challenger did not improve over the age/role baseline.
+Minutes/availability: future playing minutes over a specified horizon. Development evidence exists for an event-safe minutes diagnostic, but the sporting-rate challenger lacks sufficient temporal rate coverage.
 
 Sporting rate: future role-normalized performance conditional on observed playing time. NOT V1-SUPPORTED until coverage and fold-local normalization are approved.
 
@@ -52,7 +52,9 @@ FACT - The merged Sporting MVP tested next-season minutes, not future sporting q
 
 FACT - Frozen development population is now 2,115 rows after two ambiguous prediction events are quarantined from the merged 2,117-row population. It covers 1,022 players, five leagues, and three supported outfield roles. Corrected manifest hash: `a32621ef87e152e3b6ff761da0c794ccbb33d3254a9a42170029508b03593b0e`.
 
-FACT - On 1,806 temporal development rows with observed next-season minutes, S0 joint age-role ridge baseline Spearman is 0.1462 and S1 role-appropriate shrunk prior sporting-rate ridge challenger Spearman is 0.1576. S1 lift is +0.0113 with player-clustered 90% CI [-0.0106, +0.0305] from 1,000 deterministic bootstrap repetitions, top-tier precision lift -1.66 percentage points, and 1/7 positive Spearman folds. S2 was not fit.
+FACT - On 1,806 temporal development rows with observed next-season minutes, S0 joint age-role ridge baseline Spearman is 0.1462. M0, which adds prior minutes and data freshness, Spearman is 0.1806. S1, which adds role-appropriate shrunk prior sporting-rate evidence to M0, Spearman is 0.1757 on the deployment population with fallback behaviour.
+
+FACT - The clean M0-versus-S1 supported-rate comparison has 614 rows and 500 players. M0 Spearman is 0.2072 and S1 Spearman is 0.1836. Only two temporal folds are informative for S1, below the required three-fold minimum, so the official decision is `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE`. The 1,000-repetition player-cluster interval [-0.0687, +0.0230] is an `EXPLORATORY_CONDITIONAL_OOF_INTERVAL`, not proof of temporal stability. S2 was not fit.
 
 FACT - Missing prior sporting-rate components remain missing, unobserved outcomes are not encoded as zero, and available-minute denominators are competition-season based. Where a denominator is not defensible, raw minutes are retained but minutes share is null with `ABSTAIN_UNSUPPORTED_DENOMINATOR`.
 

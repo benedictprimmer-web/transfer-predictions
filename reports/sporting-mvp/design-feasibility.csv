@@ -1,0 +1,29 @@
+comparison,fold,target,role,training_rows,evaluation_rows,training_players,evaluation_players,required_threshold,pass_fail,abstention_reason
+one_vs_two_season_minutes,2016,two_season_cumulative_minutes,,159,87,135,87,train_rows>=250; eval_rows>=50; train_players>=100,FAIL,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT
+pooled_vs_role_specific,2016,next_minutes,DEF,80,47,59,46,train_rows>=50; eval_rows>=50 for every fold-role,FAIL,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT
+pooled_vs_role_specific,2016,next_minutes,FWD,85,68,57,59,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2016,next_minutes,MID,94,59,68,58,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+one_vs_two_season_minutes,2017,two_season_cumulative_minutes,,246,117,199,116,train_rows>=250; eval_rows>=50; train_players>=100,FAIL,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT
+pooled_vs_role_specific,2017,next_minutes,DEF,127,66,84,62,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2017,next_minutes,FWD,153,65,90,63,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2017,next_minutes,MID,153,57,104,54,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+one_vs_two_season_minutes,2018,two_season_cumulative_minutes,,363,142,282,140,train_rows>=250; eval_rows>=50; train_players>=100,PASS,
+pooled_vs_role_specific,2018,next_minutes,DEF,193,90,121,85,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2018,next_minutes,FWD,218,72,120,68,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2018,next_minutes,MID,210,59,126,58,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+one_vs_two_season_minutes,2019,two_season_cumulative_minutes,,505,140,370,139,train_rows>=250; eval_rows>=50; train_players>=100,PASS,
+pooled_vs_role_specific,2019,next_minutes,DEF,283,82,167,81,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2019,next_minutes,FWD,290,93,151,87,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2019,next_minutes,MID,269,84,156,81,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+one_vs_two_season_minutes,2020,two_season_cumulative_minutes,,645,204,462,204,train_rows>=250; eval_rows>=50; train_players>=100,PASS,
+pooled_vs_role_specific,2020,next_minutes,DEF,365,106,206,100,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2020,next_minutes,FWD,383,114,194,109,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2020,next_minutes,MID,353,103,204,101,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+one_vs_two_season_minutes,2021,two_season_cumulative_minutes,,849,193,595,191,train_rows>=250; eval_rows>=50; train_players>=100,PASS,
+pooled_vs_role_specific,2021,next_minutes,DEF,471,106,252,102,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2021,next_minutes,FWD,497,111,243,103,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2021,next_minutes,MID,456,115,248,107,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+one_vs_two_season_minutes,2022,two_season_cumulative_minutes,,1042,0,697,0,train_rows>=250; eval_rows>=50; train_players>=100,FAIL,ABSTAIN_INSUFFICIENT_FOLD_SUPPORT
+pooled_vs_role_specific,2022,next_minutes,DEF,577,110,297,107,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2022,next_minutes,FWD,608,115,288,111,train_rows>=50; eval_rows>=50 for every fold-role,PASS,
+pooled_vs_role_specific,2022,next_minutes,MID,571,84,290,84,train_rows>=50; eval_rows>=50 for every fold-role,PASS,

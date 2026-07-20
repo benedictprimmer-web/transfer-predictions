@@ -1,23 +1,32 @@
 {
-  "bootstrap_interval_interpretation": "Difference in temporal prediction metrics for generated out-of-fold predictions; not parameter uncertainty.",
+  "bootstrap_interval_interpretation": "M0-versus-S1 difference on the common supported-rate out-of-fold prediction population; conditional on generated OOF predictions, not parameter uncertainty, not proof of temporal stability, and not a substitute for sufficient informative folds.",
   "command": "python3 -m validate.sporting_mvp_models",
-  "decision": "PRIOR SPORTING RATE CHALLENGER DID NOT PASS NEXT-SEASON MINUTES GATE",
+  "decision": "ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE",
   "estimand": "next-season availability/minutes, not future sporting quality or total contribution",
   "gate": {
-    "folds": 7,
+    "bootstrap_interval_label": "EXPLORATORY_CONDITIONAL_OOF_INTERVAL",
+    "comparison": "M0_prior_availability_vs_S1_incremental_sporting_rate",
+    "folds": 2,
+    "informative_s1_folds": 2,
+    "minimum_informative_folds_required": 3,
+    "official_decision": "ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE",
     "player_cluster_bootstrap_reps": 1000,
-    "positive_spearman_folds": 1,
+    "positive_spearman_folds": 0,
+    "rate_evidence_players": 500,
+    "rate_evidence_rows": 614,
     "s1_passed": false,
-    "s2_status": "not_fit_s1_gate_failed",
-    "spearman_lift": 0.011335620013132652,
-    "spearman_lift_ci90_hi": 0.030476190525147866,
-    "spearman_lift_ci90_lo": -0.010577398509192667,
-    "top_precision_lift_pp": -1.657458563535913
+    "s2_status": "not_fit_insufficient_temporal_rate_coverage",
+    "spearman_lift": -0.023580511902229595,
+    "spearman_lift_ci90_hi": 0.022956894793262364,
+    "spearman_lift_ci90_lo": -0.06873771277478526,
+    "top_precision_lift_pp": 4.838709677419356
   },
   "locked_test_status": "not_opened",
   "models_fit": [
     "S0",
+    "M0",
     "S1"
   ],
+  "official_interpretation": "The event-safe minutes baseline is usable for development diagnostics, but current prior sporting-rate coverage is too recent and sparse for a credible temporal persistence test.",
   "price_features_used": []
 }

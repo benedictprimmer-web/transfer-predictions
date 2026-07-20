@@ -25,6 +25,7 @@ DETERMINISTIC_ARTIFACTS = [
     OUT / "fold-model-audit.csv",
     OUT / "model-comparison.csv",
     OUT / "design-ablation.csv",
+    OUT / "design-feasibility.csv",
     OUT / "subgroup-results.csv",
     OUT / "abstention-summary.csv",
     OUT / "run-manifest.json",

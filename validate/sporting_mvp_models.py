@@ -1,6 +1,6 @@
 """Small temporal sporting MVP models.
 
-Only S0 and S1 are fit by default. S2 is skipped unless S1 clears the
+S0, M0, and S1 are fit by default. S2 is skipped unless S1 clears the
 predeclared gate.
 
 Run:
@@ -98,6 +98,19 @@ def fit_fold(train: pd.DataFrame, test: pd.DataFrame) -> pd.DataFrame:
     s0_model.fit(train[["role", "age_band", "age_role", "player_age"]], train.next_minutes)
     s0 = pd.Series(s0_model.predict(test[["role", "age_band", "age_role", "player_age"]]), index=test.index)
 
+    m0_model = _ridge_pipeline(
+        ["role", "age_band", "age_role"],
+        ["player_age", "prior_minutes", "data_freshness_years"],
+    )
+    m0_model.fit(
+        train[["role", "age_band", "age_role", "player_age", "prior_minutes", "data_freshness_years"]],
+        train.next_minutes,
+    )
+    m0 = pd.Series(
+        m0_model.predict(test[["role", "age_band", "age_role", "player_age", "prior_minutes", "data_freshness_years"]]),
+        index=test.index,
+    )
+
     # Empirical-Bayes style shrinkage: role-relevant prior rate is pulled toward
     # the training role mean with a predeclared 900-minute exposure half-life.
     # The relationship to future minutes is then fitted inside the fold.
@@ -109,12 +122,12 @@ def fit_fold(train: pd.DataFrame, test: pd.DataFrame) -> pd.DataFrame:
         train_weight * train.prior_sporting_rate +
         (1 - train_weight) * train.role.map(role_rate).fillna(global_rate)
     )
-    train["s1_evidence_status"] = np.where(train.prior_sporting_rate.notna(), "SUPPORTED_RATE_EVIDENCE", "FALLBACK_S0_MISSING_RATE")
+    train["s1_evidence_status"] = np.where(train.prior_sporting_rate.notna(), "SUPPORTED_RATE_EVIDENCE", "FALLBACK_M0_MISSING_RATE")
     test_rate = _role_rate(test)
     exposure_weight = (test.prior_minutes.fillna(0) / (test.prior_minutes.fillna(0) + 900)).clip(0, 1)
     shrunk_rate = exposure_weight * test_rate + (1 - exposure_weight) * test.role.map(role_rate).fillna(global_rate)
     test["shrunk_prior_sporting_rate"] = shrunk_rate
-    test["s1_evidence_status"] = np.where(test_rate.notna(), "SUPPORTED_RATE_EVIDENCE", "FALLBACK_S0_MISSING_RATE")
+    test["s1_evidence_status"] = np.where(test_rate.notna(), "SUPPORTED_RATE_EVIDENCE", "FALLBACK_M0_MISSING_RATE")
     s1_train = train[train.prior_sporting_rate.notna()].copy()
     if len(s1_train) >= 100 and s1_train.shrunk_prior_sporting_rate.nunique(dropna=True) > 1:
         s1_model = _ridge_pipeline(
@@ -128,11 +141,11 @@ def fit_fold(train: pd.DataFrame, test: pd.DataFrame) -> pd.DataFrame:
         )
         s1 = pd.Series(s1_model.predict(test[["role", "age_band", "age_role", "player_age", "prior_minutes",
                                              "shrunk_prior_sporting_rate", "data_freshness_years"]]), index=test.index)
-        s1 = s1.where(test.s1_evidence_status.eq("SUPPORTED_RATE_EVIDENCE"), s0)
+        s1 = s1.where(test.s1_evidence_status.eq("SUPPORTED_RATE_EVIDENCE"), m0)
     else:
-        s1 = s0.copy()
-        test["s1_evidence_status"] = "FALLBACK_S0_INSUFFICIENT_TRAINING_RATE"
-    return test.assign(s0_pred=s0, s1_pred=s1)
+        s1 = m0.copy()
+        test["s1_evidence_status"] = "FALLBACK_M0_INSUFFICIENT_TRAINING_RATE"
+    return test.assign(s0_pred=s0, m0_pred=m0, s1_pred=s1)
 
 
 def evaluate(pred: pd.DataFrame, score_col: str, label: str) -> dict:
@@ -142,12 +155,78 @@ def evaluate(pred: pd.DataFrame, score_col: str, label: str) -> dict:
     return {
         "model": label,
         "rows": int(len(pred)),
+        "players": int(pred.player_id.nunique()),
         "temporal_spearman": _spearman(y, score),
         "ndcg_top_decile": _ndcg(y, score),
         "top_tier_precision": _top_precision(y, score),
         "mae_minutes": float(err.abs().mean()),
         "rmse_minutes": float(np.sqrt((err ** 2).mean())),
     }
+
+
+def _comparison_rows(pred: pd.DataFrame, models: list[tuple[str, str]], scope: str) -> list[dict]:
+    rows = []
+    for season, g in pred.groupby("validation_season"):
+        for col, name in models:
+            rec = evaluate(g, col, name)
+            rec["fold"] = int(season)
+            rec["evaluation_scope"] = scope
+            rows.append(rec)
+    for col, name in models:
+        rec = evaluate(pred, col, name)
+        rec["fold"] = "overall"
+        rec["evaluation_scope"] = scope
+        rows.append(rec)
+    return rows
+
+
+def _fold_lifts(pred: pd.DataFrame, baseline: str, challenger: str) -> pd.Series:
+    rows = {}
+    for season, g in pred.groupby("validation_season"):
+        rows[int(season)] = _spearman(g.next_minutes, g[challenger]) - _spearman(g.next_minutes, g[baseline])
+    return pd.Series(rows, dtype="float64")
+
+
+def _design_feasibility(d: pd.DataFrame, pred: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    fold_seasons = sorted(pred.validation_season.unique())
+    for season in fold_seasons:
+        train = d[d.outcome_season < season]
+        test = d[d.outcome_season == season]
+        train_two = train[train.two_season_support.astype(bool)]
+        test_two = test[test.two_season_support.astype(bool)]
+        ok = len(train_two) >= 250 and len(test_two) >= 50 and train_two.player_id.nunique() >= 100
+        rows.append({
+            "comparison": "one_vs_two_season_minutes",
+            "fold": int(season),
+            "target": "two_season_cumulative_minutes",
+            "role": "",
+            "training_rows": int(len(train_two)),
+            "evaluation_rows": int(len(test_two)),
+            "training_players": int(train_two.player_id.nunique()),
+            "evaluation_players": int(test_two.player_id.nunique()),
+            "required_threshold": "train_rows>=250; eval_rows>=50; train_players>=100",
+            "pass_fail": "PASS" if ok else "FAIL",
+            "abstention_reason": "" if ok else "ABSTAIN_INSUFFICIENT_FOLD_SUPPORT",
+        })
+        for role in sorted(test.role.dropna().unique()):
+            train_role = train[train.role.eq(role)]
+            test_role = test[test.role.eq(role)]
+            ok = len(train_role) >= 50 and len(test_role) >= 50
+            rows.append({
+                "comparison": "pooled_vs_role_specific",
+                "fold": int(season),
+                "target": "next_minutes",
+                "role": role,
+                "training_rows": int(len(train_role)),
+                "evaluation_rows": int(len(test_role)),
+                "training_players": int(train_role.player_id.nunique()),
+                "evaluation_players": int(test_role.player_id.nunique()),
+                "required_threshold": "train_rows>=50; eval_rows>=50 for every fold-role",
+                "pass_fail": "PASS" if ok else "FAIL",
+                "abstention_reason": "" if ok else "ABSTAIN_INSUFFICIENT_FOLD_SUPPORT",
+            })
+    return pd.DataFrame(rows)
 
 
 def _cluster_bootstrap_lift(pred: pd.DataFrame, reps: int = 1000, seed: int = 7) -> dict:
@@ -158,9 +237,9 @@ def _cluster_bootstrap_lift(pred: pd.DataFrame, reps: int = 1000, seed: int = 7)
     for _ in range(reps):
         draw = rng.choice(players, size=len(players), replace=True)
         sample_idx = np.concatenate([index_by_player[p] for p in draw])
-        sample = pred.loc[sample_idx, ["next_minutes", "s0_pred", "s1_pred"]]
+        sample = pred.loc[sample_idx, ["next_minutes", "m0_pred", "s1_pred"]]
         lifts.append(_spearman(sample.next_minutes, sample.s1_pred) -
-                     _spearman(sample.next_minutes, sample.s0_pred))
+                     _spearman(sample.next_minutes, sample.m0_pred))
     s = pd.Series(lifts).dropna()
     return {
         "player_cluster_bootstrap_reps": int(reps),
@@ -187,12 +266,32 @@ def run_models() -> dict:
             continue
         if train.outcome_season.max() >= test.outcome_season.min():
             raise AssertionError("temporal ordering violated")
+        rate_train = train[_role_rate(train).notna()]
+        rate_test = test[_role_rate(test).notna()]
+        scored = fit_fold(train, test).assign(validation_season=season)
+        diff_rows = int((scored.m0_pred - scored.s1_pred).abs().gt(1e-9).sum())
+        informative = bool(len(rate_train) >= 100 and len(rate_test) > 0 and diff_rows > 0)
+        if informative:
+            reason = ""
+        elif len(rate_train) < 100:
+            reason = "insufficient_rate_supported_training_rows"
+        elif len(rate_test) == 0:
+            reason = "no_rate_supported_evaluation_rows"
+        else:
+            reason = "s1_predictions_equal_m0_fallback"
         fold_audit.append({
             "validation_season": int(season),
             "train_rows": int(len(train)),
             "train_players": int(train.player_id.nunique()),
             "evaluation_rows": int(len(test)),
             "evaluation_players": int(test.player_id.nunique()),
+            "rate_supported_train_rows": int(len(rate_train)),
+            "rate_supported_train_players": int(rate_train.player_id.nunique()),
+            "rate_supported_eval_rows": int(len(rate_test)),
+            "rate_supported_eval_players": int(rate_test.player_id.nunique()),
+            "m0_s1_predictions_differ_rows": diff_rows,
+            "informative_s1_fold": informative,
+            "s1_fold_abstention_reason": reason,
             "max_training_outcome_season": int(train.outcome_season.max()),
             "min_evaluation_outcome_season": int(test.outcome_season.min()),
             "known_eval_players": int(test.player_id.isin(train.player_id).sum()),
@@ -201,63 +300,84 @@ def run_models() -> dict:
             "role_counts": json.dumps(test.role.value_counts().sort_index().to_dict(), sort_keys=True),
             "league_counts": json.dumps(test.to_league.value_counts().sort_index().to_dict(), sort_keys=True),
         })
-        folds.append(fit_fold(train, test).assign(validation_season=season))
+        folds.append(scored)
     pred = pd.concat(folds, ignore_index=True)
     if (pred.outcome_season <= pred.groupby("fold").outcome_season.transform("min")).isna().any():
         raise AssertionError("invalid temporal fold")
     if pred.prediction_key.duplicated().any():
         raise AssertionError("same prediction key scored twice")
 
-    rows = []
-    for season, g in pred.groupby("validation_season"):
-        for col, name in [("s0_pred", "S0_age_role_history"), ("s1_pred", "S1_shrunk_prior_sporting")]:
-            rec = evaluate(g, col, name)
-            rec["fold"] = int(season)
-            rows.append(rec)
-    comp = pd.DataFrame(rows)
-    overall = pd.DataFrame([evaluate(pred, "s0_pred", "S0_age_role_history"),
-                            evaluate(pred, "s1_pred", "S1_shrunk_prior_sporting")])
-    comp = pd.concat([comp, overall.assign(fold="overall")], ignore_index=True)
+    full_models = [
+        ("s0_pred", "S0_age_role"),
+        ("m0_pred", "M0_prior_availability"),
+        ("s1_pred", "S1_incremental_sporting_rate"),
+    ]
+    rate_pred = pred[pred.s1_evidence_status.eq("SUPPORTED_RATE_EVIDENCE")].copy()
+    comp = pd.DataFrame(
+        _comparison_rows(pred, full_models, "deployment_population")
+        + _comparison_rows(rate_pred, [("m0_pred", "M0_prior_availability"), ("s1_pred", "S1_incremental_sporting_rate")], "rate_evidence_common_rows")
+    )
     comp.to_csv(OUT / "model-comparison.csv", index=False)
-    pd.DataFrame(fold_audit).to_csv(OUT / "fold-model-audit.csv", index=False)
+    fold_audit_df = pd.DataFrame(fold_audit)
+    fold_audit_df.to_csv(OUT / "fold-model-audit.csv", index=False)
 
-    wide = comp[comp.fold != "overall"].pivot(index="fold", columns="model", values="temporal_spearman")
-    lift = wide["S1_shrunk_prior_sporting"] - wide["S0_age_role_history"]
-    top = comp[comp.fold != "overall"].pivot(index="fold", columns="model", values="top_tier_precision")
-    top_lift = top["S1_shrunk_prior_sporting"] - top["S0_age_role_history"]
+    deployment_overall = comp[(comp.fold == "overall") & comp.evaluation_scope.eq("deployment_population")]
+    rate_overall = comp[(comp.fold == "overall") & comp.evaluation_scope.eq("rate_evidence_common_rows")]
+    informative_folds = int(fold_audit_df.informative_s1_fold.sum())
+    lift = _fold_lifts(rate_pred, "m0_pred", "s1_pred")
+    top_lift = pd.Series({
+        int(season): _top_precision(g.next_minutes, g.s1_pred) - _top_precision(g.next_minutes, g.m0_pred)
+        for season, g in rate_pred.groupby("validation_season")
+    }, dtype="float64")
+    m0_rate_spearman = float(rate_overall.loc[rate_overall.model.eq("M0_prior_availability"), "temporal_spearman"].iloc[0]) if len(rate_overall) else float("nan")
+    s1_rate_spearman = float(rate_overall.loc[rate_overall.model.eq("S1_incremental_sporting_rate"), "temporal_spearman"].iloc[0]) if len(rate_overall) else float("nan")
+    m0_rate_top = float(rate_overall.loc[rate_overall.model.eq("M0_prior_availability"), "top_tier_precision"].iloc[0]) if len(rate_overall) else float("nan")
+    s1_rate_top = float(rate_overall.loc[rate_overall.model.eq("S1_incremental_sporting_rate"), "top_tier_precision"].iloc[0]) if len(rate_overall) else float("nan")
     gate = {
-        "spearman_lift": float(overall.loc[overall.model.eq("S1_shrunk_prior_sporting"), "temporal_spearman"].iloc[0] -
-                                overall.loc[overall.model.eq("S0_age_role_history"), "temporal_spearman"].iloc[0]),
-        "top_precision_lift_pp": float(100 * (overall.loc[overall.model.eq("S1_shrunk_prior_sporting"), "top_tier_precision"].iloc[0] -
-                                             overall.loc[overall.model.eq("S0_age_role_history"), "top_tier_precision"].iloc[0])),
+        "comparison": "M0_prior_availability_vs_S1_incremental_sporting_rate",
+        "rate_evidence_rows": int(len(rate_pred)),
+        "rate_evidence_players": int(rate_pred.player_id.nunique()),
+        "informative_s1_folds": informative_folds,
+        "minimum_informative_folds_required": 3,
+        "spearman_lift": float(s1_rate_spearman - m0_rate_spearman),
+        "top_precision_lift_pp": float(100 * (s1_rate_top - m0_rate_top)),
         "positive_spearman_folds": int((lift > 0).sum()),
         "folds": int(lift.notna().sum()),
     }
-    gate.update(_cluster_bootstrap_lift(pred))
-    gate["s1_passed"] = bool((gate["spearman_lift"] >= 0.03 or gate["top_precision_lift_pp"] >= 5) and
-                             gate["positive_spearman_folds"] > gate["folds"] / 2 and
-                             gate["spearman_lift_ci90_lo"] > 0)
-    gate["s2_status"] = "not_fit_s1_gate_failed" if not gate["s1_passed"] else "not_fit_mvp_stopped_at_minimum_supported_signal"
+    gate.update(_cluster_bootstrap_lift(rate_pred))
+    if informative_folds < 3:
+        gate["s1_passed"] = False
+        gate["official_decision"] = "ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE"
+        gate["s2_status"] = "not_fit_insufficient_temporal_rate_coverage"
+        gate["bootstrap_interval_label"] = "EXPLORATORY_CONDITIONAL_OOF_INTERVAL"
+    else:
+        gate["s1_passed"] = bool((gate["spearman_lift"] >= 0.03 or gate["top_precision_lift_pp"] >= 5) and
+                                 gate["positive_spearman_folds"] > gate["folds"] / 2 and
+                                 gate["spearman_lift_ci90_lo"] > 0)
+        gate["official_decision"] = "S1_GATE_PASSED" if gate["s1_passed"] else "S1_GATE_FAILED"
+        gate["s2_status"] = "not_fit_s1_gate_failed" if not gate["s1_passed"] else "not_fit_mvp_stopped_at_minimum_supported_signal"
 
     pred_cols = ["prediction_key", "player_id", "player_name", "role", "to_league", "outcome_season",
                  "next_minutes", "next_available_minutes", "next_minutes_share",
-                 "next_minutes_observation_status", "s0_pred", "s1_pred",
+                 "next_minutes_observation_status", "s0_pred", "m0_pred", "s1_pred",
+                 "s1_evidence_status",
                  "shrunk_prior_sporting_rate", "feature_tier", "club_match_confidence"]
     pred[pred_cols].to_csv(OUT / "validated-output-contract.csv", index=False)
+    _design_feasibility(d, pred).to_csv(OUT / "design-feasibility.csv", index=False)
 
     ablations = [
         {"comparison": "one_vs_two_season_minutes", "execution_status": "ABSTAIN_INSUFFICIENT_FOLD_SUPPORT",
          "estimand": "future availability/minutes", "target": "next_minutes/two_season_cumulative_minutes",
-         "rows": int(d.two_season_support.sum()), "failure_or_abstention_reason": "two-season common population lacks sufficient fold support after locked-boundary exclusion"},
+         "rows": int(d.two_season_support.sum()), "failure_or_abstention_reason": "see reports/sporting-mvp/design-feasibility.csv for fold counts"},
         {"comparison": "direct_vs_rate_minutes", "execution_status": "ABSTAIN_INSUFFICIENT_TARGET",
          "estimand": "future total sporting contribution", "target": "not_supported",
          "rows": 0, "failure_or_abstention_reason": "future sporting-rate target coverage is insufficient"},
         {"comparison": "minimal_vs_performance_rich", "execution_status": "STOPPED_BY_GATE",
          "estimand": "future availability/minutes", "target": "next_minutes",
-         "rows": int(len(pred)), "failure_or_abstention_reason": "S1 failed predefined gate; rich model not fit"},
+         "rows": int(len(pred)), "failure_or_abstention_reason": "S1 did not clear the minimum temporal-rate coverage gate; rich model not fit"},
         {"comparison": "pooled_vs_role_specific", "execution_status": "ABSTAIN_INSUFFICIENT_FOLD_SUPPORT",
          "estimand": "future availability/minutes", "target": "next_minutes",
-         "rows": int(len(pred)), "failure_or_abstention_reason": "role-specific folds fail minimum 50 rows per role in multiple validation seasons"},
+         "rows": int(len(pred)), "failure_or_abstention_reason": "see reports/sporting-mvp/design-feasibility.csv for fold-role counts"},
         {"comparison": "complete_case_vs_broader", "execution_status": "ABSTAIN_INSUFFICIENT_FOLD_SUPPORT",
          "estimand": "future availability/minutes", "target": "next_minutes",
          "rows": int(len(d)), "failure_or_abstention_reason": "broader/noisier populations not admitted without timestamp and denominator support"},
@@ -273,20 +393,21 @@ def run_models() -> dict:
     for name, col in [("role", "role"), ("league", "to_league"), ("feature_tier", "feature_tier")]:
         for val, g in pred.groupby(col):
             if len(g) >= 20:
-                rec = evaluate(g, "s1_pred", "S1_shrunk_prior_sporting")
+                rec = evaluate(g, "s1_pred", "S1_incremental_sporting_rate")
                 rec.update({"subgroup_type": name, "subgroup": val})
                 subgroup_rows.append(rec)
     pd.DataFrame(subgroup_rows).to_csv(OUT / "subgroup-results.csv", index=False)
 
     run = {
         "command": "python3 -m validate.sporting_mvp_models",
-        "decision": "PRIOR SPORTING RATE CHALLENGER DID NOT PASS NEXT-SEASON MINUTES GATE" if not gate["s1_passed"] else "MINUTES CHALLENGER SUPPORTED FOR RESTRICTED DEVELOPMENT POPULATION",
+        "decision": gate["official_decision"],
         "estimand": "next-season availability/minutes, not future sporting quality or total contribution",
         "gate": gate,
-        "bootstrap_interval_interpretation": "Difference in temporal prediction metrics for generated out-of-fold predictions; not parameter uncertainty.",
+        "bootstrap_interval_interpretation": "M0-versus-S1 difference on the common supported-rate out-of-fold prediction population; conditional on generated OOF predictions, not parameter uncertainty, not proof of temporal stability, and not a substitute for sufficient informative folds.",
+        "official_interpretation": "The event-safe minutes baseline is usable for development diagnostics, but current prior sporting-rate coverage is too recent and sparse for a credible temporal persistence test.",
         "locked_test_status": "not_opened",
         "price_features_used": [],
-        "models_fit": ["S0", "S1"] + (["S2"] if gate["s1_passed"] else []),
+        "models_fit": ["S0", "M0", "S1"] + (["S2"] if gate["s1_passed"] else []),
     }
     (OUT / "run-manifest.json").write_text(json.dumps(run, indent=2, sort_keys=True) + "\n")
     if "S2" in run["models_fit"] and gate["s2_status"].startswith("not_fit"):

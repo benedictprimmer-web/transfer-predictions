@@ -40,9 +40,11 @@ FACT - The strict negotiated-fee candidate sample has 5,151 rows after excluding
 
 FACT - The merged Sporting MVP validated a next-season minutes target. It did not validate future sporting quality, future sporting rate, total sporting contribution, transfer fee, market-consensus value, or buyer-specific economic value.
 
-FACT - The corrected conclusion is: the revised fold-fitted prior sporting-rate challenger did not pass the temporal gate over the joint age-role baseline for next-season minutes.
+FACT - The corrected model ladder is S0 age/role, M0 prior availability/freshness, and S1 incremental sporting-rate evidence over M0. M0 features must not be attributed to sporting rate.
 
-FACT - The stricter correction replaces the handcrafted adjustment with fold-fitted ridge models: S0 is a joint age-role baseline, and S1 adds role-appropriate prior sporting-rate evidence with transparent exposure shrinkage. The S1 gate still fails, so prior sporting evidence has not yet received a statistically valid positive test of future sporting quality or total contribution.
+FACT - The official Sporting MVP correction decision is `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE`: only the 2021 and 2022 folds contain informative S1 predictions. The event-safe minutes baseline is usable for development diagnostics, but current prior sporting-rate coverage is too recent and sparse for a credible temporal persistence test.
+
+FACT - The supported-rate M0-versus-S1 bootstrap interval is labelled `EXPLORATORY_CONDITIONAL_OOF_INTERVAL`. It is conditional on generated out-of-fold predictions, not parameter uncertainty, not proof of temporal stability, and not a substitute for sufficient informative folds.
 
 REQUIREMENT - Minutes/availability, sporting rate, total contribution, negotiated fee, market-consensus value, and buyer-specific economic value must remain separate outputs. A minutes model must not be described as a sporting-quality model, and a Transfermarkt market-consensus value must not be described as expected fee or economic value.
 

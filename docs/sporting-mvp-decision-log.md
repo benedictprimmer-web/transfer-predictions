@@ -42,18 +42,23 @@ Corrected executable result after semantic event-key repair:
 - model rows with observed next-season minutes: 1,806;
 - supported denominator rows: 2,067;
 - denominator abstentions: 48;
-- S0 Spearman: 0.1462;
-- S1 Spearman: 0.1576;
-- S1 Spearman lift: +0.0113;
-- player-clustered 90% CI for out-of-fold Spearman lift: [-0.0106, +0.0305] from 1,000 deterministic bootstrap repetitions;
-- top-tier precision lift: -1.66 percentage points;
-- positive Spearman folds: 1/7;
-- S2 status: not fit because S1 failed.
+- S0 age-role Spearman: 0.1462;
+- M0 prior-availability Spearman: 0.1806;
+- S1 incremental sporting-rate Spearman on the deployment population: 0.1757;
+- common supported-rate rows for M0-versus-S1: 614;
+- common supported-rate players: 500;
+- M0 supported-rate Spearman: 0.2072;
+- S1 supported-rate Spearman: 0.1836;
+- informative S1 folds: 2;
+- required informative folds: 3;
+- official decision: `ABSTAIN_INSUFFICIENT_TEMPORAL_RATE_COVERAGE`;
+- exploratory player-clustered 90% interval for M0-versus-S1 out-of-fold Spearman lift: [-0.0687, +0.0230] from 1,000 deterministic bootstrap repetitions;
+- S2 status: not fit because temporal sporting-rate coverage is insufficient.
 
 The deterministic model/data artifacts do not embed the changing Git commit SHA. Runtime provenance should be collected outside the byte-stable artifacts.
 
 Final wording:
 
-`The revised fold-fitted prior sporting-rate challenger did not pass the temporal gate over the joint age-role baseline for next-season minutes.`
+`The event-safe minutes baseline is usable for development diagnostics, but current prior sporting-rate coverage is too recent and sparse for a credible temporal persistence test.`
 
 Locked test status: not opened.

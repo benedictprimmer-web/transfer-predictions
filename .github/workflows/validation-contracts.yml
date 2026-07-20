@@ -18,5 +18,7 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Compile validators
         run: python -m compileall validate
+      - name: Sporting MVP synthetic integrity fixtures
+        run: python -m validate.sporting_mvp_unit_tests
       - name: Locked-period guard
         run: python -m validate.locked_guard
