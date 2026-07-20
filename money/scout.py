@@ -22,7 +22,6 @@ from impact.aging import POS_GROUP
 LEAGUE = "ENG-Premier League"
 OUT = Path(__file__).resolve().parent.parent / "data" / "money" / "scout_arsenal.csv"
 _POSS = None
-_TALENT = None
 
 
 def _prog_pctl(tid, season_end):
@@ -43,23 +42,6 @@ def _prog_pctl(tid, season_end):
             return round(float(_POSS.loc[tid].iloc[-1]))     # fall back to his latest season
         except Exception:
             return None
-
-
-def _talent_pctl(tid, season):
-    """impact.talent's price-blind quality percentile (within season x position) — AUGMENTS the
-    board (per BUILD_PLAN.md Phase 4), doesn't replace the NPV ranking. Edge PRESENT BUT UNPROVEN
-    per MODEL_verdict.md: read as a second opinion / diagnostic column, not a re-ranking signal."""
-    global _TALENT
-    if _TALENT is None:
-        p = Path(__file__).resolve().parent.parent / "data" / "money" / "talent_scores.csv"
-        _TALENT = (pd.read_csv(p).set_index(["tm_player_id", "season"]).talent_pctl
-                   if p.exists() else pd.Series(dtype=float))
-    if tid is None or _TALENT.empty:
-        return None
-    try:
-        return round(float(_TALENT.loc[(tid, season)]))
-    except KeyError:
-        return None
 
 
 def candidate_universe(ue: pd.DataFrame, season: str, min_actions: float = 150) -> pd.DataFrame:
@@ -156,8 +138,7 @@ def scout(*, to_team="Arsenal", to_season=None, context_points=72, min_actions=9
                          wage_gbp_m=round(w.annual_wage_gbp / 1e6, 1),
                          npv_m=round(cen / 1e6, 1), npv_lo_m=round(lo / 1e6, 1),
                          npv_hi_m=round(hi / 1e6, 1),
-                         prog_pctl=_prog_pctl(tid, int(season[:4]) + 1),   # descriptive scouting flag
-                         talent_pctl=_talent_pctl(tid, season)))          # price-blind quality flag
+                         prog_pctl=_prog_pctl(tid, int(season[:4]) + 1)))  # descriptive scouting flag
     board = pd.DataFrame(rows).sort_values("npv_m", ascending=False).reset_index(drop=True)
     board.attrs.update(to_team=to_team, dseason=dseason, season=season,
                        gbp_per_point=gbp_per_point, team_points=team_points)
@@ -185,7 +166,7 @@ def run(argv):
           f"{at['to_team']} as a {at['team_points']:.0f}-pt club "
           f"(£{at['gbp_per_point']/1e6:.2f}m/point; eff bar from {at['dseason']})\n")
     cols = ["player", "from_league", "age", "position", "efficiency", "usage", "prog_pctl",
-            "talent_pctl", "mv_eur_m", "fee_gbp_m", "wage_gbp_m", "npv_m", "npv_lo_m", "npv_hi_m"]
+            "mv_eur_m", "fee_gbp_m", "wage_gbp_m", "npv_m", "npv_lo_m", "npv_hi_m"]
     print(f"=== TOP {a.top} by NPV ===")
     print(board.head(a.top)[cols].to_string(index=False))
     print(f"\n=== BOTTOM 5 (worst value) ===")
