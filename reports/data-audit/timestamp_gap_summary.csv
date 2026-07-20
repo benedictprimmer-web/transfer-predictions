@@ -1,0 +1,11 @@
+date_source,mv_source,mv_is_point_in_time,row_count,median_transferdate_proxy_gap_days,p90_transferdate_proxy_gap_days,exact_date_rows,proxy_date_rows,undated_rows
+proxy,none,False,51199,,,0.0,51199.0,0.0
+proxy,pit_valuation,True,49714,,,0.0,49714.0,0.0
+exact,pit_valuation,True,19417,0,0,19417.0,0.0,0.0
+exact_raw,pit_valuation,True,6726,0,0,6726.0,0.0,0.0
+proxy,estateB_snapshot,False,4202,,,0.0,4202.0,0.0
+exact,none,False,2221,0,0,2221.0,0.0,0.0
+exact_raw,estateB_snapshot,False,462,0,0,462.0,0.0,0.0
+exact,estateB_snapshot,False,186,0,0,186.0,0.0,0.0
+exact,estateA_snapshot,False,13,0,0,13.0,0.0,0.0
+exact,raw_snapshot,False,7,0,0,7.0,0.0,0.0

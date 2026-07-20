@@ -1,0 +1,14 @@
+population,base_rows,field,present_rows,present_pct
+fbref_perf,52951,interceptions_known,21740,41.06
+fbref_perf,52951,minutes_known,46257,87.36
+fbref_perf,52951,npxg_known,24382,46.05
+fbref_perf,52951,npxg_known_and_minutes_known_JOINT,24381,
+fbref_perf,52951,npxg_known_but_minutes_unknown_JOINT,1,
+fbref_perf,52951,prog_actions_known,24382,46.05
+fbref_perf,52951,tackles_known,21712,41.0
+fbref_perf,52951,tm_player_id_linked,47475,89.66
+fbref_perf,52951,xag_known,24382,46.05
+v1_fee_scope,5151,contract_years_pit,3803,73.83
+v1_fee_scope,5151,exact_date,5151,100.0
+v1_fee_scope,5151,fee_undisclosed,0,0.0
+v1_fee_scope,5151,market_value_eur_present,5151,100.0

@@ -1,0 +1,49 @@
+from_league,to_league,movers,movers_in_locked_period,min_season,max_season
+Bundesliga,Eredivisie,91,0.0,2009,2021
+Bundesliga,La Liga,115,0.0,1994,2022
+Bundesliga,LaLiga,27,27.0,2023,2026
+Bundesliga,Liga Portugal,35,0.0,2009,2021
+Bundesliga,Ligue 1,128,48.0,1993,2026
+Bundesliga,Premier League,267,81.0,1999,2026
+Bundesliga,Serie A,119,41.0,1992,2026
+Eredivisie,Bundesliga,79,0.0,2009,2021
+Eredivisie,La Liga,39,0.0,2009,2021
+Eredivisie,Ligue 1,29,0.0,2009,2021
+Eredivisie,Premier League,142,0.0,2009,2021
+Eredivisie,Serie A,48,0.0,2009,2021
+La Liga,Bundesliga,103,0.0,1993,2022
+La Liga,Eredivisie,30,0.0,2009,2021
+La Liga,Liga Portugal,153,0.0,2009,2021
+La Liga,Ligue 1,121,0.0,1997,2022
+La Liga,Premier League,301,0.0,1997,2022
+La Liga,Serie A,196,0.0,1992,2022
+LaLiga,Bundesliga,21,21.0,2023,2026
+LaLiga,Ligue 1,28,28.0,2023,2026
+LaLiga,Premier League,67,67.0,2023,2026
+LaLiga,Serie A,46,46.0,2023,2026
+Liga Portugal,Bundesliga,25,0.0,2010,2021
+Liga Portugal,La Liga,203,0.0,2009,2021
+Liga Portugal,Ligue 1,88,0.0,2009,2021
+Liga Portugal,Premier League,86,0.0,2009,2021
+Liga Portugal,Serie A,59,0.0,2009,2021
+Ligue 1,Bundesliga,177,71.0,1993,2026
+Ligue 1,Eredivisie,27,0.0,2009,2021
+Ligue 1,La Liga,161,0.0,1992,2022
+Ligue 1,LaLiga,39,39.0,2023,2026
+Ligue 1,Liga Portugal,78,0.0,2009,2021
+Ligue 1,Premier League,341,88.0,1996,2026
+Ligue 1,Serie A,225,81.0,1994,2026
+Premier League,Bundesliga,218,66.0,1999,2026
+Premier League,Eredivisie,111,0.0,2009,2021
+Premier League,La Liga,287,0.0,1998,2022
+Premier League,LaLiga,72,72.0,2023,2026
+Premier League,Liga Portugal,69,0.0,2009,2021
+Premier League,Ligue 1,267,87.0,1996,2026
+Premier League,Serie A,267,78.0,1995,2026
+Serie A,Bundesliga,120,28.0,1994,2026
+Serie A,Eredivisie,48,0.0,2010,2021
+Serie A,La Liga,293,0.0,1992,2022
+Serie A,LaLiga,34,34.0,2023,2026
+Serie A,Liga Portugal,91,0.0,2009,2021
+Serie A,Ligue 1,232,61.0,1993,2026
+Serie A,Premier League,331,82.0,1996,2026

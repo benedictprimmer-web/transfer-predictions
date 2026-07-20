@@ -45,8 +45,15 @@ ESTATE_B = Path(os.environ.get(
     "ESTATE_B_DIR", "/Users/benrimmer/Downloads/football-transfer-db"))
 OUT = REPO / "data" / "merged" / "transfers_canonical.parquet"
 
-BIG5_COMP = {"GB1": "Premier League", "ES1": "LaLiga", "IT1": "Serie A",
+BIG5_COMP = {"GB1": "Premier League", "ES1": "La Liga", "IT1": "Serie A",
              "FR1": "Ligue 1", "L1": "Bundesliga"}
+LEAGUE_LABEL_ALIASES = {"LaLiga": "La Liga"}
+
+
+def _canonical_league_label(s):
+    if pd.isna(s):
+        return s
+    return LEAGUE_LABEL_ALIASES.get(str(s), s)
 
 
 def _norm_club(s: str) -> str:
@@ -425,6 +432,11 @@ def build_canonical(write: bool = True) -> pd.DataFrame:
     # 5. raw-harvest enrichment: exact dates at scale + recent fees + PIT contracts
     df = df.drop(columns=["yr", "pit_mv"], errors="ignore")
     df = _enrich_from_raw(df)
+    for c in ("from_league", "to_league"):
+        src = f"{c}_source_label"
+        if src not in df:
+            df[src] = df[c]
+        df[c] = df[c].map(_canonical_league_label)
 
     if write:
         OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -481,6 +493,7 @@ def _check():
     mv = _asof_mv(rows, vals)
     assert (mv == 10.0).all(), f"as-of leaked a same-day/future value: {mv.tolist()}"
     assert _norm_club("Real Madrid CF") == _norm_club("real madrid"), "club norm mismatch"
+    assert _canonical_league_label("LaLiga") == "La Liga"
     assert _proxy_date([2020], ["winter"]).iloc[0] == pd.Timestamp("2021-01-20")
     assert _proxy_date([2020], ["summer"]).iloc[0] == pd.Timestamp("2020-08-01")
     print("ok — as-of is strictly-before (no leak), club-norm + proxy-date correct")

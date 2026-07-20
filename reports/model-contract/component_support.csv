@@ -1,0 +1,8 @@
+component,v1_status,row_grain,evidence_count,reason
+future_minutes_availability,NOT V1-SUPPORTED,player snapshot / transfer candidate,,"current link is prior-performance-safe, not a destination next-season label builder | UNAVAILABLE_IN_THIS_ENVIRONMENT: ESTATE_B_DIR not present; evidence_count not computed, not zero"
+future_sporting_contribution,NOT V1-SUPPORTED,player snapshot / transfer candidate,,"usage/WOWY signal is weak and target builder is incomplete for destination-season contribution | UNAVAILABLE_IN_THIS_ENVIRONMENT: ESTATE_B_DIR not present; evidence_count not computed, not zero"
+market_consensus_value,"SUPPORTED AS INPUT, NOT GROUND TRUTH",player-date valuation,507815,Transfermarkt valuation is consensus proxy with PIT availability on canonical rows
+negotiated_transfer_fee,V1-CANDIDATE WITH EXACT-DATE PAID-PERMANENT SCOPE,paid permanent transfer,5151,continuous target restricted to disclosed paid permanent deals with PIT MV and exact dates
+wage,NOT V1-SUPPORTED AS OBSERVED HISTORICAL LABEL,player-season wage,13650,FIFA/Capology/modelled wages require source/status separation and licensing review
+replacement_based_importance,DECISION LAYER ONLY,buyer-player-role snapshot,0,no approved supervised label; requires named buyer squad context
+buyer_specific_economic_value,NOT V1-SUPPORTED AS HEADLINE SCORE,buyer-player-contract scenario,98,current NPV board has 0/98 positives and benefit generalization is mixed

@@ -1,0 +1,21 @@
+{
+  "absolute_log1p_rmse_diff_club_block_ci_90": [
+    0.052302958426751686,
+    0.0915251687431827
+  ],
+  "cluster_unit": "to_club_id",
+  "decision": "F1_minimal ships as the provisional fee-diagnostic challenger over F0b (the calibrated baseline, not the naive F0a identity).",
+  "gate_passed": true,
+  "min_required": 0.05,
+  "n_dev_evaluation_rows": 925,
+  "n_eval_seasons": 3,
+  "relative_improvement_club_block_ci_90": [
+    0.06809625646250275,
+    0.11512907452000473
+  ],
+  "relative_improvement_f1_vs_f0b": 0.0915502020125183,
+  "rmse_f0a_naive_descriptive_only": 0.8080905910425206,
+  "rmse_f0b_baseline": 0.7889226791204397,
+  "rmse_f1": 0.7166966484747063,
+  "uncertainty_caveat": "Only 3 distinct evaluation seasons (2019,2020,2021) exist in this scope \u2014 a season-block bootstrap would resample from just 3 units and is not reported as a headline CI. to_club_id gives 100+ clusters per season and is used instead."
+}

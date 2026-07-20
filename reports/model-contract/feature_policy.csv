@@ -1,0 +1,3 @@
+component,allowed_features,prohibited_features,requires_buyer_context,feature_cutoff_rule
+negotiated_fee_v1_candidate,"age, supported_position, origin/destination league, strictly pre-transfer market consensus, PIT contract years if contract_is_pit","future performance, post-transfer market value, current-state contract snapshots, current-state wages, buyer identity for buyer-agnostic variants",False,all features strictly before prediction cutoff; proxy-dated rows excluded from V1 fee scope
+buyer_specific_surplus,"buyer squad context, replacement set, buyer revenue curve, fee, wage, contract assumptions",destination importance when buyer is unknown; final-test calibration; unflagged modelled wages,True,buyer context must be known at prediction timestamp

@@ -1,0 +1,6 @@
+claim_context,source_table,row_grain,filter,time_range,denominator,numerator,coverage_pct
+thin R2 Transfermarkt transfers.csv.gz,data/transfermarkt/transfers.csv.gz,one transfer row from source file,all rows; disclosed fee := transfer_fee > 0,1993-07-01 to 2030-06-30,35139,2584,7.353652636671505
+"current canonical, all transaction types",warehouse.transfers_canonical,canonical transfer row,1=1; disclosed fee := fee_eur > 0,"(1992, 2026)",134147,28102,20.948660797483356
+"current canonical, permanent only",warehouse.transfers_canonical,canonical transfer row,transfer_type='permanent'; disclosed fee := fee_eur > 0,"(1992, 2026)",49616,25596,51.58819735569171
+"current canonical, paid-permanent training eligible",warehouse.transfers_canonical,canonical transfer row,"transfer_type='permanent' and fee_eur > 0 and market_value_eur is not null and player_age is not null and coalesce(fee_suspect,false)=false; disclosed fee := fee_eur > 0","(1992, 2026)",134147,17410,12.97829992470946
+"current canonical, all positive fee model-ready filter",warehouse.transfers_canonical,canonical transfer row,"fee_eur > 0 and market_value_eur is not null and player_age is not null and coalesce(fee_suspect,false)=false; disclosed fee := fee_eur > 0","(1992, 2026)",134147,19859,14.803909144446017

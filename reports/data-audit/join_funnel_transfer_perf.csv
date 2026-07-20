@@ -1,0 +1,2 @@
+step,row_count,note
+safe transfer-performance link rows,,"UNAVAILABLE_IN_THIS_ENVIRONMENT: transfer_performance_link_safe is materialized from ESTATE_B_DIR (default /Users/benrimmer/Downloads/football-transfer-db), a raw source directory that lives outside this repo's tracked data/ and was not present when the warehouse was rebuilt here. Counts below are NOT zero findings — they are not computed. Do not treat as 'no linked transfers'."

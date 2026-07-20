@@ -1,0 +1,18 @@
+{
+  "command": "python3 -m validate.sporting_mvp_models",
+  "decision": "SPORTING SIGNAL TOO WEAK - FEE DIAGNOSTIC MVP ONLY",
+  "gate": {
+    "folds": 7,
+    "positive_spearman_folds": 0,
+    "s1_passed": false,
+    "s2_status": "not_fit_s1_gate_failed",
+    "spearman_lift": -0.05161112847724579,
+    "top_precision_lift_pp": 2.209944751381215
+  },
+  "locked_test_status": "not_opened",
+  "models_fit": [
+    "S0",
+    "S1"
+  ],
+  "price_features_used": []
+}

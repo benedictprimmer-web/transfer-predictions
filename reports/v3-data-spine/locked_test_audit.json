@@ -1,0 +1,9 @@
+{
+  "buffer_rows_excluded_season_2022": 533,
+  "dev_rows": 2731,
+  "locked_rows_excluded": 198,
+  "locked_rows_key_hash_sha256": "57056633470880bc98a2d8a6f2c5b89aa4d271725f4c563f79a1f403904ad8dd",
+  "locked_season_min": 2023,
+  "note": "Hash covers row KEYS only, not any outcome/label/prediction. No locked-row metric was computed.",
+  "total_rows": 3462
+}

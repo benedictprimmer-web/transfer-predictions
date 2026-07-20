@@ -2,6 +2,16 @@
 
 *Written 2026-07-11 for a fresh chat. Read this, then `MEMORY.md` (auto-loaded), then the memo files it points to. Everything below is real — computed from data on disk, not planned.*
 
+**Update 2026-07-13 (this branch, `agent/data-audit-pr`, PR #1):** this branch
+has since merged `main` and added a Phase 0 data audit, V1 modelling
+contract, and a scoped V2 pass (Mustermann evidence layer, full-data
+descriptive analysis, one gated fee-model prototype comparison). Start with
+`docs/reconciliation.md` (what changed and what was reconciled),
+`docs/v2-results.md` (V2 verdict), and §9 below before trusting any number
+in this file against the current branch — several (notably the NPV board
+count) were superseded. `main` itself is unchanged from what's described
+below.
+
 ---
 
 ## 0. What this is
@@ -81,3 +91,81 @@ https://claude.ai/code/artifact/3e282ec9-0aae-4f2a-8b9c-b0d3c1a82bf4
 
 ## 8. Working style that fit this project
 Parallel sub-agents for independent grunt work (each: one module, tidy fns + offline `_check()`, `build` for real pull, report data not prose). Judgment/synthesis + anything feeding the gate: do inline. Every gate falsifiable, never loosened; a surviving FAIL becomes a documented finding. Show error bars — a point estimate here is a lie. Memory files in `~/.claude/projects/.../memory/` track the durable facts.
+
+## 9. PR #1 branch repair + V2 pass (2026-07-13, `agent/data-audit-pr`)
+
+**Read `docs/reconciliation.md` first** — it supersedes some numbers above
+(notably: NPV board is 120 rows / 5 positive, not 98/0; that was a stale
+artifact, not new data). Then `docs/v2-results.md` for what the V2 pass
+found, and `docs/mustermann.md` for the evidence-layer design.
+
+**One-line status (superseded by §10 below — read that first):** git repair
+clean (no conflicts); Phase 0 audit and V1 contract both reproduce on the
+combined branch; one gated fee-prototype comparison ran (numbers below were
+corrected on 2026-07-13, see §10); sporting-target prototypes were
+originally reported as blocked by Estate B — also corrected, see §10.
+
+**New this branch**: `impact/evidence.py` (per-90/shrinkage/percentile/
+evidence-card primitives, self-tested), `validate/locked_guard.py` (the
+locked-period exclusion helper — route any new dev-only loader through
+`dev_only()`), `validate/v2_full_data.py` and `validate/v2_fee_prototypes.py`
+(the two commands that produced `reports/v2-full-data/`).
+
+**Also found, not fixed**: `transfers_canonical` league labels split
+`"La Liga"`/`"LaLiga"` at the 2023 rebrand (`ingest/merge.py` normalization
+bug). In `docs/contradiction-log.md`.
+
+## 10. V2 corrections + V3 data spine (2026-07-13, external review)
+
+External review caught three real bugs in §9's work, all reproduced
+independently before fixing (full record: `docs/contradiction-log.md`):
+
+1. `transfer_performance_link_safe` was mischaracterized as a future/
+   destination-season source. It is explicitly a strictly-**prior** feature
+   link by design (`perf_season < transfer_season`, a leak guard) — the
+   opposite of what a sporting outcome target needs, regardless of Estate B
+   availability.
+2. The fee-prototype's reported "CI [+6.2%,+12.0%]" bootstrapped the
+   *absolute* RMSE difference but was labeled as a *relative percentage*
+   interval. Fixed: `validate/v2_fee_prototypes.py` now reports both,
+   correctly labeled, club-block-bootstrapped (not row-wise IID), and gates
+   against a calibrated baseline (F0b) rather than the trivial fee=MV
+   identity (F0a, now descriptive only). Corrected result: F1 beats F0b by
+   +9.15% [rel. CI +6.8%,+11.5%] — still passes, smaller and more honest.
+   New finding: the existing production `money/fees.py` HistGBR
+   underperforms the simple linear F1 on the identical population.
+3. `impact/evidence.py`'s shrinkage weight used a dimensionally unsound
+   `k`, and `support_flag` silently treated unknown (`NaN`) minutes as the
+   *highest*-confidence label. Both fixed: shrinkage is now a proper
+   Gamma-Poisson conjugate model with a simulation-calibrated self-check
+   (83% empirical coverage of an 80% nominal interval), and unknown
+   exposure is its own abstention category.
+
+**The most consequential fix is #1**: it meant the sporting-contribution
+component was never actually blocked by Estate B specifically — a genuine
+future-outcome table can be built entirely from in-repo `fbref_perf` +
+`transfers_canonical`. `docs/v3-plan.md` builds it
+(`transfer_performance_outcomes_future`); `docs/v3-results.md` has the
+resulting effective-sample funnel and whether a sporting prototype cleared
+its gate. **Read that before trusting §1-§9 above on the sporting
+component's status.**
+
+## 11. V3 data spine, built (2026-07-13, branch `agent/v3-data-spine`)
+
+`docs/v3-plan.md` and `docs/v3-results.md` have the full account. One-line
+status: `transfer_performance_features_prior` and
+`transfer_performance_outcomes_future` exist
+(`validate/v3_sporting_target.py`), built entirely from in-repo
+`fbref_perf`+`transfers_canonical`+a new `ingest/club_crosswalk.py` (no
+club ID exists in this repo; built a name-matcher, validated it against
+real data, found and locked-in-as-regression-tests 4 real false positives).
+Effective dev-eligible sporting population: **2,117 transfers with a
+one-season outcome, 1,266 with two-season** (`reports/v3-data-spine/
+effective_sample_funnel.csv`). Two real bugs caught and fixed before
+shipping: a non-monotone funnel, and a locked-period leak specific to
+two-season outcomes (`transfer_season`-based filtering under-protects a
++2-season horizon — must filter on `outcome_season`, see
+`validate.v3_sporting_target.dev_outcomes_only`). **No sporting model was
+fit against this population in this pass** — the data spine is the
+deliverable; ADR `docs/architecture-decisions/0004-separate-arms.md`
+formalizes the five-arm product structure this spine feeds into.
