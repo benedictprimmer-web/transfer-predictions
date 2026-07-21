@@ -1,0 +1,186 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Design B - Club Recruitment Dashboard</title>
+<style>
+@page { size:A4; margin:18mm; }
+body { margin:0; background:#f4f7fa; color:#172333; font:10pt/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+main { max-width:1120px; margin:0 auto; padding:34px; }
+header { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #d9ded8; padding-bottom:18px; margin-bottom:22px; }
+h1 { font-family:Georgia,serif; font-size:34px; margin:0; letter-spacing:0; }
+h2 { margin:0; font-size:20px; }
+h3 { border-left:5px solid #667; padding-left:10px; font-size:22px; }
+.deck { max-width:680px; color:#52606d; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.card { background:#ffffff; border:1px solid #d8ddd8; border-top:5px solid var(--accent); border-radius:10px; padding:15px; break-inside:avoid; box-shadow:0 8px 20px rgba(20,35,50,.06); }
+.card-head { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+.club { color:var(--accent); font-weight:700; text-transform:uppercase; font-size:10px; }
+.action { background:#edf3ec; border:1px solid #cfdccc; border-radius:999px; padding:5px 8px; font-weight:700; white-space:nowrap; }
+.badges { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.badges span { background:#eef1f4; border:1px solid #d8dde3; border-radius:999px; padding:3px 7px; font-size:9px; }
+.warning { background:#fff6e5; border-left:4px solid #d39b2a; padding:8px; margin:8px 0; }
+.market,.cite { color:#596774; font-size:9px; margin-top:7px; }
+section { display:flex; flex-direction:column; gap:12px; }
+</style></head>
+<body><main>
+<header><div><h1>Design B: Club Recruitment Dashboard</h1><p class="deck">As-of 2026-07-20. Editorial decision support only: no validated sporting prediction, no NPV, no surplus, no underpriced-player claim, no ranking.</p></div></header>
+<div class="grid"><section><h3>Arsenal</h3>
+<article class="card" style="--accent:#b7192b">
+  <div class="card-head">
+    <div><span class="club">Arsenal</span><h2>Christos Tzolis</h2><p>Direct left-wing solution</p></div>
+    <div class="action">Advance Scouting</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Single Verified Report</span><span>Report: Advanced Report</span><span>Confidence: Medium</span><span>Local: Partial</span><span>Fit: High</span><span>Risk: Unknown</span>
+  </div>
+  <p><b>Reporting reason:</b> One inspected player-specific source; no second verified independent corroboration.</p>
+  <p><b>Why:</b> Included because Arsenal&#x27;s stated need is a direct left-winger and current reporting presents Tzolis as the clearest active left-wing solution.</p>
+  <p><b>Tactical summary:</b> Best aligns with the Arsenal need anchor because the role is specifically left wing and current reporting frames him as Trossard replacement cover.</p>
+  <p><b>Concern:</b> The review has no validated local chance-creation or off-ball role model for Arsenal&#x27;s left side.</p>
+  <div class="warning"><b>Data warning:</b> Local evidence is identity and Transfermarkt market-consensus only; no Arsenal-specific sporting prediction.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 30,000,000</b> on 2025-12-10</div>
+  <div class="cite">Sources: pl_needs_2026;sky_tzolis_arsenal;guardian_tzolis_arsenal;tm_arsenal_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#b7192b">
+  <div class="card-head">
+    <div><span class="club">Arsenal</span><h2>Julián Alvarez</h2><p>Forward-ceiling option</p></div>
+    <div class="action">Monitor Price</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Unverified Report Only</span><span>Report: Rumour Only</span><span>Confidence: Unverified</span><span>Local: Partial</span><span>Fit: Medium</span><span>Risk: High</span>
+  </div>
+  <p><b>Reporting reason:</b> Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims.</p>
+  <p><b>Why:</b> Included as a forward-ceiling alternative, not as the primary left-wing answer.</p>
+  <p><b>Tactical summary:</b> Could raise Arsenal&#x27;s forward ceiling, but the role only indirectly addresses the left-wing need anchor.</p>
+  <p><b>Concern:</b> Role priority mismatch: this is not the direct winger profile identified as Arsenal&#x27;s first need.</p>
+  <div class="warning"><b>Data warning:</b> Do not treat market consensus as expected fee or buyer-specific contribution.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 100,000,000</b> on 2025-12-12</div>
+  <div class="cite">Sources: pl_needs_2026;independent_alvarez_arsenal;tm_arsenal_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#b7192b">
+  <div class="card-head">
+    <div><span class="club">Arsenal</span><h2>Bradley Barcola</h2><p>Direct left-wing solution</p></div>
+    <div class="action">Monitor Price</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Unverified Report Only</span><span>Report: Rumour Only</span><span>Confidence: Unverified</span><span>Local: Partial</span><span>Fit: Medium</span><span>Risk: High</span>
+  </div>
+  <p><b>Reporting reason:</b> Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims.</p>
+  <p><b>Why:</b> Included because the Guardian reporting grouped him with Arsenal&#x27;s left-wing search.</p>
+  <p><b>Tactical summary:</b> Partial positional alignment with the left-wing need, but the current evidence does not prove tactical suitability beyond the broad role.</p>
+  <p><b>Concern:</b> PSG current-club context and sparse direct reporting make this more monitoring than action.</p>
+  <div class="warning"><b>Data warning:</b> No local validated scoring edge; tactical fit remains editorial.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 70,000,000</b> on 2025-12-15</div>
+  <div class="cite">Sources: pl_needs_2026;guardian_tzolis_arsenal;tm_arsenal_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#b7192b">
+  <div class="card-head">
+    <div><span class="club">Arsenal</span><h2>John Stones</h2><p>Saliba-cover/backline contingency</p></div>
+    <div class="action">Tactical Review Only</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Unverified Report Only</span><span>Report: Rumour Only</span><span>Confidence: Unverified</span><span>Local: Partial</span><span>Fit: Not Assessed</span><span>Risk: Unknown</span>
+  </div>
+  <p><b>Reporting reason:</b> Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims.</p>
+  <p><b>Why:</b> Included from the fixed candidate set as a backline contingency rather than a first-priority need.</p>
+  <p><b>Tactical summary:</b> Could only be assessed through video/squad planning because the live link is lower confidence.</p>
+  <p><b>Concern:</b> Low-tier sourcing and role not aligned with Arsenal&#x27;s primary left-wing need.</p>
+  <div class="warning"><b>Data warning:</b> Defender review abstains from attacking metrics; no validated centre-back quality model.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 18,000,000</b> on 2025-12-09</div>
+  <div class="cite">Sources: pl_needs_2026;sun_stones_arsenal;tm_arsenal_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#b7192b">
+  <div class="card-head">
+    <div><span class="club">Arsenal</span><h2>Bruno Guimarães</h2><p>Midfield-control option</p></div>
+    <div class="action">Monitor Price</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Single Verified Report</span><span>Report: Reported Interest</span><span>Confidence: Medium</span><span>Local: Partial</span><span>Fit: Medium</span><span>Risk: High</span>
+  </div>
+  <p><b>Reporting reason:</b> One inspected player-specific source; no second verified independent corroboration.</p>
+  <p><b>Why:</b> Included as a midfield-control option with high-quality reporting, not because it is the primary need.</p>
+  <p><b>Tactical summary:</b> Strong player-profile hypothesis for midfield control, but it does not solve the direct-wing priority.</p>
+  <p><b>Concern:</b> High tactical appeal can distract from the stated Arsenal squad-need order.</p>
+  <div class="warning"><b>Data warning:</b> No buyer-specific value or validated ranking is produced.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 75,000,000</b> on 2025-12-09</div>
+  <div class="cite">Sources: pl_needs_2026;guardian_bruno_arsenal;sky_bruno_arsenal;tm_arsenal_rumour_attempt</div>
+</article></section><section><h3>Chelsea</h3>
+<article class="card" style="--accent:#1455a0">
+  <div class="card-head">
+    <div><span class="club">Chelsea</span><h2>Morgan Rogers</h2><p>Rogers integration and price-risk review</p></div>
+    <div class="action">Tactical Review Only</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Unverified Report Only</span><span>Report: Rumour Only</span><span>Confidence: Unverified</span><span>Local: Partial</span><span>Fit: Medium</span><span>Risk: High</span>
+  </div>
+  <p><b>Reporting reason:</b> Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims.</p>
+  <p><b>Why:</b> Included because established reporting presents an advanced Chelsea move, but the task is integration review, not discovery.</p>
+  <p><b>Tactical summary:</b> Could add attacking-midfield power, but this does not directly answer Chelsea&#x27;s defender-with-back-three-know-how need anchor.</p>
+  <p><b>Concern:</b> Role overlap and tactical integration risk should be reviewed before treating this as squad-need fulfilment.</p>
+  <div class="warning"><b>Data warning:</b> Strong reporting but not official confirmation; no validated Chelsea sporting prediction.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 70,000,000</b> on 2025-12-09</div>
+  <div class="cite">Sources: chelsea_official_transfers_2026;guardian_rogers_chelsea;talksport_rogers_chelsea;tm_chelsea_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#1455a0">
+  <div class="card-head">
+    <div><span class="club">Chelsea</span><h2>Maxence Lacroix</h2><p>Back-three defensive need</p></div>
+    <div class="action">Tactical Review Only</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Unverified Report Only</span><span>Report: Rumour Only</span><span>Confidence: Unverified</span><span>Local: Partial</span><span>Fit: Medium</span><span>Risk: High</span>
+  </div>
+  <p><b>Reporting reason:</b> Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims.</p>
+  <p><b>Why:</b> Included because Chelsea&#x27;s need anchor is a defender with back-three know-how and reporting links Chelsea to Lacroix, but suitability remains unproven.</p>
+  <p><b>Tactical summary:</b> Broad centre-back role alignment is useful, but the cited reporting does not prove back-three experience, possession fit, or defensive quality for Chelsea.</p>
+  <p><b>Concern:</b> Local data does not validate defensive quality, possession fit, or back-three experience.</p>
+  <div class="warning"><b>Data warning:</b> Centre-back quality is not assessed by attacking or shot-value metrics.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 35,000,000</b> on 2025-12-09</div>
+  <div class="cite">Sources: pl_needs_2026;talksport_lacroix_chelsea;tm_chelsea_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#1455a0">
+  <div class="card-head">
+    <div><span class="club">Chelsea</span><h2>Andrea Cambiaso</h2><p>Left-side defensive/wing-back need</p></div>
+    <div class="action">Tactical Review Only</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Unverified Report Only</span><span>Report: Rumour Only</span><span>Confidence: Unverified</span><span>Local: Partial</span><span>Fit: Not Assessed</span><span>Risk: Unknown</span>
+  </div>
+  <p><b>Reporting reason:</b> Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims.</p>
+  <p><b>Why:</b> Included from the fixed set as a left-side defensive/wing-back option.</p>
+  <p><b>Tactical summary:</b> Possible positional relevance, but the Chelsea link is low-tier and tactical facts are not independently sourced.</p>
+  <p><b>Concern:</b> TEAMtalk is retained only as lower-confidence reporting; no stronger source was used for a tactical claim.</p>
+  <div class="warning"><b>Data warning:</b> Low-confidence link; no validated local wing-back fit model.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 30,000,000</b> on 2025-12-23</div>
+  <div class="cite">Sources: pl_needs_2026;teamtalk_cambiaso_chelsea;tm_chelsea_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#1455a0">
+  <div class="card-head">
+    <div><span class="club">Chelsea</span><h2>Álvaro Carreras</h2><p>Left-side defensive/wing-back need</p></div>
+    <div class="action">Monitor Price</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: Single Verified Report</span><span>Report: Reported Interest</span><span>Confidence: Medium</span><span>Local: Partial</span><span>Fit: Medium</span><span>Risk: High</span>
+  </div>
+  <p><b>Reporting reason:</b> One inspected player-specific source; no second verified independent corroboration.</p>
+  <p><b>Why:</b> Included as a left-side defensive option connected to Chelsea reporting.</p>
+  <p><b>Tactical summary:</b> Positional fit is plausible for left-side cover but it is secondary to the back-three centre-back anchor.</p>
+  <p><b>Concern:</b> Current club and role context create availability and price questions.</p>
+  <div class="warning"><b>Data warning:</b> No validated local wing-back model; current-club timing is the latest local file value.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 60,000,000</b> on 2025-12-12</div>
+  <div class="cite">Sources: pl_needs_2026;as_carreras_chelsea;tm_chelsea_rumour_attempt</div>
+</article>
+<article class="card" style="--accent:#1455a0">
+  <div class="card-head">
+    <div><span class="club">Chelsea</span><h2>Edmond Tapsoba</h2><p>Back-three defensive need</p></div>
+    <div class="action">Low Priority</div>
+  </div>
+  <div class="badges">
+    <span>Evidence: No Current Corroboration</span><span>Report: No Current Corroboration</span><span>Confidence: Unverified</span><span>Local: Partial</span><span>Fit: Not Assessed</span><span>Risk: High</span>
+  </div>
+  <p><b>Reporting reason:</b> Only unverified player-specific reporting is retained; HTTP/headline metadata does not verify claims.</p>
+  <p><b>Why:</b> Retained because the fixed set required him, not because current Chelsea reporting corroborated the move.</p>
+  <p><b>Tactical summary:</b> Back-three defensive role would match the need category, but no current Chelsea link is corroborated.</p>
+  <p><b>Concern:</b> Availability evidence points away from a live move because of the Leverkusen extension.</p>
+  <div class="warning"><b>Data warning:</b> No current Chelsea reporting corroborated; keep as low priority.</div>
+  <div class="market">Market-consensus snapshot: <b>EUR 35,000,000</b> on 2025-12-19</div>
+  <div class="cite">Sources: pl_needs_2026;bundesliga_tapsoba_extension;tm_chelsea_rumour_attempt</div>
+</article></section></div>
+</main></body></html>

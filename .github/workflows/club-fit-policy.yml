@@ -1,0 +1,22 @@
+name: Club Fit Policy
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["agent/chelsea-arsenal-review"]
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile validation and scripts
+        run: python -m compileall validate scripts
+      - name: Run club-fit source-confidence policy tests
+        run: python -m validate.club_fit_review_policy
